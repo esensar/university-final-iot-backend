@@ -1,3 +1,7 @@
+# App configuration
+DEBUG = False
+
+# MQTT configuration
 MQTT_BROKER_URL = 'mybroker.com'
 MQTT_BROKER_PORT = 1883
 MQTT_USERNAME = 'user'
