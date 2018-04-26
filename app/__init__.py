@@ -1,23 +1,18 @@
+import atexit
 from flask import Flask
-from flask_mqtt import Mqtt
+from app.mod_devices import setup_mqtt, tear_down_mqtt
 
 app = Flask(__name__, instance_relative_config=True)
 app.config.from_object('config')
 app.config.from_pyfile('config.py')
-mqtt = Mqtt(app)
+
+def on_stop():
+    print('Application stopping')
+    tear_down_mqtt()
+
+setup_mqtt(app)
+atexit.register(on_stop)
 
 @app.route("/")
 def hello():
     return "Hello World!"
-
-@mqtt.on_connect()
-def handle_connect(client, userdata, flags, rc):
-    mqtt.subscribe('topic/state')
-
-@mqtt.on_message()
-def handle_mqtt_message(client, userdata, message):
-    data = dict(
-        topic=message.topic,
-        payload=message.payload.decode()
-    )
-    print(message.payload.decode())
