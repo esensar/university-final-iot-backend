@@ -1,10 +1,23 @@
+import atexit
+from flask import Blueprint
 from flask_mqtt import Mqtt
 
+devices = Blueprint('devices', __name__)
 mqtt = Mqtt()
 
+def on_stop():
+    tear_down_mqtt()
 
-def setup_mqtt(app):
-    mqtt.init_app(app)
+atexit.register(on_stop)
+
+@devices.route("/")
+def hello():
+    return "Hello from devices!"
+
+
+@devices.record
+def setup_mqtt(setup_state):
+    mqtt.init_app(setup_state.app)
     mqtt.client.on_message = handle_mqtt_message
     mqtt.client.on_subscribe = handle_subscribe
     print('MQTT client initialized')
