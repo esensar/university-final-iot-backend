@@ -8,12 +8,15 @@ app.config.from_object('config')
 app.config.from_pyfile('config.py')
 db = SQLAlchemy(app)
 
+
 def on_stop():
     print('Application stopping')
     tear_down_mqtt()
 
+
 setup_mqtt(app)
 atexit.register(on_stop)
+
 
 @app.route("/")
 def hello():
