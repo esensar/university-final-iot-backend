@@ -1,9 +1,12 @@
 import atexit
 from flask import Blueprint
 from flask_mqtt import Mqtt
+from .. import db
 
 devices = Blueprint('devices', __name__)
 mqtt = Mqtt()
+
+from .models import Recording
 
 def on_stop():
     tear_down_mqtt()
@@ -51,3 +54,5 @@ def handle_mqtt_message(client, userdata, message):
         payload=message.payload.decode()
     )
     print(message.payload.decode())
+
+
