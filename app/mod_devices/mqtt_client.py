@@ -1,4 +1,7 @@
+from datetime import datetime
 from flask_mqtt import Mqtt
+from .models import Recording
+from . import db
 
 mqtt = Mqtt()
 
@@ -34,10 +37,7 @@ def handle_subscribe(client, userdata, mid, granted_qos):
 
 
 def handle_mqtt_message(client, userdata, message):
-    data = dict(
-        topic=message.topic,
-        payload=message.payload.decode()
-    )
+    recording = Recording(1, 1, "315", datetime.utcnow(), "{}")
+    db.session.add(recording)
+    db.session.commit()
     print(message.payload.decode())
-
-
