@@ -18,12 +18,13 @@ class Recording(db.Model):
 
     def __init__(self, device_id, record_type,
                  record_value, recorded_at, raw_json):
-        self.device_id = device_id
-        self.record_type = record_type
-        self.record_value = record_value
-        self.recorded_at = recorded_at
+        self.device_id = int(device_id)
+        self.record_type = int(record_type)
+        self.record_value = str(record_value)
+        self.recorded_at = datetime.fromtimestamp(int(recorded_at))
         self.received_at = datetime.utcnow()
         self.raw_record = raw_json
 
     def __repr__(self):
-        return '<Recording %r>' % self.recorded_at
+        return '<Recording (value=%s, recorded_at=%s)>' % (
+            self.record_value, self.recorded_at)
