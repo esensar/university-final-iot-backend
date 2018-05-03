@@ -9,9 +9,11 @@ db = SQLAlchemy(app)
 
 
 # Blueprints setup
-from app.mod_devices import setup_mqtt, tear_down_mqtt, devices
+from app.mod_devices import devices
+from app.mod_accounts import accounts
 
 app.register_blueprint(devices, url_prefix='/devices')
+app.register_blueprint(accounts, url_prefix='/accounts')
 
 
 @app.route("/")

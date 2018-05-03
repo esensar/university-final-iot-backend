@@ -4,17 +4,20 @@ from .. import db
 
 devices = Blueprint('devices', __name__)
 
-from .models import Recording
 # Models
+from .models import Recording
 
 # Mqtt
 from .mqtt_client import tear_down_mqtt, setup_mqtt
+
 
 # When app dies, stop mqtt connection
 def on_stop():
     tear_down_mqtt()
 
+
 atexit.register(on_stop)
+
 
 # Routes
 @devices.route("/")
@@ -25,4 +28,3 @@ def hello():
 @devices.record
 def on_blueprint_setup(setup_state):
     setup_mqtt(setup_state.app)
-
