@@ -27,7 +27,7 @@ CSRF_SESSION_KEY = "secret"
 SECRET_KEY = "secret"
 
 # MQTT configuration
-MQTT_BROKER_URL = 'mybroker.com'
+MQTT_BROKER_URL = 'broker.hivemq.com'
 MQTT_BROKER_PORT = 1883
 MQTT_USERNAME = 'user'
 MQTT_PASSWORD = 'secret'
