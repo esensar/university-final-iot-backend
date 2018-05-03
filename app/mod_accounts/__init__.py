@@ -1,9 +1,6 @@
 from flask import Blueprint
+from .controllers import initialize_routes
 
 accounts = Blueprint('accounts', __name__)
 
-
-# Routes
-@accounts.route("/")
-def hello():
-    return "Hello from accounts!"
+initialize_routes(accounts)

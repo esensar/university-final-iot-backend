@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, relationship
+from sqlalchemy import Column, Integer, String, ForeignKey
 from app import db
 
 
@@ -8,9 +8,9 @@ class Account(db.Model):
     id = Column(Integer, primary_key=True)
     username = Column(String, index=True, unique=True)
     password = Column(String)
-    emails = Column(String, index=True, unique=True)
+    email = Column(String, index=True, unique=True)
     role_id = Column(Integer, ForeignKey("roles.id"))
-    role = relationship("Role", foreign_keys=[role_id])
+    role = db.relationship("Role", foreign_keys=[role_id])
 
     def __init__(self, username, password, role):
         self.username = str(username)
