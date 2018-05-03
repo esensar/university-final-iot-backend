@@ -45,8 +45,7 @@ def handle_mqtt_message(client, userdata, message):
         # If type is JSON
         recording = parse_json_message(message.topic, message.payload.decode())
         with app.app_context():
-            db.session.add(recording)
-            db.session.commit()
+            recording.save()
     except ValueError:
         print("ERROR!")
         error_type, error_instance, traceback = sys.exc_info()

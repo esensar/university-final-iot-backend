@@ -1,21 +1,20 @@
 from datetime import datetime
 from app import db
-from sqlalchemy import Column, Integer, DateTime, String
 from sqlalchemy.dialects.postgresql import JSON
 
 
 class Recording(db.Model):
     __tablename__ = 'recordings'
 
-    id = Column(Integer, primary_key=True)
-    recorded_at = Column(DateTime, index=True,
-                         default=datetime.utcnow())
-    received_at = Column(DateTime, index=True,
-                         default=datetime.utcnow())
-    device_id = Column(Integer)
-    record_type = Column(Integer, nullable=False)
-    record_value = Column(String, nullable=False)
-    raw_record = Column(JSON, nullable=True)
+    id = db.Column(db.Integer, primary_key=True)
+    recorded_at = db.Column(db.DateTime, index=True,
+                            default=db.func.current_timestamp())
+    received_at = db.Column(db.DateTime, index=True,
+                            default=db.func.current_timestamp())
+    device_id = db.Column(db.Integer)
+    record_type = db.Column(db.Integer, nullable=False)
+    record_value = db.Column(db.String, nullable=False)
+    raw_record = db.Column(JSON, nullable=True)
 
     def __init__(self, device_id, record_type,
                  record_value, recorded_at, raw_json):
@@ -25,6 +24,14 @@ class Recording(db.Model):
         self.recorded_at = datetime.fromtimestamp(int(recorded_at))
         self.received_at = datetime.utcnow()
         self.raw_record = raw_json
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
+    @staticmethod
+    def get_all():
+        return Recording.query.all()
 
     def __repr__(self):
         return '<Recording (value=%s, recorded_at=%s)>' % (
