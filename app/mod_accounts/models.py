@@ -1,13 +1,14 @@
-from sqlalchemy import (Model, Column, String,
-                        Integer, ForeignKey, relationship)
+from sqlalchemy import Column, Integer, String, ForeignKey, relationship
+from app import db
 
 
-class Account(Model):
+class Account(db.Model):
     __tablename__ = 'accounts'
 
     id = Column(Integer, primary_key=True)
-    username = Column(String)
+    username = Column(String, index=True, unique=True)
     password = Column(String)
+    emails = Column(String, index=True, unique=True)
     role_id = Column(Integer, ForeignKey("roles.id"))
     role = relationship("Role", foreign_keys=[role_id])
 
@@ -23,7 +24,7 @@ class Account(Model):
         return '<Account (name=%s, role=%s)>' % self.username, self.role
 
 
-class Role(Model):
+class Role(db.Model):
     __tablename__ = 'roles'
 
     id = Column(Integer, primary_key=True)

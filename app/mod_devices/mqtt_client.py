@@ -2,6 +2,7 @@ import sys
 import json
 from flask_mqtt import Mqtt
 from .models import Recording
+from app import db, app
 
 mqtt = Mqtt()
 
@@ -37,16 +38,16 @@ def handle_subscribe(client, userdata, mid, granted_qos):
 
 
 def handle_mqtt_message(client, userdata, message):
-    from .. import db
     print("Received message!")
     print("Topic: " + message.topic)
     print("Payload: " + message.payload.decode())
     try:
         # If type is JSON
         recording = parse_json_message(message.topic, message.payload.decode())
-        db.session.add(recording)
-        db.session.commit()
-        print(recording)
+        with app.app_context():
+            db.session
+            db.session.add(recording)
+            db.session.commit()
     except ValueError:
         print("ERROR!")
         error_type, error_instance, traceback = sys.exc_info()
@@ -59,9 +60,11 @@ def parse_json_message(topic, payload) -> Recording:
     try:
         json_msg = json.loads(payload)
         device_id = get_device_id(topic)
-        return Recording(device_id, json_msg["record_type"],
-                         json_msg["record_value"], json_msg["recorded_at"],
-                         json_msg)
+        return Recording(device_id=device_id,
+                         record_type=json_msg["record_type"],
+                         record_value=json_msg["record_value"],
+                         recorded_at=json_msg["recorded_at"],
+                         raw_json=json_msg)
     except KeyError:
         error_type, error_instance, traceback = sys.exc_info()
         raise ValueError("JSON parsing failed! Key error: "

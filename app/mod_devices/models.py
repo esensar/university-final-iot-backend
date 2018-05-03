@@ -1,9 +1,10 @@
 from datetime import datetime
-from sqlalchemy import Model, DateTime, String, Column, Integer
+from app import db
+from sqlalchemy import Column, Integer, DateTime, String
 from sqlalchemy.dialects.postgresql import JSON
 
 
-class Recording(Model):
+class Recording(db.Model):
     __tablename__ = 'recordings'
 
     id = Column(Integer, primary_key=True)
