@@ -1,20 +1,20 @@
 from datetime import datetime
-from . import db
+from sqlalchemy import Model, DateTime, String, Column, Integer
 from sqlalchemy.dialects.postgresql import JSON
 
 
-class Recording(db.Model):
+class Recording(Model):
     __tablename__ = 'recordings'
 
-    id = db.Column(db.Integer, primary_key=True)
-    recorded_at = db.Column(db.DateTime, index=True,
-                            default=datetime.utcnow())
-    received_at = db.Column(db.DateTime, index=True,
-                            default=datetime.utcnow())
-    device_id = db.Column(db.Integer)
-    record_type = db.Column(db.Integer, nullable=False)
-    record_value = db.Column(db.String, nullable=False)
-    raw_record = db.Column(JSON, nullable=True)
+    id = Column(Integer, primary_key=True)
+    recorded_at = Column(DateTime, index=True,
+                         default=datetime.utcnow())
+    received_at = Column(DateTime, index=True,
+                         default=datetime.utcnow())
+    device_id = Column(Integer)
+    record_type = Column(Integer, nullable=False)
+    record_value = Column(String, nullable=False)
+    raw_record = Column(JSON, nullable=True)
 
     def __init__(self, device_id, record_type,
                  record_value, recorded_at, raw_json):

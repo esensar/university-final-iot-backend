@@ -2,7 +2,6 @@ import sys
 import json
 from flask_mqtt import Mqtt
 from .models import Recording
-from . import db
 
 mqtt = Mqtt()
 
@@ -38,6 +37,7 @@ def handle_subscribe(client, userdata, mid, granted_qos):
 
 
 def handle_mqtt_message(client, userdata, message):
+    from .. import db
     print("Received message!")
     print("Topic: " + message.topic)
     print("Payload: " + message.payload.decode())

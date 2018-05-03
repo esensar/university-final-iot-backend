@@ -8,12 +8,15 @@ app.config.from_pyfile('config.py')
 db = SQLAlchemy(app)
 
 
-# Blueprints setup
-from app.mod_devices import devices
-from app.mod_accounts import accounts
+def setup_blueprints(app):
+    from .mod_devices import devices
+    from .mod_accounts import accounts
 
-app.register_blueprint(devices, url_prefix='/devices')
-app.register_blueprint(accounts, url_prefix='/accounts')
+    app.register_blueprint(devices, url_prefix='/devices')
+    app.register_blueprint(accounts, url_prefix='/accounts')
+
+
+setup_blueprints(app)
 
 
 @app.route("/")

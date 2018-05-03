@@ -1,14 +1,15 @@
-from . import db
+from sqlalchemy import (Model, Column, String,
+                        Integer, ForeignKey, relationship)
 
 
-class Account(db.Model):
+class Account(Model):
     __tablename__ = 'accounts'
 
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String)
-    password = db.Column(db.String)
-    role_id = db.Column(db.Integer, db.ForeignKey("roles.id"))
-    role = db.relationship("Role", foreign_keys=[role_id])
+    id = Column(Integer, primary_key=True)
+    username = Column(String)
+    password = Column(String)
+    role_id = Column(Integer, ForeignKey("roles.id"))
+    role = relationship("Role", foreign_keys=[role_id])
 
     def __init__(self, username, password, role):
         self.username = str(username)
@@ -22,11 +23,11 @@ class Account(db.Model):
         return '<Account (name=%s, role=%s)>' % self.username, self.role
 
 
-class Role(db.Model):
+class Role(Model):
     __tablename__ = 'roles'
 
-    id = db.Column(db.Integer, primary_key=True)
-    display_name = db.Column(db.String)
+    id = Column(Integer, primary_key=True)
+    display_name = Column(String)
 
     def __init__(self, name):
         self.display_name = str(name)

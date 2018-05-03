@@ -1,14 +1,8 @@
 import atexit
 from flask import Blueprint
-from .. import db
+from .mqtt_client import tear_down_mqtt, setup_mqtt
 
 devices = Blueprint('devices', __name__)
-
-# Models
-from .models import Recording
-
-# Mqtt
-from .mqtt_client import tear_down_mqtt, setup_mqtt
 
 
 # When app dies, stop mqtt connection
