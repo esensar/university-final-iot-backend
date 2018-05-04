@@ -5,10 +5,24 @@ from .models import Recording
 from app import db, app
 
 class MqttClient:
-    def __init__(self):
-        self.mqtt = Mqtt()
-        self.initialized = False
+    class __MqttClient:
+        def __init__(self):
+            self.mqtt = Mqtt()
+            self.initialized = False
+        def __str__(self):
+            return repr(self)
 
+
+    instance = None
+
+
+    def __init__(self):
+        if not MqttClient.instance:
+            MqttClient.instance = MqttClient.__MqttClient()
+
+
+    def __getattr__(self, name):
+        return getattr(self.instance, name)
 
     # Mqtt setup
     def setup(self, app):
