@@ -1,9 +1,10 @@
+import os
+
 # App configuration
 DEBUG = False
 
 # Define the application directory
-import os
-BASE_DIR = os.path.abspath(os.path.dirname(__file__))  
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
 # Define the database - we are working with
 SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
@@ -20,11 +21,11 @@ THREADS_PER_PAGE = 2
 CSRF_ENABLED = True
 
 # Use a secure, unique and absolutely secret key for
-# signing the data. 
+# signing the data.
 CSRF_SESSION_KEY = "secret"
 
 # Secret key for signing cookies
-SECRET_KEY = "secret"
+SECRET_KEY = "?['Z(Z\x83Y \x06T\x12\x96<\xff\x12\xe0\x1b\xd1J\xe0\xd9ld"
 
 # MQTT configuration
 MQTT_BROKER_URL = 'broker.hivemq.com'
