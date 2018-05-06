@@ -2,7 +2,7 @@ import atexit
 from flask import Blueprint
 from .mqtt_client import MqttClient
 
-devices = Blueprint('devices', __name__)
+devices_bp = Blueprint('devices', __name__)
 mqtt_client = None
 
 
@@ -16,12 +16,12 @@ atexit.register(on_stop)
 
 
 # Routes
-@devices.route("/")
+@devices_bp.route("/")
 def hello():
     return "Hello from devices!"
 
 
-@devices.record
+@devices_bp.record
 def on_blueprint_setup(setup_state):
     print('Blueprint setup')
     mqtt_client = MqttClient()

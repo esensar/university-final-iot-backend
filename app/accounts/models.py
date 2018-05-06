@@ -24,7 +24,7 @@ class Account(db.Model):
 
     def save(self):
         """
-        Stores current user to database
+        Stores this user to database
         This may raise errors
         """
         db.session.add(self)
@@ -52,10 +52,24 @@ class Account(db.Model):
 
     @staticmethod
     def get_all():
+        """
+        Get all stored accounts
+        """
         return Account.query.all()
 
     @staticmethod
     def get(**kwargs):
+        """
+        Get accounts with given filters
+
+        Available filters:
+         * username
+         * email
+         * role_id
+         * id
+         * password (useless, but not forbidden)
+
+        """
         return Account.query.filter_by(**kwargs).first()
 
     def create_auth_token(self):
@@ -92,15 +106,25 @@ class Role(db.Model):
         self.display_name = str(name)
 
     def save(self):
+        """
+        Stores this role to database
+        This may raise errors
+        """
         db.session.add(self)
         db.session.commit()
 
     @staticmethod
     def get_all():
+        """
+        Get all stored roles
+        """
         return Role.query.all()
 
     @staticmethod
     def get(roleId):
+        """
+        Get role with id = roleId
+        """
         return Role.query.filter_by(id=roleId)
 
     def __repr__(self):
