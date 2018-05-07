@@ -49,3 +49,15 @@ def create_token(username, password):
         raise ValueError("Invalid credentials")
 
     return account.create_auth_token()
+
+
+def validate_token(token):
+    """
+    Validates token and returns associated account
+
+    :param token: auth token to validate
+    :type token: string
+    :returns created token
+    :rtype Account
+    """
+    return Account.validate_token(token)

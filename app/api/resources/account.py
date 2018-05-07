@@ -3,6 +3,7 @@ from webargs import fields
 from webargs.flaskparser import use_args
 from flasgger import swag_from
 import app.accounts as accounts
+from app.api import protected
 
 
 class AccountResource(Resource):
@@ -28,6 +29,7 @@ class AccountResource(Resource):
         except ValueError:
             abort(422, message='Account already exists', status='error')
 
+    @protected
     @swag_from('swagger/get_account_spec.yaml')
     def get(self):
         return '', 200

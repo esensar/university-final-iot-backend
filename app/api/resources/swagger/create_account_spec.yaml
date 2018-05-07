@@ -19,6 +19,7 @@ parameters:
               - password
               - email
             $ref: '#/definitions/User'
+security: []
 responses:
   201:
     description: Successful creation

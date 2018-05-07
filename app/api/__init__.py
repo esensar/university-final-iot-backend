@@ -1,16 +1,45 @@
-from flask import Blueprint
-from flask_restful import Api
-from .resources.account import AccountResource
-from .resources.token import TokenResource
+from flask import Blueprint, request, g
+from flask_restful import Api, Resource, abort
+from functools import wraps
 from marshmallow import ValidationError
+from app.accounts import validate_token
 
 
 api_bp = Blueprint('api', __name__)
 api = Api(api_bp)
 
-# Add resources
-api.add_resource(AccountResource, '/v1/accounts')
-api.add_resource(TokenResource, '/v1/token')
+
+def protected(func):
+    @wraps(func)
+    def protected_function(*args, **kwargs):
+        try:
+            token = request.headers['Authorization'] or None
+
+            if not token:
+                abort(401, message='Unauthorized', status='error')
+
+            g.current_account = validate_token(token.replace("Bearer ", ""))
+            if not g.current_account:
+                abort(401, message='Unauthorized', status='error')
+        except Exception:
+            abort(401, message='Unauthorized', status='error')
+
+    return protected_function
+
+
+class ProtectedResource(Resource):
+    method_decorators = [protected]
+
+
+def add_resources():
+    from .resources.account import AccountResource
+    from .resources.token import TokenResource
+
+    api.add_resource(AccountResource, '/v1/accounts')
+    api.add_resource(TokenResource, '/v1/token')
+
+
+add_resources()
 
 
 @api_bp.errorhandler(ValidationError)

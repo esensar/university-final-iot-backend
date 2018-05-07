@@ -16,6 +16,7 @@ parameters:
         properties:
           user:
             $ref: '#/definitions/Credentials'
+security: []
 responses:
   200:
     description: Successful creation
@@ -33,4 +34,4 @@ responses:
   401:
     description: Bad credentials
     schema:
-      $ref: '#/definitions/Error'
+      $ref: '#/definitions/UnauthorizedError'

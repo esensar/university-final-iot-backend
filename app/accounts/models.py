@@ -77,20 +77,31 @@ class Account(db.Model):
         Generates the Auth Token
         :return: string
         """
-        try:
-            current_time = datetime.datetime.utcnow()
-            payload = {
-                'exp': current_time + datetime.timedelta(days=0, hours=1),
-                'iat': current_time,
-                'sub': self.id
-            }
-            return jwt.encode(
-                payload,
-                app.config.get('SECRET_KEY'),
-                algorithm='HS256'
-            ).decode('utf-8')
-        except Exception as e:
-            return e
+        current_time = datetime.datetime.utcnow()
+        payload = {
+            'exp': current_time + datetime.timedelta(days=0, hours=1),
+            'iat': current_time,
+            'sub': self.id
+        }
+        return jwt.encode(
+            payload,
+            app.config.get('SECRET_KEY'),
+            algorithm='HS256'
+        ).decode('utf-8')
+
+    @staticmethod
+    def validate_token(token):
+        """
+        Validates given Auth token
+        :rtype: Account
+        :return: Account associated with token
+        """
+        payload = jwt.decode(
+            token,
+            app.config.get('SECRET_KEY'),
+            algorithms=['HS256']
+        )
+        return Account.get(id=payload['sub'])
 
     def __repr__(self):
         return '<Account (name=%s, role=%s)>' % self.username, self.role
