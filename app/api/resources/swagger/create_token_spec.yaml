@@ -1,0 +1,36 @@
+Creates new token for given account
+Requires a registered User with a valid username and password
+Creates a JWT token and returns it or returns an error if credentials are wrong
+---
+tags:
+  - Token
+  - Account
+parameters:
+  - in: body
+    name: body
+    required: true
+    schema:
+        type: object
+        required:
+          - user
+        properties:
+          user:
+            $ref: '#/definitions/Credentials'
+responses:
+  200:
+    description: Successful creation
+    schema:
+      required:
+        - status
+        - token
+      properties:
+        status:
+          type: string
+          default: success
+        token:
+          type: string
+          description: JWT token
+  401:
+    description: Bad credentials
+    schema:
+      $ref: '#/definitions/Error'

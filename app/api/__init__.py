@@ -4,6 +4,7 @@ from .resources.account import AccountResource
 from .resources.token import TokenResource
 from marshmallow import ValidationError
 
+
 api_bp = Blueprint('api', __name__)
 api = Api(api_bp)
 

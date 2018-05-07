@@ -1,0 +1,77 @@
+---
+servers:
+  - url: https://final-iot-backend.herokuapp.com/
+    description: Heroku deployed app for testing
+
+basePath: ""
+
+definitions:
+
+  username:
+    type: string
+    description: User's name in the system
+    default: testusername
+
+  email:
+    type: string
+    format: email
+    description: User's registered email
+    default: user@test.com
+
+  password:
+    type: string
+    format: password
+    description: User's password
+    default: TestPassword1234
+
+  status:
+    type: string
+    description: Status of request
+
+  message:
+    type: string
+    description: Descriptive message
+
+  Credentials:
+    type: object
+    required:
+      - username
+      - password
+    properties:
+      username:
+        $ref: '#/definitions/username'
+      password:
+        $ref: '#/definitions/password'
+
+  User:
+    type: object
+    required:
+      - username
+      - password
+      - email
+    properties:
+      username:
+        $ref: '#/definitions/username'
+      password:
+        $ref: '#/definitions/password'
+      email:
+        $ref: '#/definitions/email'
+
+  Error:
+    type: object
+    required:
+      - status
+      - message
+    properties:
+      status:
+        $ref: '#/definitions/status'
+        default: error
+      message:
+        $ref: '#/definitions/message'
+        default: Error message
+
+info:
+  description: Python (Flask) backend for IoT sysyem made for master's degree final project
+  title: IoT Backend
+  version: 0.0.1
+swagger: '2.0'

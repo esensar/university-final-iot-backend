@@ -2,12 +2,14 @@
 from flask_api import FlaskAPI
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
+from flasgger import Swagger
 
 app = FlaskAPI(__name__, instance_relative_config=True)
 app.config.from_object('config')
 app.config.from_pyfile('config.py', silent=True)
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
+swagger = Swagger(app, template_file='swagger/template.yaml')
 
 
 def setup_blueprints(app):
@@ -34,5 +36,5 @@ setup_blueprints(app)
 
 
 @app.route("/")
-def hello():
+def root():
     return "Hello World!"

@@ -1,6 +1,7 @@
 from flask_restful import Resource, abort
 from webargs import fields
 from webargs.flaskparser import use_args
+from flasgger import swag_from
 import app.accounts as accounts
 
 
@@ -13,6 +14,7 @@ class TokenResource(Resource):
     }
 
     @use_args(user_args)
+    @swag_from('swagger/create_token_spec.yaml')
     def post(self, args):
         try:
             args = args['user']

@@ -1,0 +1,28 @@
+Creates new user account
+Requires User object and creates account
+or returns an error if account already exists
+---
+tags:
+  - Account
+parameters:
+  - in: body
+    name: body
+    required: true
+    schema:
+        type: object
+        required:
+          - user
+        properties:
+          user:
+            required:
+              - username
+              - password
+              - email
+            $ref: '#/definitions/User'
+responses:
+  201:
+    description: Successful creation
+  422:
+    description: Account already exists
+    schema:
+      $ref: '#/definitions/Error'

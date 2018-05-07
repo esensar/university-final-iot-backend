@@ -1,6 +1,7 @@
 from flask_restful import Resource, abort
 from webargs import fields
 from webargs.flaskparser import use_args
+from flasgger import swag_from
 import app.accounts as accounts
 
 
@@ -14,6 +15,7 @@ class AccountResource(Resource):
     }
 
     @use_args(user_args)
+    @swag_from('swagger/create_account_spec.yaml')
     def post(self, args):
         try:
             args = args['user']
@@ -25,3 +27,7 @@ class AccountResource(Resource):
                 return '', 201
         except ValueError:
             abort(422, message='Account already exists', status='error')
+
+    @swag_from('swagger/get_account_spec.yaml')
+    def get(self):
+        return '', 200

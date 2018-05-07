@@ -1,0 +1,22 @@
+Gets a user account
+---
+tags:
+  - Account
+parameters:
+  - in: body
+    name: body
+    required: true
+    schema:
+        type: object
+        required:
+          - user
+        properties:
+          user:
+            $ref: '#/definitions/User'
+responses:
+  201:
+    description: Successful creation
+  422:
+    description: Account already exists
+    schema:
+      $ref: '#/definitions/Error'
