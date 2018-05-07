@@ -7,8 +7,8 @@ import app.accounts as accounts
 class TokenResource(Resource):
     user_args = {
             'user': fields.Nested({
-                'username': fields.Str(),
-                'password': fields.Str()
+                'username': fields.Str(required=True),
+                'password': fields.Str(required=True)
             }, required=True, location='json')
     }
 

@@ -13,6 +13,7 @@ api.add_resource(TokenResource, '/v1/token')
 
 
 @api_bp.errorhandler(ValidationError)
+@api_bp.errorhandler(422)
 def handle_validation_error(e):
     return {'status': 'error', 'message': str(e)}, 422
 
