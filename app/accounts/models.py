@@ -67,7 +67,7 @@ class Account(db.Model):
     @staticmethod
     def get(**kwargs):
         """
-        Get accounts with given filters
+        Get account with given filters
 
         Available filters:
          * username
