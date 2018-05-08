@@ -14,10 +14,6 @@ parameters:
           - user
         properties:
           user:
-            required:
-              - username
-              - password
-              - email
             $ref: '#/definitions/User'
 security: []
 responses:

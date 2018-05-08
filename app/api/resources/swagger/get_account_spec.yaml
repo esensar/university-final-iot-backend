@@ -1,22 +1,25 @@
 Gets a user account
+User may only get own account. Accessing other accounts will return 403.
 ---
 tags:
   - Account
 parameters:
-  - in: body
-    name: body
+  - in: path
+    name: user_id
     required: true
-    schema:
-        type: object
-        required:
-          - user
-        properties:
-          user:
-            $ref: '#/definitions/User'
+    type: integer
+    description: Id of the user
 responses:
-  201:
-    description: Successful creation
-  422:
-    description: Account already exists
+  200:
+    description: Success
+    schema:
+      type: object
+      required:
+        - user
+      properties:
+        user:
+          $ref: '#/definitions/User'
+  403:
+    description: Accessed a different account
     schema:
       $ref: '#/definitions/Error'

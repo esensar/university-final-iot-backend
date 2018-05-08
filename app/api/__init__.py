@@ -1,3 +1,4 @@
+import sys
 from flask import Blueprint, request, g
 from flask_restful import Api, Resource, abort
 from functools import wraps
@@ -22,7 +23,12 @@ def protected(func):
             if not g.current_account:
                 abort(401, message='Unauthorized', status='error')
         except Exception:
+            error_type, error_instance, traceback = sys.exc_info()
+            print(str(error_type))
+            print(str(error_instance))
             abort(401, message='Unauthorized', status='error')
+
+        return func(*args, **kwargs)
 
     return protected_function
 
@@ -34,10 +40,17 @@ class ProtectedResource(Resource):
 def add_resources():
     from .resources.account import AccountResource, AccountListResource
     from .resources.token import TokenResource
+    from .resources.device import (DeviceResource,
+                                   DeviceRecordingResource,
+                                   DeviceListResource)
 
     api.add_resource(AccountResource, '/v1/accounts/<int:account_id>')
     api.add_resource(AccountListResource, '/v1/accounts')
     api.add_resource(TokenResource, '/v1/token')
+    api.add_resource(DeviceResource, '/v1/devices/<int:device_id>')
+    api.add_resource(DeviceRecordingResource,
+                     '/v1/devices/<int:device_id>/recordings')
+    api.add_resource(DeviceListResource, '/v1/devices')
 
 
 add_resources()

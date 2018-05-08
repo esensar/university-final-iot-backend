@@ -1,6 +1,7 @@
 import jwt
 import datetime
 from app import db, app
+from calendar import timegm
 
 
 class Account(db.Model):
@@ -108,10 +109,13 @@ class Account(db.Model):
             app.config.get('SECRET_KEY'),
             algorithms=['HS256']
         )
+        current_time = timegm(datetime.datetime.utcnow().utctimetuple())
+        if current_time > payload['exp']:
+            raise ValueError("Expired token")
         return Account.get(id=payload['sub'])
 
     def __repr__(self):
-        return '<Account (name=%s, role=%s)>' % self.username, self.role
+        return '<Account (name=%s, role=%s)>' % (self.username, self.role)
 
 
 class Role(db.Model):
@@ -146,4 +150,4 @@ class Role(db.Model):
         return Role.query.filter_by(id=roleId)
 
     def __repr__(self):
-        return '<Role %s>' % self.name
+        return '<Role %s>' % self.display_name

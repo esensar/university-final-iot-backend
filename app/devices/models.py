@@ -137,6 +137,15 @@ class Device(db.Model):
         """
         return Device.query.filter_by(**kwargs).first()
 
+    @staticmethod
+    def exists(**kwargs):
+        """
+        Checks if device with all of the given arguments exists
+        """
+        if Device.query.filter_by(**kwargs).first():
+            return True
+        return False
+
     def __repr__(self):
         return '<Device (name=%s, type=%s)>' % (
             self.name, self.device_type_id)

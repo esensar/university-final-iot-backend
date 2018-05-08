@@ -15,9 +15,9 @@ def create_account(username, email, password):
     :type username: string
     :type email: string
     :type password: string
-    :returns True if account is successfully created
-    :rtype Boolean
-    :raises ValueError if account already exists
+    :returns: True if account is successfully created
+    :rtype: Boolean
+    :raises: ValueError if account already exists
     """
     if not Account.exists_with_any_of(username=username, email=email):
         pw_hash = bcrypt.generate_password_hash(password).decode('utf-8')
@@ -37,9 +37,9 @@ def create_token(username, password):
     :param password: password of Account
     :type username: string
     :type password: string
-    :returns created token
-    :rtype string
-    :raises ValueError if credentials are invalid or account does not exist
+    :returns: created token
+    :rtype: string
+    :raises: ValueError if credentials are invalid or account does not exist
     """
     if not Account.exists(username=username):
         raise ValueError("Invalid credentials")
@@ -57,7 +57,7 @@ def validate_token(token):
 
     :param token: auth token to validate
     :type token: string
-    :returns created token
-    :rtype Account
+    :returns: created token
+    :rtype: Account
     """
     return Account.validate_token(token)

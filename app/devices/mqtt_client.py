@@ -2,66 +2,55 @@ import sys
 import json
 from flask_mqtt import Mqtt
 from .models import Recording
-from app import db, app
+from app import app
+
 
 class MqttClient:
-    class __MqttClient:
-        def __init__(self):
-            self.mqtt = Mqtt()
-            self.initialized = False
-        def __str__(self):
-            return repr(self)
-
-
-    instance = None
-
-
-    def __init__(self):
-        if not MqttClient.instance:
-            MqttClient.instance = MqttClient.__MqttClient()
-
-
-    def __getattr__(self, name):
-        return getattr(self.instance, name)
+    __initialized = False
+    mqtt = Mqtt()
 
     # Mqtt setup
-    def setup(self, app):
-        if not self.initialized:
-            self.mqtt.init_app(app)
-            self.mqtt.client.on_message = self.handle_mqtt_message
-            self.mqtt.client.on_subscribe = self.handle_subscribe
-            initialized = True
+    @staticmethod
+    def setup(app):
+        if not MqttClient.__initialized:
+            MqttClient.mqtt.init_app(app)
+            MqttClient.mqtt.client.on_message = MqttClient.handle_mqtt_message
+            MqttClient.mqtt.client.on_subscribe = MqttClient.handle_subscribe
+            MqttClient.__initialized = True
 
-            @self.mqtt.on_connect()
+            @MqttClient.mqtt.on_connect()
             def handle_connect(client, userdata, flags, rc):
                 print('MQTT client connected')
-                self.mqtt.subscribe('device/+')
+                MqttClient.mqtt.subscribe('device/+')
 
-            @self.mqtt.on_disconnect()
+            @MqttClient.mqtt.on_disconnect()
             def handle_disconnect():
                 print('MQTT client disconnected')
 
             print('MQTT client initialized')
 
+    @staticmethod
+    def tear_down():
+        if MqttClient.__initialized:
+            MqttClient.mqtt.unsubscribe_all()
+            if (hasattr(MqttClient.mqtt, 'client') and
+                    MqttClient.mqtt.client is not None):
+                MqttClient.mqtt.client.disconnect()
+            print('MQTT client destroyed')
 
-    def tear_down(self):
-        self.mqtt.unsubscribe_all()
-        if hasattr(self.mqtt, 'client') and self.mqtt.client is not None:
-            self.mqtt.client.disconnect()
-        print('MQTT client destroyed')
-
-
-    def handle_subscribe(self, client, userdata, mid, granted_qos):
+    @staticmethod
+    def handle_subscribe(client, userdata, mid, granted_qos):
         print('MQTT client subscribed')
 
-
-    def handle_mqtt_message(self, client, userdata, message):
+    @staticmethod
+    def handle_mqtt_message(client, userdata, message):
         print("Received message!")
         print("Topic: " + message.topic)
         print("Payload: " + message.payload.decode())
         try:
             # If type is JSON
-            recording = self.parse_json_message(message.topic, message.payload.decode())
+            recording = MqttClient.parse_json_message(
+                    message.topic, message.payload.decode())
             with app.app_context():
                 recording.save()
         except ValueError:
@@ -71,11 +60,11 @@ class MqttClient:
             print("Instance: " + str(error_instance))
             return
 
-
-    def parse_json_message(self, topic, payload) -> Recording:
+    @staticmethod
+    def parse_json_message(topic, payload) -> Recording:
         try:
             json_msg = json.loads(payload)
-            device_id = self.get_device_id(topic)
+            device_id = MqttClient.get_device_id(topic)
             return Recording(device_id=device_id,
                              record_type=json_msg["record_type"],
                              record_value=json_msg["record_value"],
@@ -86,8 +75,8 @@ class MqttClient:
             raise ValueError("JSON parsing failed! Key error: "
                              + str(error_instance))
 
-
-    def get_device_id(self, topic) -> int:
+    @staticmethod
+    def get_device_id(topic) -> int:
         device_token, device_id = topic.split("/")
         if device_token == "device":
             return int(device_id)

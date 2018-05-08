@@ -12,6 +12,25 @@ definitions:
     description: User's name in the system
     default: testusername
 
+  id:
+    type: integer
+    description: ID
+    default: 1
+
+  datetime:
+    type: string
+    description: Time
+
+  devicename:
+    type: string
+    description: Name of device
+    default: My device
+
+  devicetype:
+    type: int
+    description: Type of device
+    default: 1
+
   email:
     type: string
     format: email
@@ -56,6 +75,33 @@ definitions:
         $ref: '#/definitions/password'
       email:
         $ref: '#/definitions/email'
+
+  Recording:
+    type: object
+    required:
+      - recorded_at
+      - record_type
+      - record_value
+    properties:
+      recorded_at:
+        $ref: '#/definitions/datetime'
+      record_type:
+        $ref: '#/definitions/id'
+      record_value:
+        type: string
+        description: Value of the recording
+        default: '25 degrees'
+
+  Device:
+    type: object
+    required:
+      - id
+      - name
+    properties:
+      id:
+        $ref: '#/definitions/id'
+      name:
+        $ref: '#/definitions/devicename'
 
   UnauthorizedError:
     type: object

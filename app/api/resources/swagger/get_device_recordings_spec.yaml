@@ -1,0 +1,23 @@
+Gets all recordings for given device
+---
+tags:
+  - Device
+  - Recording
+parameters:
+  - in: path
+    name: device_id
+    required: true
+    type: integer
+    description: Id of the device
+responses:
+  200:
+    description: Success
+    schema:
+      type: object
+      required:
+        - recordings
+      properties:
+        recordings:
+          type: array
+          items:
+            $ref: '#/definitions/Recording'
