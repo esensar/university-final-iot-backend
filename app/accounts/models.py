@@ -12,6 +12,13 @@ class Account(db.Model):
     email = db.Column(db.String, index=True, unique=True)
     role_id = db.Column(db.Integer, db.ForeignKey("roles.id"))
     role = db.relationship("Role", foreign_keys=[role_id])
+    created_at = db.Column(db.DateTime,
+                           nullable=False,
+                           default=db.func.current_timestamp())
+    modified_at = db.Column(db.DateTime,
+                            nullable=False,
+                            default=db.func.current_timestamp(),
+                            onupdate=db.func.current_timestamp())
 
     def __init__(self, username, password, email, role=2):
         self.username = str(username)

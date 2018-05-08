@@ -11,7 +11,7 @@ class Recording(db.Model):
                             default=db.func.current_timestamp())
     received_at = db.Column(db.DateTime, index=True,
                             default=db.func.current_timestamp())
-    device_id = db.Column(db.Integer)
+    device_id = db.Column(db.Integer, db.ForeignKey('devices.id'))
     record_type = db.Column(db.Integer, nullable=False)
     record_value = db.Column(db.String, nullable=False)
     raw_record = db.Column(JSON, nullable=True)
@@ -36,3 +36,26 @@ class Recording(db.Model):
     def __repr__(self):
         return '<Recording (value=%s, recorded_at=%s)>' % (
             self.record_value, self.recorded_at)
+
+
+class Device(db.Model):
+    __tablename__ = 'devices'
+
+    id = db.Column(db.Integer, primary_key=True)
+    created_at = db.Column(db.DateTime,
+                           nullable=False,
+                           default=db.func.current_timestamp())
+    modified_at = db.Column(db.DateTime,
+                            nullable=False,
+                            default=db.func.current_timestamp(),
+                            onupdate=db.func.current_timestamp())
+    name = db.Column(db.String, nullable=False)
+    device_type = db.Column(db.Integer, db.ForeignKey('device_types.id'))
+    configuration = db.Column(JSON, nullable=True)
+
+
+class DeviceType(db.Model):
+    __tablename__ = 'device_types'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, nullable=False)
