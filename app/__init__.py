@@ -26,9 +26,11 @@ def setup_blueprints(app):
     from .devices import devices_bp
     from .accounts import accounts_bp
     from .api import api_bp
+    from .mqtt import mqtt_bp
 
     app.register_blueprint(devices_bp)
     app.register_blueprint(accounts_bp)
+    app.register_blueprint(mqtt_bp)
     app.register_blueprint(api_bp, url_prefix='/api')
 
 

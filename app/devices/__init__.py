@@ -1,24 +1,9 @@
-import atexit
+import sys
 from flask import Blueprint
-from .mqtt_client import MqttClient
 from .models import Device, Recording
+from app import app
 
 devices_bp = Blueprint('devices', __name__)
-
-
-# When app dies, stop mqtt connection
-def on_stop():
-    MqttClient.tear_down()
-
-
-atexit.register(on_stop)
-
-
-# Setup
-@devices_bp.record
-def __on_blueprint_setup(setup_state):
-    print('Blueprint setup')
-    MqttClient.setup(setup_state.app)
 
 
 # Public interface
@@ -69,3 +54,33 @@ def get_device(device_id):
         raise ValueError("Device with id %s does not exist" % device_id)
 
     return Device.get(id=device_id)
+
+
+def create_recording(device_id, raw_json):
+    """
+    Tries to create recording with given parameters. Raises error on failure
+
+    :param device_id: Id of device
+    :type device_id: int
+    :param raw_json: Raw json received
+    :type raw_json: json
+    :raises: ValueError if parsing fails or device does not exist
+    """
+    def parse_raw_json_recording(device_id, json_msg) -> Recording:
+        try:
+            return Recording(device_id=device_id,
+                             record_type=json_msg["record_type"],
+                             record_value=json_msg["record_value"],
+                             recorded_at=json_msg["recorded_at"],
+                             raw_json=json_msg)
+        except KeyError:
+            error_type, error_instance, traceback = sys.exc_info()
+            raise ValueError("JSON parsing failed! Key error: "
+                             + str(error_instance))
+
+    if not Device.exists(id=device_id):
+        raise ValueError("Device does not exist!")
+
+    recording = parse_raw_json_recording(device_id, raw_json)
+    with app.app_context():
+        recording.save()

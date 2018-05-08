@@ -1,8 +1,7 @@
 import sys
 import json
 from flask_mqtt import Mqtt
-from .models import Recording
-from app import app
+import app.devices as devices
 
 
 class MqttClient:
@@ -49,31 +48,15 @@ class MqttClient:
         print("Payload: " + message.payload.decode())
         try:
             # If type is JSON
-            recording = MqttClient.parse_json_message(
-                    message.topic, message.payload.decode())
-            with app.app_context():
-                recording.save()
+            devices.create_recording(
+                    MqttClient.get_device_id(message.topic),
+                    json.loads(message.payload.decode()))
         except ValueError:
             print("ERROR!")
             error_type, error_instance, traceback = sys.exc_info()
             print("Type: " + str(error_type))
             print("Instance: " + str(error_instance))
             return
-
-    @staticmethod
-    def parse_json_message(topic, payload) -> Recording:
-        try:
-            json_msg = json.loads(payload)
-            device_id = MqttClient.get_device_id(topic)
-            return Recording(device_id=device_id,
-                             record_type=json_msg["record_type"],
-                             record_value=json_msg["record_value"],
-                             recorded_at=json_msg["recorded_at"],
-                             raw_json=json_msg)
-        except KeyError:
-            error_type, error_instance, traceback = sys.exc_info()
-            raise ValueError("JSON parsing failed! Key error: "
-                             + str(error_instance))
 
     @staticmethod
     def get_device_id(topic) -> int:
