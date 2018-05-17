@@ -3,6 +3,7 @@ from flask_api import FlaskAPI
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flasgger import Swagger
+from flask_cors import CORS
 
 app = FlaskAPI(__name__, instance_relative_config=True)
 app.config.from_object('config')
@@ -10,6 +11,7 @@ app.config.from_pyfile('config.py', silent=True)
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 swagger = Swagger(app, template_file='swagger/template.yaml')
+CORS(app)
 
 
 def setup_blueprints(app):
