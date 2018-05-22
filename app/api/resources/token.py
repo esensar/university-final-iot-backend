@@ -2,6 +2,7 @@ from flask_restful import Resource, abort
 from webargs import fields
 from webargs.flaskparser import use_args
 from flasgger import swag_from
+from app.api import ProtectedResource
 import app.accounts as accounts
 
 
@@ -25,3 +26,9 @@ class TokenResource(Resource):
                 return {'status': 'success', 'token': token}, 200
         except ValueError:
             abort(401, message='Invalid credentials', status='error')
+
+
+class ValidateTokenResource(ProtectedResource):
+    @swag_from('swagger/validate_token_spec.yaml')
+    def get(self):
+        return {'status': 'success', 'message': 'Valid token'}, 200

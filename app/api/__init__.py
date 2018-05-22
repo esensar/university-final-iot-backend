@@ -39,7 +39,7 @@ class ProtectedResource(Resource):
 
 def add_resources():
     from .resources.account import AccountResource, AccountListResource
-    from .resources.token import TokenResource
+    from .resources.token import TokenResource, ValidateTokenResource
     from .resources.device import (DeviceResource,
                                    DeviceRecordingResource,
                                    DeviceListResource)
@@ -47,6 +47,7 @@ def add_resources():
     api.add_resource(AccountResource, '/v1/accounts/<int:account_id>')
     api.add_resource(AccountListResource, '/v1/accounts')
     api.add_resource(TokenResource, '/v1/token')
+    api.add_resource(ValidateTokenResource, '/v1/token/validate')
     api.add_resource(DeviceResource, '/v1/devices/<int:device_id>')
     api.add_resource(DeviceRecordingResource,
                      '/v1/devices/<int:device_id>/recordings')

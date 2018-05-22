@@ -1,0 +1,22 @@
+Validates token passed in Authorization header
+---
+tags:
+  - Token
+responses:
+  200:
+    description: Valid token
+    schema:
+      required:
+        - status
+        - message
+      properties:
+        status:
+          type: string
+          default: success
+        message:
+          type: string
+          default: Valid token
+  401:
+    description: Bad credentials
+    schema:
+      $ref: '#/definitions/UnauthorizedError'
