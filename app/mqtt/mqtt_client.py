@@ -51,7 +51,7 @@ class MqttClient:
             devices.create_recording(
                     MqttClient.get_device_id(message.topic),
                     json.loads(message.payload.decode()))
-        except ValueError:
+        except Exception:
             print("ERROR!")
             error_type, error_instance, traceback = sys.exc_info()
             print("Type: " + str(error_type))
