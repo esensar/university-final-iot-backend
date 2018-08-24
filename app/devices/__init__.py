@@ -1,13 +1,13 @@
 import sys
 from flask import Blueprint
-from .models import Device, Recording
+from .models import Device, Recording, DeviceAssociation
 from app import app
 
 devices_bp = Blueprint('devices', __name__)
 
 
 # Public interface
-def create_device(name, device_type=1):
+def create_device(name, account_id, device_type=1):
     """
     Tries to create device with given parameters
 
@@ -21,6 +21,8 @@ def create_device(name, device_type=1):
     """
     device = Device(name, None, device_type)
     device.save()
+    device_association = DeviceAssociation(device.id, account_id)
+    device_association.save()
 
 
 def get_device_recordings(device_id):
@@ -55,6 +57,16 @@ def get_device(device_id):
 
     return Device.get(id=device_id)
 
+
+def get_devices(account_id):
+    """
+    Tries to get all devices associated to account. Raises error on
+    failure
+
+    :returns: List of Devices associated to this account
+    :rtype: List of Devices
+    """
+    return Device.get_many_for_user(account_id)
 
 def create_recording(device_id, raw_json):
     """

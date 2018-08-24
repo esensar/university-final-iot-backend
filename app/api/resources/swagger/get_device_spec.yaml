@@ -14,7 +14,7 @@ responses:
     schema:
       type: object
       required:
-        -device
+        - device
       properties:
         device:
           $ref: '#/definitions/Device'

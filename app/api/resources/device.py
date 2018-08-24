@@ -1,6 +1,7 @@
 from marshmallow import Schema, fields
 from webargs.flaskparser import use_args
 from flasgger import swag_from
+from flask import g
 import app.devices as devices
 from app.api import ProtectedResource
 
@@ -13,6 +14,9 @@ class DeviceSchema(Schema):
 class DeviceWrapperSchema(Schema):
     device = fields.Nested(DeviceSchema, required=True, location='json')
 
+class DevicesWrapperSchema(Schema):
+    devices = fields.Nested(DeviceSchema, required=True,
+            location='json', many=True)
 
 class RecordingsSchema(Schema):
     recorded_at = fields.DateTime()
@@ -45,6 +49,12 @@ class DeviceListResource(ProtectedResource):
     def post(self, args):
         args = args['device']
         success = devices.create_device(
-                args['name'])
+                args['name'],
+                g.current_account.id)
         if success:
             return '', 201
+
+    @swag_from('swagger/get_devices_spec.yaml')
+    def get(self):
+        return DevicesWrapperSchema().dump(
+                {'devices': devices.get_devices(g.current_account.id)}), 200

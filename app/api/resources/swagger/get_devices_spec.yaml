@@ -1,0 +1,18 @@
+Gets all associated devices
+---
+tags:
+  - Device
+parameters:
+responses:
+  200:
+    description: Success
+    schema:
+      type: object
+      required:
+        - devices
+      properties:
+        devices:
+          type: array
+          items:
+            $ref: '#/definitions/Device'
+
