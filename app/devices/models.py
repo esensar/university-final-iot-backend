@@ -33,6 +33,13 @@ class Recording(db.Model):
         db.session.add(self)
         db.session.commit()
 
+    def delete(self):
+        """
+        Deletes this recording from database
+        """
+        db.session.delete(self)
+        db.session.commit()
+
     @staticmethod
     def get_all():
         return Recording.query.all()
@@ -92,7 +99,10 @@ class Device(db.Model):
     device_type = db.relationship("DeviceType", foreign_keys=[device_type_id])
     configuration = db.Column(JSON, nullable=True)
 
-    users = db.relationship("DeviceAssociation")
+    users = db.relationship("DeviceAssociation",
+                            cascade="save-update, merge, delete")
+    recordings = db.relationship("Recording",
+                                 cascade="save-update, merge, delete")
 
     def __init__(self, name, configuration=None, device_type=1):
         self.name = name
@@ -105,6 +115,13 @@ class Device(db.Model):
         This may raise errors
         """
         db.session.add(self)
+        db.session.commit()
+
+    def delete(self):
+        """
+        Deletes this recording from database
+        """
+        db.session.delete(self)
         db.session.commit()
 
     @staticmethod
@@ -128,7 +145,9 @@ class Device(db.Model):
         """
         Get many devices which are associated to account
         """
-        return Device.query.filter(Device.users.any(account_id=account_id)).all()
+        return Device.query.filter(
+                Device.users.any(account_id=account_id)
+                ).all()
 
     @staticmethod
     def get(**kwargs):
@@ -159,14 +178,16 @@ class Device(db.Model):
         return '<Device (name=%s, type=%s)>' % (
             self.name, self.device_type_id)
 
-        
+
 class DeviceAssociation(db.Model):
     __tablename__ = 'device_associations'
 
-    device_id = db.Column(db.Integer, db.ForeignKey('devices.id'), primary_key=True) 
-    account_id = db.Column(db.Integer, db.ForeignKey('accounts.id'), primary_key=True) 
+    device_id = db.Column(db.Integer, db.ForeignKey('devices.id'),
+                          primary_key=True)
+    account_id = db.Column(db.Integer, db.ForeignKey('accounts.id'),
+                           primary_key=True)
     access_level = db.Column(db.Integer, db.ForeignKey('access_levels.id'),
-            nullable=False)
+                             nullable=False)
 
     def __init__(self, device_id, account_id, access_level=1):
         self.device_id = device_id
@@ -198,7 +219,7 @@ class DeviceAssociation(db.Model):
         Get many device associations for user with account id passed in
         parameter
         """
-        return get_many(account_id=account_id)
+        return DeviceAssociation.get_many(account_id=account_id)
 
     @staticmethod
     def get_for_device(device_id):
@@ -206,10 +227,11 @@ class DeviceAssociation(db.Model):
         Get many device associations for device with account id passed in
         parameter
         """
-        return get_many(device_id=device_id)
+        return DeviceAssociation.get_many(device_id=device_id)
 
     def __repr__(self):
-        return '<DeviceAssociation (device_id=%s, accoount_id=%s)>' % (self.device_id, self.account_id)
+        return '<DeviceAssociation (device_id=%s, accoount_id=%s)>' % (
+                self.device_id, self.account_id)
 
 
 class DeviceType(db.Model):

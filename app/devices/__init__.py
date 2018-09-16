@@ -58,6 +58,17 @@ def get_device(device_id):
     return Device.get(id=device_id)
 
 
+def delete_device(device_id):
+    """
+    Tries to delete device with given parameters. Does not raise errors
+
+    """
+    if not Device.exists(id=device_id):
+        return
+
+    Device.get(id=device_id).delete()
+
+
 def get_devices(account_id):
     """
     Tries to get all devices associated to account. Raises error on
@@ -67,6 +78,7 @@ def get_devices(account_id):
     :rtype: List of Devices
     """
     return Device.get_many_for_user(account_id)
+
 
 def create_recording(device_id, raw_json):
     """
@@ -78,7 +90,7 @@ def create_recording(device_id, raw_json):
     :type raw_json: json
     :raises: ValueError if parsing fails or device does not exist
     """
-    def parse_raw_json_recording(device_id, json_msg) -> Recording:
+    def parse_raw_json_recording(device_id, json_msg):
         try:
             return Recording(device_id=device_id,
                              record_type=json_msg["record_type"],

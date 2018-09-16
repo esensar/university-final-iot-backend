@@ -14,9 +14,11 @@ class DeviceSchema(Schema):
 class DeviceWrapperSchema(Schema):
     device = fields.Nested(DeviceSchema, required=True, location='json')
 
+
 class DevicesWrapperSchema(Schema):
     devices = fields.Nested(DeviceSchema, required=True,
-            location='json', many=True)
+                            location='json', many=True)
+
 
 class RecordingsSchema(Schema):
     recorded_at = fields.DateTime()
@@ -34,6 +36,11 @@ class DeviceResource(ProtectedResource):
     def get(self, device_id):
         return DeviceWrapperSchema().dump(
                 {'device': devices.get_device(device_id)}), 200
+
+    @swag_from('swagger/delete_device_spec.yaml')
+    def delete(self, device_id):
+        devices.delete_device(device_id)
+        return '', 204
 
 
 class DeviceRecordingResource(ProtectedResource):

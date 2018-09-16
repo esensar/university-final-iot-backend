@@ -1,0 +1,13 @@
+Deletes a device
+---
+tags:
+  - Device
+parameters:
+  - in: path
+    name: device_id
+    required: true
+    type: integer
+    description: Id of the device
+responses:
+  204:
+    description: Success
