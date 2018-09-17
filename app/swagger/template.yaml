@@ -21,6 +21,11 @@ definitions:
     type: string
     description: Time
 
+  devicetypename:
+    type: string
+    description: Name of device type
+    default: STANDARD
+
   devicename:
     type: string
     description: Name of device
@@ -92,7 +97,7 @@ definitions:
         description: Value of the recording
         default: '25 degrees'
 
-  Device:
+  DeviceType:
     type: object
     required:
       - id
@@ -101,7 +106,21 @@ definitions:
       id:
         $ref: '#/definitions/id'
       name:
+        $ref: '#/definitions/devicetypename'
+
+  Device:
+    type: object
+    required:
+      - id
+      - name
+      - device_type
+    properties:
+      id:
+        $ref: '#/definitions/id'
+      name:
         $ref: '#/definitions/devicename'
+      device_type:
+        $ref: '#/definitions/DeviceType'
 
   UnauthorizedError:
     type: object

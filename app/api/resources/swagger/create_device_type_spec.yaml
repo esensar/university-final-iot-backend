@@ -1,0 +1,19 @@
+Creates new device type
+Requires DeviceType object and creates device type
+---
+tags:
+  - DeviceType
+parameters:
+  - in: body
+    name: body
+    required: true
+    schema:
+        type: object
+        required:
+          - device_type
+        properties:
+          device_type:
+            $ref: '#/definitions/DeviceType'
+responses:
+  201:
+    description: Successful creation

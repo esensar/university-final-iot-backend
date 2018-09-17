@@ -1,0 +1,17 @@
+Gets all device types
+---
+tags:
+  - DeviceType
+responses:
+  200:
+    description: Success
+    schema:
+      type: object
+      required:
+        - device_types
+      properties:
+        device_types:
+          type: array
+          items:
+            $ref: '#/definitions/DeviceType'
+

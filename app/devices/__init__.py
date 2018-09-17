@@ -1,6 +1,6 @@
 import sys
 from flask import Blueprint
-from .models import Device, Recording, DeviceAssociation
+from .models import Device, Recording, DeviceAssociation, DeviceType
 from app import app
 
 devices_bp = Blueprint('devices', __name__)
@@ -23,6 +23,19 @@ def create_device(name, account_id, device_type=1):
     device.save()
     device_association = DeviceAssociation(device.id, account_id)
     device_association.save()
+
+
+def create_device_type(name):
+    """
+    Tries to create device type with given parameters
+
+    :param name: Desired device type name
+    :type name: string
+    :returns: True if device type is successfully created
+    :rtype: Boolean
+    """
+    device_type = DeviceType(name)
+    device_type.save()
 
 
 def get_device_recordings(device_id):
@@ -58,6 +71,23 @@ def get_device(device_id):
     return Device.get(id=device_id)
 
 
+def get_device_type(device_type_id):
+    """
+    Tries to get device type with given parameters. Raises error on failure
+
+    :param device_type_id: Id of device type
+    :type device_type_id: int
+    :returns: Requested device type
+    :rtype: DeviceType
+    :raises: ValueError if device type does not exist
+    """
+    if not DeviceType.exists(id=device_type_id):
+        raise ValueError("Device type with id %s does not exist" %
+                         device_type_id)
+
+    return DeviceType.get(id=device_type_id)
+
+
 def delete_device(device_id):
     """
     Tries to delete device with given parameters. Does not raise errors
@@ -78,6 +108,16 @@ def get_devices(account_id):
     :rtype: List of Devices
     """
     return Device.get_many_for_user(account_id)
+
+
+def get_device_types():
+    """
+    Tries to get all device types. Raises error on failure
+
+    :returns: List of device types
+    :rtype: List of DeviceTypes
+    """
+    return DeviceType.get_many()
 
 
 def create_recording(device_id, raw_json):

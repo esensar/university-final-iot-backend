@@ -42,7 +42,9 @@ def add_resources():
     from .resources.token import TokenResource, ValidateTokenResource
     from .resources.device import (DeviceResource,
                                    DeviceRecordingResource,
-                                   DeviceListResource)
+                                   DeviceListResource,
+                                   DeviceTypeResource,
+                                   DeviceTypeListResource)
 
     api.add_resource(AccountResource, '/v1/accounts/<int:account_id>')
     api.add_resource(AccountListResource, '/v1/accounts')
@@ -52,6 +54,9 @@ def add_resources():
     api.add_resource(DeviceRecordingResource,
                      '/v1/devices/<int:device_id>/recordings')
     api.add_resource(DeviceListResource, '/v1/devices')
+    api.add_resource(DeviceTypeResource,
+                     '/v1/devices/types/<int:device_type_id>')
+    api.add_resource(DeviceTypeListResource, '/v1/devices/types')
 
 
 add_resources()

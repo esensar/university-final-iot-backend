@@ -6,9 +6,15 @@ import app.devices as devices
 from app.api import ProtectedResource
 
 
+class DeviceTypeSchema(Schema):
+    id = fields.Integer(dump_only=True)
+    name = fields.Str(required=True)
+
+
 class DeviceSchema(Schema):
     id = fields.Integer(dump_only=True)
     name = fields.Str(required=True)
+    device_type = fields.Nested(DeviceTypeSchema, dump_only=True)
 
 
 class DeviceWrapperSchema(Schema):
@@ -18,6 +24,16 @@ class DeviceWrapperSchema(Schema):
 class DevicesWrapperSchema(Schema):
     devices = fields.Nested(DeviceSchema, required=True,
                             location='json', many=True)
+
+
+class DeviceTypeWrapperSchema(Schema):
+    device_type = fields.Nested(DeviceTypeSchema, required=True,
+                                location='json')
+
+
+class DeviceTypesWrapperSchema(Schema):
+    device_types = fields.Nested(DeviceTypeSchema, required=True,
+                                 location='json', many=True)
 
 
 class RecordingsSchema(Schema):
@@ -41,6 +57,29 @@ class DeviceResource(ProtectedResource):
     def delete(self, device_id):
         devices.delete_device(device_id)
         return '', 204
+
+
+class DeviceTypeResource(ProtectedResource):
+    @swag_from('swagger/get_device_type_spec.yaml')
+    def get(self, device_type_id):
+        return DeviceTypeWrapperSchema().dump(
+                {'device_type': devices.get_device_type(device_type_id)}), 200
+
+
+class DeviceTypeListResource(ProtectedResource):
+    @use_args(DeviceTypeWrapperSchema())
+    @swag_from('swagger/create_device_type_spec.yaml')
+    def post(self, args):
+        args = args['device_type']
+        success = devices.create_device_type(
+                args['name'])
+        if success:
+            return '', 201
+
+    @swag_from('swagger/get_device_types_spec.yaml')
+    def get(self):
+        return DeviceTypesWrapperSchema().dump(
+                {'device_types': devices.get_device_types()}), 200
 
 
 class DeviceRecordingResource(ProtectedResource):

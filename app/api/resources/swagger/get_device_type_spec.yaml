@@ -1,0 +1,21 @@
+Gets a device type
+---
+tags:
+  - DeviceType
+parameters:
+  - in: path
+    name: device_type_id
+    required: true
+    type: integer
+    description: Id of the device type
+responses:
+  200:
+    description: Success
+    schema:
+      type: object
+      required:
+        - device_type
+      properties:
+        device_type:
+          $ref: '#/definitions/DeviceType'
+

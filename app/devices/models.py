@@ -243,6 +243,45 @@ class DeviceType(db.Model):
     def __init__(self, name):
         self.name = name
 
+    def save(self):
+        """
+        Stores this device type to database
+        This may raise errors
+        """
+        db.session.add(self)
+        db.session.commit()
+
+    @staticmethod
+    def get_many(**kwargs):
+        """
+        Get many devices types with given filters as a list
+
+        Available filters:
+         * id
+         * name
+        """
+        return DeviceType.query.filter_by(**kwargs).all()
+
+    @staticmethod
+    def get(**kwargs):
+        """
+        Get device type with given filters
+
+        Available filters:
+         * id
+         * name
+        """
+        return DeviceType.query.filter_by(**kwargs).first()
+
+    @staticmethod
+    def exists(**kwargs):
+        """
+        Checks if device type with all of the given arguments exists
+        """
+        if DeviceType.query.filter_by(**kwargs).first():
+            return True
+        return False
+
     def __repr__(self):
         return '<DeviceType (name %s)>' % self.name
 
