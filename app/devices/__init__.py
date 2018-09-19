@@ -2,7 +2,6 @@ import sys
 from flask import Blueprint
 from .models import Device, Recording, DeviceAssociation, DeviceType
 from app import app
-from app.mqtt.mqtt_client import MqttClient
 
 devices_bp = Blueprint('devices', __name__)
 
@@ -49,6 +48,7 @@ def set_device_configuration(device_id, configuration_json):
     :type configuration_json: JSON
     :rtype: Boolean
     """
+    from app.mqtt.mqtt_client import MqttClient
     device = Device.get(id=device_id)
     device.configuration = configuration_json
     device.save()
