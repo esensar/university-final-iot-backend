@@ -1,7 +1,7 @@
 from marshmallow import Schema, fields
 from webargs.flaskparser import use_args
 from flasgger import swag_from
-from flask import g
+from flask import g, request
 import app.devices as devices
 from app.api import ProtectedResource
 
@@ -106,3 +106,15 @@ class DeviceListResource(ProtectedResource):
     def get(self):
         return DevicesWrapperSchema().dump(
                 {'devices': devices.get_devices(g.current_account.id)}), 200
+
+
+class DeviceConfigurationResource(ProtectedResource):
+    @swag_from('swagger/update_device_configuration_spec.yaml')
+    def put(self, device_id):
+        success = devices.set_device_configuration(device_id, request.json)
+        if success:
+            return '', 204
+
+    @swag_from('swagger/get_device_configuration_spec.yaml')
+    def get(self, device_id):
+        return devices.get_device_configuration(device_id), 200

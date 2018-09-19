@@ -1,0 +1,19 @@
+Updates a device configuration
+---
+tags:
+  - Device
+  - Configuration
+parameters:
+  - in: path
+    name: device_id
+    required: true
+    type: integer
+    description: Id of the device
+  - in: body
+    name: body
+    required: true
+    schema:
+        type: object
+responses:
+  204:
+    description: Success

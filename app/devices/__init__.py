@@ -38,6 +38,33 @@ def create_device_type(name):
     device_type.save()
 
 
+def set_device_configuration(device_id, configuration_json):
+    """
+    Tries to update configuration of device with given id
+
+    :param device_id: Id of device to change configuration
+    :param configuration_json: New configuration
+    :type device_id: int
+    :type configuration_json: JSON
+    :rtype: Boolean
+    """
+    device = Device.get(id=device_id)
+    device.configuration = configuration_json
+    device.save()
+
+
+def get_device_configuration(device_id):
+    """
+    Tries to get configuration for device with given parameters.
+
+    :param device_id: Id of device
+    :type device_id: int
+    :returns: Configuration of given device
+    :rtype: JSON Configuration
+    """
+    return Device.get(id=device_id).configuration
+
+
 def get_device_recordings(device_id):
     """
     Tries to get device recording for device with given parameters. Raises

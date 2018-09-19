@@ -1,0 +1,16 @@
+Gets a device configuration
+---
+tags:
+  - Device
+  - Configuration
+parameters:
+  - in: path
+    name: device_id
+    required: true
+    type: integer
+    description: Id of the device
+responses:
+  200:
+    description: Success
+    schema:
+      type: object

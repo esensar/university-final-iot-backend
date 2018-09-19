@@ -44,7 +44,8 @@ def add_resources():
                                    DeviceRecordingResource,
                                    DeviceListResource,
                                    DeviceTypeResource,
-                                   DeviceTypeListResource)
+                                   DeviceTypeListResource,
+                                   DeviceConfigurationResource)
 
     api.add_resource(AccountResource, '/v1/accounts/<int:account_id>')
     api.add_resource(AccountListResource, '/v1/accounts')
@@ -57,6 +58,8 @@ def add_resources():
     api.add_resource(DeviceTypeResource,
                      '/v1/devices/types/<int:device_type_id>')
     api.add_resource(DeviceTypeListResource, '/v1/devices/types')
+    api.add_resource(DeviceConfigurationResource,
+                     '/v1/devices/<int:device_id>/configuration')
 
 
 add_resources()
