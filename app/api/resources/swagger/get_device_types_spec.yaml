@@ -2,6 +2,21 @@ Gets all device types
 ---
 tags:
   - DeviceType
+parameters:
+  - in: path
+    name: page
+    required: false
+    schema:
+      type: integer
+      minimum: 1
+    description: requested page
+  - in: path
+    name: per_page
+    required: false
+    schema:
+      type: integer
+      minimum: 1
+    description: requested items per page
 responses:
   200:
     description: Success

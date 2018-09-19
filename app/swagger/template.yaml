@@ -122,6 +122,17 @@ definitions:
       device_type:
         $ref: '#/definitions/DeviceType'
 
+  DeviceCreation:
+    type: object
+    required:
+      - name
+      - device_type_id
+    properties:
+      name:
+        $ref: '#/definitions/devicename'
+      device_type_id:
+        $ref: '#/definitions/id'
+
   UnauthorizedError:
     type: object
     required:

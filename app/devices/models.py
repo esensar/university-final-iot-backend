@@ -138,7 +138,8 @@ class Device(db.Model):
          * configuration (useless)
 
         """
-        return Device.query.filter_by(**kwargs).all()
+        return Device.query.filter_by(**kwargs).paginate(
+                None, None, False).items
 
     @staticmethod
     def get_many_for_user(account_id):
@@ -147,7 +148,7 @@ class Device(db.Model):
         """
         return Device.query.filter(
                 Device.users.any(account_id=account_id)
-                ).all()
+                ).paginate(None, None, False).items
 
     @staticmethod
     def get(**kwargs):
@@ -260,7 +261,8 @@ class DeviceType(db.Model):
          * id
          * name
         """
-        return DeviceType.query.filter_by(**kwargs).all()
+        return DeviceType.query.filter_by(**kwargs).paginate(
+                None, None, False).items
 
     @staticmethod
     def get(**kwargs):

@@ -13,7 +13,7 @@ parameters:
           - device
         properties:
           device:
-            $ref: '#/definitions/Device'
+            $ref: '#/definitions/DeviceCreation'
 responses:
   201:
     description: Successful creation
