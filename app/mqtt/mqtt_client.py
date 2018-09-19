@@ -59,7 +59,7 @@ class MqttClient:
             return
 
     @staticmethod
-    def get_device_id(topic) -> int:
+    def get_device_id(topic):
         device_token, device_id = topic.split("/")
         if device_token == "device":
             return int(device_id)

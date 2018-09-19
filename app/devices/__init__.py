@@ -63,11 +63,7 @@ def get_device(device_id):
     :type device_id: int
     :returns: Requested device
     :rtype: Device
-    :raises: ValueError if device does not exist
     """
-    if not Device.exists(id=device_id):
-        raise ValueError("Device with id %s does not exist" % device_id)
-
     return Device.get(id=device_id)
 
 
@@ -79,23 +75,14 @@ def get_device_type(device_type_id):
     :type device_type_id: int
     :returns: Requested device type
     :rtype: DeviceType
-    :raises: ValueError if device type does not exist
     """
-    if not DeviceType.exists(id=device_type_id):
-        raise ValueError("Device type with id %s does not exist" %
-                         device_type_id)
-
     return DeviceType.get(id=device_type_id)
 
 
 def delete_device(device_id):
     """
     Tries to delete device with given parameters. Does not raise errors
-
     """
-    if not Device.exists(id=device_id):
-        return
-
     Device.get(id=device_id).delete()
 
 

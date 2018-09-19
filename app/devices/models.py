@@ -76,7 +76,7 @@ class Recording(db.Model):
          * raw_record (useless)
 
         """
-        return Recording.query.filter_by(**kwargs).first()
+        return Recording.query.filter_by(**kwargs).first_or_404()
 
     def __repr__(self):
         return '<Recording (value=%s, recorded_at=%s)>' % (
@@ -163,7 +163,7 @@ class Device(db.Model):
          * configuration (useless)
 
         """
-        return Device.query.filter_by(**kwargs).first()
+        return Device.query.filter_by(**kwargs).first_or_404()
 
     @staticmethod
     def exists(**kwargs):
@@ -271,7 +271,7 @@ class DeviceType(db.Model):
          * id
          * name
         """
-        return DeviceType.query.filter_by(**kwargs).first()
+        return DeviceType.query.filter_by(**kwargs).first_or_404()
 
     @staticmethod
     def exists(**kwargs):
