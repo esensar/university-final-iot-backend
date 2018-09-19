@@ -15,6 +15,7 @@ class DeviceSchema(Schema):
     id = fields.Integer(dump_only=True)
     name = fields.Str(required=True)
     device_type = fields.Nested(DeviceTypeSchema, dump_only=True)
+    device_type_id = fields.Integer(load_only=True, missing=1)
 
 
 class DeviceWrapperSchema(Schema):
@@ -96,7 +97,8 @@ class DeviceListResource(ProtectedResource):
         args = args['device']
         success = devices.create_device(
                 args['name'],
-                g.current_account.id)
+                g.current_account.id,
+                args['device_type_id'])
         if success:
             return '', 201
 
