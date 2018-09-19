@@ -1,0 +1,23 @@
+Updates a dashboard
+---
+tags:
+  - Dashboard
+parameters:
+  - in: path
+    name: dashboard_id
+    required: true
+    type: integer
+    description: Id of the device
+  - in: body
+    name: body
+    required: true
+    schema:
+      type: object
+      required:
+        - dashboard
+      properties:
+        device:
+          $ref: '#/definitions/DashboardCreation'
+responses:
+  204:
+    description: Success

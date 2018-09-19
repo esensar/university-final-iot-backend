@@ -1,0 +1,16 @@
+Gets all associated dashboards
+---
+tags:
+  - Dashboard
+responses:
+  200:
+    description: Success
+    schema:
+      type: object
+      required:
+        - dashboards
+      properties:
+        devices:
+          type: array
+          items:
+            $ref: '#/definitions/Dashboard'

@@ -1,0 +1,19 @@
+Creates new dashboard
+Requires Dashboard object and creates dashboard
+---
+tags:
+  - Dashboard
+parameters:
+  - in: body
+    name: body
+    required: true
+    schema:
+        type: object
+        required:
+          - dashboard
+        properties:
+          device:
+            $ref: '#/definitions/DashboardCreation'
+responses:
+  201:
+    description: Successful creation

@@ -61,6 +61,11 @@ definitions:
     description: Configuration
     default: {}
 
+  dashboarddata:
+    type: string
+    description: Dashboard data
+    default: {}
+
   Credentials:
     type: object
     required:
@@ -154,6 +159,25 @@ definitions:
         $ref: '#/definitions/devicename'
       device_type_id:
         $ref: '#/definitions/id'
+
+  Dashboard:
+    type: object
+    required:
+      - id
+      - dashboard_data
+    properties:
+      id:
+        $ref: '#/definitions/id'
+      dashboard_data:
+        $ref: '#/definitions/dashboarddata'
+
+  DashboardCreation:
+    type: object
+    required:
+      - dashboard_data
+    properties:
+      dashboard_data:
+        $ref: '#/definitions/dashboarddata'
 
   UnauthorizedError:
     type: object
