@@ -56,6 +56,11 @@ definitions:
     type: string
     description: Descriptive message
 
+  configuration:
+    type: string
+    description: Configuration
+    default: {}
+
   Credentials:
     type: object
     required:
@@ -121,6 +126,23 @@ definitions:
         $ref: '#/definitions/devicename'
       device_type:
         $ref: '#/definitions/DeviceType'
+
+  DeviceWithConfig:
+    type: object
+    required:
+      - id
+      - name
+      - device_type
+      - configuration
+    properties:
+      id:
+        $ref: '#/definitions/id'
+      name:
+        $ref: '#/definitions/devicename'
+      device_type:
+        $ref: '#/definitions/DeviceType'
+      configuration:
+        $ref: '#/definitions/configuration'
 
   DeviceCreation:
     type: object

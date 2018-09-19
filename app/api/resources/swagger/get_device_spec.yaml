@@ -17,5 +17,5 @@ responses:
         - device
       properties:
         device:
-          $ref: '#/definitions/Device'
+          $ref: '#/definitions/DeviceWithConfig'
 

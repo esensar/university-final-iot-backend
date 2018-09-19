@@ -18,8 +18,13 @@ class DeviceSchema(Schema):
     device_type_id = fields.Integer(load_only=True, missing=1)
 
 
+class DeviceWithConfigurationSchema(DeviceSchema):
+    configuration = fields.Raw(dump_only=True)
+
+
 class DeviceWrapperSchema(Schema):
-    device = fields.Nested(DeviceSchema, required=True, location='json')
+    device = fields.Nested(DeviceWithConfigurationSchema,
+                           required=True, location='json')
 
 
 class DevicesWrapperSchema(Schema):
