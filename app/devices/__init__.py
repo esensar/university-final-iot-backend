@@ -96,6 +96,21 @@ def get_device(device_id):
     return Device.get(id=device_id)
 
 
+def can_user_access_device(account_id, device_id):
+    """
+    Checks if user with given account_id can access device with given device_id
+
+    :param account_id: Id of account
+    :param device_id: Id of device
+    :type account_id: int
+    :type device_id: int
+    :returns: true if device is accessible by this account, false otherwise
+    :rtype: Boolean
+    """
+    return len(DeviceAssociation.get_many(account_id=account_id,
+                                          device_id=device_id)) > 0
+
+
 def get_device_type(device_type_id):
     """
     Tries to get device type with given parameters. Raises error on failure
