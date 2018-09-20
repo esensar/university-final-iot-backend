@@ -13,12 +13,7 @@ parameters:
     name: body
     required: true
     schema:
-        type: object
-        required:
-          - recording
-        properties:
-          recording:
-            $ref: '#/definitions/Recording'
+      $ref: '#/definitions/Recording'
 responses:
   201:
     description: Successful creation
