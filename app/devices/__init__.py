@@ -1,7 +1,7 @@
 import sys
 from flask import Blueprint
 from .models import Device, Recording, DeviceAssociation, DeviceType
-from app import app
+from app.core import app
 
 devices_bp = Blueprint('devices', __name__)
 

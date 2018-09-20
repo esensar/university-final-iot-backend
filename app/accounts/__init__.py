@@ -1,4 +1,4 @@
-from app import bcrypt
+from app.core import bcrypt
 from flask import Blueprint
 from .models import Account
 

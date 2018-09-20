@@ -1,6 +1,6 @@
 import jwt
 import datetime
-from app import db, app
+from app.core import db, app
 from calendar import timegm
 
 

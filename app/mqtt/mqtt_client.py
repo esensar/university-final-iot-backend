@@ -27,6 +27,10 @@ class MqttClient:
             def handle_disconnect():
                 print('MQTT client disconnected')
 
+            @MqttClient.mqtt.on_log()
+            def handle_logging(client, userdata, level, buf):
+                print(level, buf)
+
             print('MQTT client initialized')
 
     @staticmethod
