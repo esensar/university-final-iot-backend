@@ -1,4 +1,5 @@
 from flask import g
+from flask_restful import abort
 from marshmallow import Schema, fields
 from webargs.flaskparser import use_args
 from flasgger import swag_from
@@ -23,12 +24,20 @@ class DashboardsSchema(Schema):
 class DashboardResource(ProtectedResource):
     @swag_from('swagger/get_dashboard_spec.yaml')
     def get(self, dashboard_id):
+        requested_dashboard = dashboard.get_dashboard(dashboard_id)
+        if requested_dashboard.account_id != g.current_account.id:
+            abort(403, message='You are not allowed to access this dashboard',
+                  status='error')
         return DashboardWrapperSchema().dump(
-                {'dashboard': dashboard.get_dashboard(dashboard_id)}), 200
+                {'dashboard': requested_dashboard}), 200
 
     @use_args(DashboardWrapperSchema())
     @swag_from('swagger/update_dashboard_spec.yaml')
     def put(self, dashboard_id, args):
+        requested_dashboard = dashboard.get_dashboard(dashboard_id)
+        if requested_dashboard.account_id != g.current_account.id:
+            abort(403, message='You are not allowed to access this dashboard',
+                  status='error')
         args = args['dashboard']
         success = dashboard.update_dashboard(
                 dashboard_id,
