@@ -7,7 +7,7 @@ parameters:
     name: dashboard_id
     required: true
     type: integer
-    description: Id of the device
+    description: Id of the dashboard
   - in: body
     name: body
     required: true

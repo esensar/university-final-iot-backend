@@ -107,6 +107,13 @@ class DeviceRecordingResource(ProtectedResource):
         return RecordingsWrapperSchema().dump(
                 {'recordings': devices.get_device_recordings(device_id)}), 200
 
+    @swag_from('swagger/create_device_recording_spec.yaml')
+    def post(self, device_id):
+        validate_device_ownership(device_id)
+        success = devices.create_recording(device_id, request.json)
+        if success:
+            return '', 201
+
 
 class DeviceListResource(ProtectedResource):
     @use_args(DeviceWrapperSchema())

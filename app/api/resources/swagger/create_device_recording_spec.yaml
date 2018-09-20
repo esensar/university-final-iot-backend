@@ -1,0 +1,24 @@
+Creates new recoding
+---
+tags:
+  - Recording
+  - Device
+parameters:
+  - in: path
+    name: device_id
+    required: true
+    type: integer
+    description: Id of the device
+  - in: body
+    name: body
+    required: true
+    schema:
+        type: object
+        required:
+          - recording
+        properties:
+          recording:
+            $ref: '#/definitions/Recording'
+responses:
+  201:
+    description: Successful creation
