@@ -48,11 +48,11 @@ def set_device_configuration(device_id, configuration_json):
     :type configuration_json: JSON
     :rtype: Boolean
     """
-    from app.mqtt.mqtt_client import MqttClient
+    from app.celery_builder import send_config
     device = Device.get(id=device_id)
     device.configuration = configuration_json
     device.save()
-    MqttClient.send_config(device_id, str(configuration_json))
+    send_config.delay(device_id, str(configuration_json))
 
 
 def get_device_configuration(device_id):

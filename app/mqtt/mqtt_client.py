@@ -1,6 +1,6 @@
 import sys
 import json
-from flask_mqtt import Mqtt, MQTT_ERR_SUCCESS
+from flask_mqtt import Mqtt
 import app.devices as devices
 
 
@@ -74,22 +74,3 @@ class MqttClient:
             return int(device_id)
         else:
             raise ValueError("Topic is in invalid format")
-
-    @staticmethod
-    def send_config(device_id, config):
-        print("Sending configuration to device: " + str(device_id))
-        print("Configuration: " + str(config))
-        topic = 'device/' + str(device_id) + '/config'
-        print("Targeting topic: " + topic)
-        try:
-            (result, mid) = MqttClient.mqtt.publish(topic, config, 2)
-            if (result == MQTT_ERR_SUCCESS):
-                print("Success!!!")
-            print("Result: " + str(result))
-            print("Message id: " + str(mid))
-        except Exception:
-            print("ERROR!")
-            error_type, error_instance, traceback = sys.exc_info()
-            print("Type: " + str(error_type))
-            print("Instance: " + str(error_instance))
-            return
