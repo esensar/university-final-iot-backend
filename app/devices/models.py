@@ -1,4 +1,6 @@
+import time
 from datetime import datetime
+import datetime as datetime_module
 from app.core import db
 from sqlalchemy.dialects.postgresql import JSON
 
@@ -60,6 +62,33 @@ class Recording(db.Model):
 
         """
         return Recording.query.filter_by(**kwargs).all()
+
+    @staticmethod
+    def get_many_filtered(device_id, record_type, date_start, date_end):
+        """
+        Get many recording with given filters as a list
+
+        Available filters:
+         * record_type
+         * recorded_at (upper and lower limit)
+        """
+        query = Recording.query.filter(Recording.device_id == device_id)
+        if record_type is not None:
+            query = query.filter(Recording.record_type == record_type)
+        if date_start is not None:
+            lower_limit = time.mktime(datetime.strptime(date_start,
+                                      "%d-%m-%Y").timetuple())
+            query = query.filter(Recording.recorded_at >
+                                 db.func.to_timestamp(lower_limit))
+        if date_end is not None:
+            upper_limit = time.mktime(
+                    (datetime.strptime(
+                        date_end,
+                        "%d-%m-%Y"
+                        )+datetime_module.timedelta(days=1)).timetuple())
+            query = query.filter(Recording.recorded_at <
+                                 db.func.to_timestamp(upper_limit))
+        return query.all()
 
     @staticmethod
     def get(**kwargs):

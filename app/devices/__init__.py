@@ -84,6 +84,31 @@ def get_device_recordings(device_id):
     return Recording.get_many(device_id=device_id)
 
 
+def get_device_recordings_filtered(device_id, record_type=None,
+                                   start_date=None, end_date=None):
+    """
+    Tries to get device recording for device with given parameters. Raises
+    error on failure
+
+    :param device_id: Id of device
+    :param record_type: Type of recording
+    :param start_date: Lower date limit
+    :param end_date: Upper date limit
+    :type device_id: int
+    :type record_type: int
+    :type start_date: Date (string: %d-%m-%Y)
+    :type end_date: Date (string: %d-%m-%Y)
+    :returns: List of Recordings for given filters
+    :rtype: List of Recording
+    :raises: ValueError if device does not exist
+    """
+    if not Device.exists(id=device_id):
+        raise ValueError("Device with id %s does not exist" % device_id)
+
+    return Recording.get_many_filtered(device_id, record_type,
+                                       start_date, end_date)
+
+
 def get_device(device_id):
     """
     Tries to get device with given parameters. Raises error on failure

@@ -104,8 +104,14 @@ class DeviceRecordingResource(ProtectedResource):
     @swag_from('swagger/get_device_recordings_spec.yaml')
     def get(self, device_id):
         validate_device_ownership(device_id)
+        request_args = request.args
         return RecordingsWrapperSchema().dump(
-                {'recordings': devices.get_device_recordings(device_id)}), 200
+                {'recordings':
+                    devices.get_device_recordings_filtered(
+                        device_id,
+                        request_args.get('record_type'),
+                        request_args.get('start_date'),
+                        request_args.get('end_date'))}), 200
 
     @swag_from('swagger/create_device_recording_spec.yaml')
     def post(self, device_id):
