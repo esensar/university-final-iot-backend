@@ -1,0 +1,24 @@
+Updates an account role
+---
+tags:
+  - Account
+  - Role
+parameters:
+  - in: path
+    name: account_id
+    required: true
+    type: integer
+    description: Id of the account
+  - in: body
+    name: body
+    required: true
+    schema:
+      type: object
+      required:
+        - role_id
+      properties:
+        role_id:
+          type: integer
+responses:
+  204:
+    description: Success

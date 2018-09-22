@@ -28,6 +28,22 @@ def create_account(username, email, password):
     raise ValueError("Account with given parameters already exists")
 
 
+def update_account_role(account_id, role_id):
+    """
+    Tries to update account role
+
+    :param account_id: Target account id
+    :param role_id: New role role_id
+    :type account_id: int
+    :type role_id: int
+    :returns: True if role is updated successfully
+    :rtype: Boolean
+    """
+    acc = Account.get(id=account_id)
+    acc.role_id = role_id
+    acc.save()
+
+
 def create_token(username, password):
     """
     Tries to create token for account with given parameters.
