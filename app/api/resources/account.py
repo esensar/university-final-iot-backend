@@ -17,6 +17,32 @@ class RoleUpdateSchema(Schema):
     role_id = fields.Integer(required=True, load_only=True, location='json')
 
 
+class RoleSchema(Schema):
+    role_id = fields.Integer(required=True, location='json')
+    display_name = fields.String(required=True, location='json')
+    permissions = fields.List(fields.String, required=True,
+                              location='json', many=True)
+
+
+class RoleWrapperSchema(Schema):
+    role = fields.Nested(RoleSchema, required=True, location='json')
+
+
+class RolesWrapperSchema(Schema):
+    roles = fields.Nested(RoleSchema, required=True,
+                          location='json', many=True)
+
+
+class RoleCreationSchema(Schema):
+    display_name = fields.String(required=True, location='json')
+    permissions = fields.List(fields.String, required=True,
+                              location='json', many=True)
+
+
+class RoleCreationWrapperSchema(Schema):
+    role = fields.Nested(RoleCreationSchema, required=True, location='json')
+
+
 class UserWrapperSchema(Schema):
     user = fields.Nested(UserSchema, required=True, location='json')
 
@@ -27,6 +53,29 @@ class AccountResource(ProtectedResource):
         if g.current_account.id == account_id:
             return UserWrapperSchema().dump({'user': g.current_account}), 200
         abort(403, message='You can only get your own account', status='error')
+
+
+class RoleResource(ProtectedResource):
+    @swag_from('swagger/get_role_spec.yaml')
+    def get(self, role_id):
+        return RoleWrapperSchema().dump(
+                {'role': accounts.get_role(role_id)}), 200
+
+
+class RolesResource(ProtectedResource):
+    @use_args(RoleCreationWrapperSchema())
+    @swag_from('swagger/create_role_spec.yaml')
+    def post(self, args):
+        args = args['role']
+        success = accounts.create_role(args['display_name'],
+                                       args['permissions'])
+        if success:
+            return '', 201
+
+    @swag_from('swagger/get_roles_spec.yaml')
+    def get(self):
+        return RolesWrapperSchema().dump(
+                {'roles': accounts.get_all_roles()}), 200
 
 
 class AccountRoleResource(ProtectedResource):

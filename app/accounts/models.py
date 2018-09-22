@@ -122,10 +122,12 @@ class Role(db.Model):
     __tablename__ = 'roles'
 
     id = db.Column(db.Integer, primary_key=True)
-    display_name = db.Column(db.String)
+    display_name = db.Column(db.String, unique=True)
+    permissions = db.Column(db.ARRAY(db.String))
 
-    def __init__(self, name):
+    def __init__(self, name, permissions):
         self.display_name = str(name)
+        self.permissions = permissions
 
     def save(self):
         """
@@ -147,7 +149,7 @@ class Role(db.Model):
         """
         Get role with id = roleId
         """
-        return Role.query.filter_by(id=roleId)
+        return Role.query.filter_by(id=roleId).first_or_404()
 
     def __repr__(self):
-        return '<Role %s>' % self.display_name
+        return '<Role %s (%s)>' % self.display_name, self.permissions

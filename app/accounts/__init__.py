@@ -1,6 +1,6 @@
 from app.core import bcrypt
 from flask import Blueprint
-from .models import Account
+from .models import Account, Role
 
 accounts_bp = Blueprint('accounts', __name__)
 
@@ -42,6 +42,44 @@ def update_account_role(account_id, role_id):
     acc = Account.get(id=account_id)
     acc.role_id = role_id
     acc.save()
+
+
+def create_role(display_name, permissions):
+    """
+    Tries to create role
+
+    :param display_name: Name of role - display only
+    :param permissions: List of strings - permissions that this role has
+    :type display_name: String
+    :type permissions: List of String
+    :returns: True if role is successfully created
+    :rtype: Boolean
+    :raises: ValueError if role already exists
+    """
+    role = Role(display_name, permissions)
+    role.save()
+
+
+def get_role(role_id):
+    """
+    Tries to get role
+
+    :param role_id: Id of role
+    :type role_id: int
+    :returns: Role if found
+    :rtype: Role
+    """
+    return Role.get(role_id)
+
+
+def get_all_roles():
+    """
+    Gets all roles
+
+    :returns: Role list if found
+    :rtype: List of Roles
+    """
+    return Role.get_all()
 
 
 def create_token(username, password):
