@@ -4,7 +4,7 @@ from marshmallow import Schema, fields
 from webargs.flaskparser import use_args
 from flasgger import swag_from
 import app.accounts as accounts
-from app.api import ProtectedResource
+from app.api import ProtectedResource, requires_permission
 
 
 class UserSchema(Schema):
@@ -65,6 +65,7 @@ class RoleResource(ProtectedResource):
 class RolesResource(ProtectedResource):
     @use_args(RoleCreationWrapperSchema())
     @swag_from('swagger/create_role_spec.yaml')
+    @requires_permission('CREATE_ROLE', 'Role creation')
     def post(self, args):
         args = args['role']
         success = accounts.create_role(args['display_name'],
