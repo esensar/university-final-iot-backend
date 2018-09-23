@@ -26,6 +26,11 @@ definitions:
     type: string
     description: Time
 
+  timestamp:
+    type: integer
+    description: Time
+    default: 1537720769
+
   devicetypename:
     type: string
     description: Name of device type
@@ -37,7 +42,7 @@ definitions:
     default: My device
 
   devicetype:
-    type: int
+    type: integer
     description: Type of device
     default: 1
 
@@ -121,6 +126,22 @@ definitions:
     properties:
       recorded_at:
         $ref: '#/definitions/datetime'
+      record_type:
+        $ref: '#/definitions/id'
+      record_value:
+        type: string
+        description: Value of the recording
+        default: '25 degrees'
+
+  RecordingCreation:
+    type: object
+    required:
+      - recorded_at
+      - record_type
+      - record_value
+    properties:
+      recorded_at:
+        $ref: '#/definitions/timestamp'
       record_type:
         $ref: '#/definitions/id'
       record_value:
@@ -250,5 +271,5 @@ security:
 info:
   description: Python (Flask) backend for IoT sysyem made for master's degree final project
   title: IoT Backend
-  version: 0.0.1
+  version: 0.1.0
 swagger: '2.0'
