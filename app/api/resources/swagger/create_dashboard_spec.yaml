@@ -12,7 +12,7 @@ parameters:
         required:
           - dashboard
         properties:
-          device:
+          dashboard:
             $ref: '#/definitions/DashboardCreation'
 responses:
   201:
