@@ -12,10 +12,10 @@ responses:
       properties:
         status:
           type: string
-          default: success
+          example: success
         message:
           type: string
-          default: Valid token
+          example: Valid token
   401:
     description: Bad credentials
     schema:

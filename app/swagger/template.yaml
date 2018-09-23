@@ -10,71 +10,75 @@ definitions:
   genericname:
     type: string
     description: name
-    default: name
+    example: name
 
   username:
     type: string
     description: User's name in the system
-    default: testusername
+    example: user_name
 
   id:
     type: integer
     description: ID
-    default: 1
+    example: 1
 
   datetime:
     type: string
     description: Time
+    example: 2018-09-19T17:50:24+00:00
 
   timestamp:
     type: integer
     description: Time
-    default: 1537720769
+    example: 1537379424
 
   devicetypename:
     type: string
     description: Name of device type
     default: STANDARD
+    example: STANDARD
 
   devicename:
     type: string
     description: Name of device
-    default: My device
+    example: Temperature device
 
   devicetype:
     type: integer
     description: Type of device
-    default: 1
+    example: 1
 
   email:
     type: string
     format: email
     description: User's registered email
-    default: user@test.com
+    example: user@mail.com
 
   password:
     type: string
     format: password
     description: User's password
-    default: TestPassword1234
+    example: TestPassword1234
 
   status:
     type: string
     description: Status of request
+    example: error
 
   message:
     type: string
     description: Descriptive message
+    example: Long message
 
   configuration:
     type: string
     description: Configuration
-    default: {}
+    example: {}
 
   dashboarddata:
     type: object
     description: Dashboard data
-    default: {}
+    example: {}
 
   Credentials:
     type: object
@@ -131,7 +135,7 @@ definitions:
       record_value:
         type: string
         description: Value of the recording
-        default: '25 degrees'
+        example: '25 degrees'
 
   RecordingCreation:
     type: object
@@ -147,7 +151,7 @@ definitions:
       record_value:
         type: string
         description: Value of the recording
-        default: '25 degrees'
+        example: '25 degrees'
 
   DeviceType:
     type: object
@@ -229,10 +233,10 @@ definitions:
     properties:
       status:
         $ref: '#/definitions/status'
-        default: error
+        example: error
       message:
         $ref: '#/definitions/message'
-        default: Unauthorized
+        example: Unauthorized
 
   Error:
     type: object
@@ -242,10 +246,10 @@ definitions:
     properties:
       status:
         $ref: '#/definitions/status'
-        default: error
+        example: error
       message:
         $ref: '#/definitions/message'
-        default: Error message
+        example: Error message
 
 securityDefinitions:
   Bearer:
