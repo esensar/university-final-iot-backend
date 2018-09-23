@@ -1,0 +1,21 @@
+Gets a role
+---
+tags:
+  - Role
+parameters:
+  - in: path
+    name: role_id
+    required: true
+    type: integer
+    description: Id of the role
+responses:
+  200:
+    description: Success
+    schema:
+      type: object
+      required:
+        - role
+      properties:
+        device:
+          $ref: '#/definitions/Role'
+

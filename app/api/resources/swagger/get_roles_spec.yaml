@@ -1,0 +1,16 @@
+Gets all roles
+---
+tags:
+  - Role
+responses:
+  200:
+    description: Success
+    schema:
+      type: object
+      required:
+        - roles
+      properties:
+        devices:
+          type: array
+          items:
+            $ref: '#/definitions/Role'

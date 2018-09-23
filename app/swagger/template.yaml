@@ -7,6 +7,11 @@ basePath: ""
 
 definitions:
 
+  genericname:
+    type: string
+    description: name
+    default: name
+
   username:
     type: string
     description: User's name in the system
@@ -90,6 +95,22 @@ definitions:
         $ref: '#/definitions/password'
       email:
         $ref: '#/definitions/email'
+
+  Role:
+    type: object
+    required:
+      - id
+      - display_name
+      - permissions
+    properties:
+      id:
+        $ref: '#/definitions/id'
+      display_name:
+        $ref: '#/definitions/genericname'
+      permissions:
+        type: array
+        items:
+          $ref: '#definitions/genericname'
 
   Recording:
     type: object

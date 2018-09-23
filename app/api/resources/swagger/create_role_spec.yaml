@@ -1,0 +1,19 @@
+Creates new role
+Requires Role object and creates role
+---
+tags:
+  - Role
+parameters:
+  - in: body
+    name: body
+    required: true
+    schema:
+        type: object
+        required:
+          - role
+        properties:
+          device:
+            $ref: '#/definitions/Role'
+responses:
+  201:
+    description: Successful creation

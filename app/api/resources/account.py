@@ -18,7 +18,7 @@ class RoleUpdateSchema(Schema):
 
 
 class RoleSchema(Schema):
-    role_id = fields.Integer(required=True, location='json')
+    id = fields.Integer(required=True, location='json')
     display_name = fields.String(required=True, location='json')
     permissions = fields.List(fields.String, required=True,
                               location='json', many=True)
@@ -63,9 +63,9 @@ class RoleResource(ProtectedResource):
 
 
 class RolesResource(ProtectedResource):
+    @requires_permission('CREATE_ROLE', 'Role creation')
     @use_args(RoleCreationWrapperSchema())
     @swag_from('swagger/create_role_spec.yaml')
-    @requires_permission('CREATE_ROLE', 'Role creation')
     def post(self, args):
         args = args['role']
         success = accounts.create_role(args['display_name'],
