@@ -33,7 +33,7 @@ class DashboardResource(ProtectedResource):
 
     @use_args(DashboardWrapperSchema())
     @swag_from('swagger/update_dashboard_spec.yaml')
-    def put(self, dashboard_id, args):
+    def put(self, args, dashboard_id):
         requested_dashboard = dashboard.get_dashboard(dashboard_id)
         if requested_dashboard.account_id != g.current_account.id:
             abort(403, message='You are not allowed to access this dashboard',
