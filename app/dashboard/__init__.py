@@ -43,7 +43,7 @@ def update_dashboard(dashboard_id, dashboard_data):
     """
     dashboard = Dashboard.get(id=dashboard_id)
     dashboard.dashboard_data = dashboard_data
-    dashboard_data.save()
+    dashboard.save()
 
 
 def get_dashboards(account_id):
