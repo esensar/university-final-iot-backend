@@ -9,24 +9,24 @@ parameters:
     required: true
     type: integer
     description: Id of the device
-  - in: path
+  - in: query
     name: record_type
     required: false
     schema:
       type: integer
     description: requested record_type
-  - in: path
+  - in: query
     name: start_date
     required: false
     schema:
       type: string
-    description: start date of filter
-  - in: path
+    description: start date of filter in format %d-%m-%Y (21-09-2018)
+  - in: query
     name: end_date
     required: false
     schema:
       type: string
-    description: end date of filter
+    description: end date of filter in format %d-%m-%Y (21-09-2018)
 responses:
   200:
     description: Success
