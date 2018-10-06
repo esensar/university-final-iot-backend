@@ -3,8 +3,8 @@ from flask_restful import abort
 from marshmallow import Schema, fields
 from webargs.flaskparser import use_args
 from flasgger import swag_from
-import app.dashboard as dashboard
-from app.api import ProtectedResource
+import app.dashboards.api as dashboard
+from app.api.auth_protection import ProtectedResource
 
 
 class DashboardSchema(Schema):

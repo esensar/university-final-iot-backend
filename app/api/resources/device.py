@@ -3,8 +3,8 @@ from marshmallow import Schema, fields
 from webargs.flaskparser import use_args
 from flasgger import swag_from
 from flask import g, request
-import app.devices as devices
-from app.api import ProtectedResource
+import app.devices.api as devices
+from app.api.auth_protection import ProtectedResource
 
 
 class DeviceTypeSchema(Schema):
