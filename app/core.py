@@ -31,7 +31,7 @@ def setup_blueprints(app):
     from .devices.blueprint import devices_bp
     from .dashboards.blueprint import dashboard_bp
     from .api import api_bp
-    from .mqtt import mqtt_bp
+    from .mqtt.blueprint import mqtt_bp
 
     app.register_blueprint(accounts_bp)
     app.register_blueprint(devices_bp)
