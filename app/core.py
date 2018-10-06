@@ -28,7 +28,7 @@ def setup_blueprints(app):
     they are just simple python packages/modules
     """
     from .accounts.blueprint import accounts_bp
-    from .devices import devices_bp
+    from .devices.blueprint import devices_bp
     from .dashboards.blueprint import dashboard_bp
     from .api import api_bp
     from .mqtt import mqtt_bp

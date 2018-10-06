@@ -1,7 +1,7 @@
 import sys
 import json
 from flask_mqtt import Mqtt
-import app.devices as devices
+import app.devices.api as devices
 
 
 class MqttClient:
