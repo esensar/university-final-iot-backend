@@ -5,7 +5,8 @@ from webargs.flaskparser import use_args
 from flasgger import swag_from
 import app.accounts.api as accounts
 from app.api.auth_protection import ProtectedResource
-from app.api.permission_protection import requires_permission
+from app.api.permission_protection import (requires_permission,
+                                           valid_permissions)
 
 
 class UserSchema(Schema):
@@ -18,11 +19,16 @@ class RoleUpdateSchema(Schema):
     role_id = fields.Integer(required=True, load_only=True, location='json')
 
 
+def validate_role_permissions(permissions_list):
+    return set(permissions_list).issubset(valid_permissions)
+
+
 class RoleSchema(Schema):
     id = fields.Integer(required=True, location='json')
     display_name = fields.String(required=True, location='json')
     permissions = fields.List(fields.String, required=True,
-                              location='json', many=True)
+                              location='json', many=True,
+                              validate=validate_role_permissions)
 
 
 class RoleWrapperSchema(Schema):
