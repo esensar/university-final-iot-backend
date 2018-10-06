@@ -1,7 +1,4 @@
-from flask import Blueprint
 from .models import Dashboard
-
-dashboard_bp = Blueprint('dashboard', __name__)
 
 
 # Public interface

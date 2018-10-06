@@ -29,7 +29,7 @@ def setup_blueprints(app):
     """
     from .accounts.blueprint import accounts_bp
     from .devices import devices_bp
-    from .dashboard import dashboard_bp
+    from .dashboards.blueprint import dashboard_bp
     from .api import api_bp
     from .mqtt import mqtt_bp
 
