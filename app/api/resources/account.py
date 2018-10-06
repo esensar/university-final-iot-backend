@@ -4,7 +4,8 @@ from marshmallow import Schema, fields
 from webargs.flaskparser import use_args
 from flasgger import swag_from
 import app.accounts.api as accounts
-from app.api import ProtectedResource, requires_permission
+from app.api.auth_protection import ProtectedResource
+from app.api.permission_protection import requires_permission
 
 
 class UserSchema(Schema):

@@ -30,7 +30,7 @@ def setup_blueprints(app):
     from .accounts.blueprint import accounts_bp
     from .devices.blueprint import devices_bp
     from .dashboards.blueprint import dashboard_bp
-    from .api import api_bp
+    from .api.blueprint import api_bp
     from .mqtt.blueprint import mqtt_bp
 
     app.register_blueprint(accounts_bp)

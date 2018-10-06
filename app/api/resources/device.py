@@ -4,7 +4,7 @@ from webargs.flaskparser import use_args
 from flasgger import swag_from
 from flask import g, request
 import app.devices.api as devices
-from app.api import ProtectedResource
+from app.api.auth_protection import ProtectedResource
 
 
 class DeviceTypeSchema(Schema):

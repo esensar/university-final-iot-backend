@@ -2,7 +2,7 @@ from flask_restful import Resource, abort
 from webargs import fields
 from webargs.flaskparser import use_args
 from flasgger import swag_from
-from app.api import ProtectedResource
+from app.api.auth_protection import ProtectedResource
 import app.accounts.api as accounts
 
 

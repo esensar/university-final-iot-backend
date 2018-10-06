@@ -4,7 +4,7 @@ from marshmallow import Schema, fields
 from webargs.flaskparser import use_args
 from flasgger import swag_from
 import app.dashboards.api as dashboard
-from app.api import ProtectedResource
+from app.api.auth_protection import ProtectedResource
 
 
 class DashboardSchema(Schema):
