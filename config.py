@@ -28,7 +28,7 @@ CSRF_SESSION_KEY = "secret"
 SECRET_KEY = "?['Z(Z\x83Y \x06T\x12\x96<\xff\x12\xe0\x1b\xd1J\xe0\xd9ld"
 
 # MQTT configuration
-MQTT_CLIENT_ID = 'final-iot-backend-server-local2'
+MQTT_CLIENT_ID = 'final-iot-backend-server'
 MQTT_BROKER_URL = 'broker.hivemq.com'
 MQTT_BROKER_PORT = 1883
 MQTT_USERNAME = 'user'
