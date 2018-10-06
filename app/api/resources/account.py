@@ -3,7 +3,7 @@ from flask import g
 from marshmallow import Schema, fields
 from webargs.flaskparser import use_args
 from flasgger import swag_from
-import app.accounts as accounts
+import app.accounts.api as accounts
 from app.api import ProtectedResource, requires_permission
 
 

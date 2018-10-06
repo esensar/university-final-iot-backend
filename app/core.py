@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flasgger import Swagger
 from flask_cors import CORS
-from .tasks import celery as celery_configurator
+from .tasks import celery_configurator
 
 app = FlaskAPI(__name__, instance_relative_config=True)
 app.config.from_object('config')
@@ -27,7 +27,7 @@ def setup_blueprints(app):
     They are exposed as blueprints just for consistency, otherwise
     they are just simple python packages/modules
     """
-    from .accounts import accounts_bp
+    from .accounts.blueprint import accounts_bp
     from .devices import devices_bp
     from .dashboard import dashboard_bp
     from .api import api_bp

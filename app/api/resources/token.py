@@ -3,7 +3,7 @@ from webargs import fields
 from webargs.flaskparser import use_args
 from flasgger import swag_from
 from app.api import ProtectedResource
-import app.accounts as accounts
+import app.accounts.api as accounts
 
 
 class TokenResource(Resource):

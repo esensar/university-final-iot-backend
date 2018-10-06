@@ -3,7 +3,7 @@ from flask import Blueprint, request, g
 from flask_restful import Api, Resource, abort
 from functools import wraps
 from marshmallow import ValidationError
-from app.accounts import validate_token
+from app.accounts.api import validate_token
 
 
 api_bp = Blueprint('api', __name__)
