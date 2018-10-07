@@ -45,7 +45,7 @@ def set_device_configuration(device_id, configuration_json):
     :type configuration_json: JSON
     :rtype: Boolean
     """
-    from app.celery_builder import send_config
+    from .tasks import send_config
     device = Device.get(id=device_id)
     device.configuration = configuration_json
     device.save()
