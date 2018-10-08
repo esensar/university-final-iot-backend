@@ -1,12 +1,12 @@
 import sys
 from app.celery_builder import task_builder
-from .blueprint import devices_bp
+from flask import current_app as app
 
 
 @task_builder.task()
 def send_config(device_id, config):
     from flask_mqtt import Mqtt, MQTT_ERR_SUCCESS
-    mqtt = Mqtt(devices_bp)
+    mqtt = Mqtt(app)
 
     @mqtt.on_log()
     def handle_logging(client, userdata, level, buf):
