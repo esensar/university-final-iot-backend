@@ -16,4 +16,13 @@ pipelines:
           # trigger: manual  # uncomment to have a manual step
           script:
             - git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git HEAD
+    develop:
+      - step:
+          # set HEROKU_API_KEY and HEROKU_APP_NAME environment variables
+          # set clone `depth: full' as described here: https://confluence.atlassian.com/x/Y9-5Mw
+          name: Deploy to Heroku test
+          deployment: test   # set to test, staging or production
+              # trigger: manual  # uncomment to have a manual step
+          script:
+            - git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME_TEST.git HEAD
 
