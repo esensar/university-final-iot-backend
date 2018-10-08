@@ -2,6 +2,7 @@ import os
 
 # App configuration
 DEBUG = os.environ['DEBUG']
+APP_VERSION = '0.2.0'
 
 # Define the application directory
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -39,7 +40,7 @@ MQTT_REFRESH_TIME = 1.0  # refresh time in seconds
 CELERY_BROKER_URL = os.environ['REDIS_URL']
 CELERY_RESULT_BACKEND = os.environ['REDIS_URL']
 
-# Flassger config
+# Flasgger config
 SWAGGER = {
     'uiversion': 3
 }
