@@ -14,8 +14,8 @@ responses:
     schema:
       type: object
       required:
-        - device_type
+        - content
       properties:
-        device_type:
+        content:
           $ref: '#/definitions/DeviceType'
 

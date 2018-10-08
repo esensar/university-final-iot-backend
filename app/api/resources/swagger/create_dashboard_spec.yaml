@@ -9,11 +9,7 @@ parameters:
     required: true
     schema:
         type: object
-        required:
-          - dashboard
-        properties:
-          dashboard:
-            $ref: '#/definitions/DashboardCreation'
+        $ref: '#/definitions/DashboardCreation'
 responses:
   201:
     description: Successful creation

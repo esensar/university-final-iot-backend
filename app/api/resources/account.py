@@ -7,9 +7,10 @@ import app.accounts.api as accounts
 from app.api.auth_protection import ProtectedResource
 from app.api.permission_protection import (requires_permission,
                                            valid_permissions)
+from app.api.schemas import BaseResourceSchema
 
 
-class UserSchema(Schema):
+class UserSchema(BaseResourceSchema):
     username = fields.Str(required=True)
     email = fields.Email(required=True)
     password = fields.Str(required=True, load_only=True)
@@ -23,21 +24,12 @@ def validate_role_permissions(permissions_list):
     return set(permissions_list).issubset(valid_permissions)
 
 
-class RoleSchema(Schema):
+class RoleSchema(BaseResourceSchema):
     id = fields.Integer(required=True, location='json')
     display_name = fields.String(required=True, location='json')
     permissions = fields.List(fields.String, required=True,
                               location='json', many=True,
                               validate=validate_role_permissions)
-
-
-class RoleWrapperSchema(Schema):
-    role = fields.Nested(RoleSchema, required=True, location='json')
-
-
-class RolesWrapperSchema(Schema):
-    roles = fields.Nested(RoleSchema, required=True,
-                          location='json', many=True)
 
 
 class RoleCreationSchema(Schema):
@@ -46,35 +38,26 @@ class RoleCreationSchema(Schema):
                               location='json', many=True)
 
 
-class RoleCreationWrapperSchema(Schema):
-    role = fields.Nested(RoleCreationSchema, required=True, location='json')
-
-
-class UserWrapperSchema(Schema):
-    user = fields.Nested(UserSchema, required=True, location='json')
-
-
 class AccountResource(ProtectedResource):
     @swag_from('swagger/get_account_spec.yaml')
     def get(self, account_id):
         if g.current_account.id == account_id:
-            return UserWrapperSchema().dump({'user': g.current_account}), 200
+            return UserSchema().dump(g.current_account), 200
         abort(403, message='You can only get your own account', status='error')
 
 
 class RoleResource(ProtectedResource):
     @swag_from('swagger/get_role_spec.yaml')
     def get(self, role_id):
-        return RoleWrapperSchema().dump(
-                {'role': accounts.get_role(role_id)}), 200
+        return RoleSchema().dump(
+                accounts.get_role(role_id)), 200
 
 
 class RolesResource(ProtectedResource):
     @requires_permission('CREATE_ROLE', 'Role creation')
-    @use_args(RoleCreationWrapperSchema())
+    @use_args(RoleCreationSchema(), locations=('json',))
     @swag_from('swagger/create_role_spec.yaml')
     def post(self, args):
-        args = args['role']
         success = accounts.create_role(args['display_name'],
                                        args['permissions'])
         if success:
@@ -82,12 +65,11 @@ class RolesResource(ProtectedResource):
 
     @swag_from('swagger/get_roles_spec.yaml')
     def get(self):
-        return RolesWrapperSchema().dump(
-                {'roles': accounts.get_all_roles()}), 200
+        return RoleSchema().dump(accounts.get_all_roles(), many=True), 200
 
 
 class AccountRoleResource(ProtectedResource):
-    @use_args(RoleUpdateSchema())
+    @use_args(RoleUpdateSchema(), locations=('json',))
     @swag_from('swagger/update_account_role_spec.yaml')
     def put(self, args, account_id):
         if g.current_account.id == account_id:
@@ -99,11 +81,10 @@ class AccountRoleResource(ProtectedResource):
 
 
 class AccountListResource(Resource):
-    @use_args(UserWrapperSchema())
+    @use_args(UserSchema(), locations=('json',))
     @swag_from('swagger/create_account_spec.yaml')
     def post(self, args):
         try:
-            args = args['user']
             success = accounts.create_account(
                     args['username'],
                     args['email'],
