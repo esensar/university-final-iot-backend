@@ -1,3 +1,3 @@
 release: ./release-tasks.sh
 web: gunicorn app.core:app -w 4 --preload
-worker: celery -A app.celery_builder.celery worker
+worker: celery -A app.celery_builder.task_builder worker

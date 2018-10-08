@@ -7,3 +7,4 @@ app.config.from_object('config')
 app.config.from_pyfile('config.py', silent=True)
 app.config['MQTT_CLIENT_ID'] = 'final-iot-backend-server-worker'
 task_builder = make_celery(app)
+task_builder.autodiscover_tasks(['app.devices'])
