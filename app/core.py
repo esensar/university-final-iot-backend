@@ -12,6 +12,7 @@ app.config.from_pyfile('config.py', silent=True)
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 swagger = Swagger(app, template_file='swagger/template.yaml')
+swagger.template['info']['version'] = app.config['APP_VERSION']
 CORS(app)
 celery = celery_configurator.make_celery(app)
 

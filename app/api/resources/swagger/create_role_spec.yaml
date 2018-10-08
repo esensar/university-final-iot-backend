@@ -9,11 +9,7 @@ parameters:
     required: true
     schema:
         type: object
-        required:
-          - role
-        properties:
-          device:
-            $ref: '#/definitions/Role'
+        $ref: '#/definitions/Role'
 responses:
   201:
     description: Successful creation

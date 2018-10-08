@@ -9,11 +9,7 @@ parameters:
     required: true
     schema:
         type: object
-        required:
-          - device
-        properties:
-          device:
-            $ref: '#/definitions/DeviceCreation'
+        $ref: '#/definitions/DeviceCreation'
 responses:
   201:
     description: Successful creation

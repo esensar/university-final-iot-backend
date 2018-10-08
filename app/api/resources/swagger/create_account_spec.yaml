@@ -10,11 +10,7 @@ parameters:
     required: true
     schema:
         type: object
-        required:
-          - user
-        properties:
-          user:
-            $ref: '#/definitions/User'
+        $ref: '#/definitions/User'
 security: []
 responses:
   201:

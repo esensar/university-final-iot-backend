@@ -11,11 +11,7 @@ parameters:
     required: true
     schema:
         type: object
-        required:
-          - user
-        properties:
-          user:
-            $ref: '#/definitions/Credentials'
+        $ref: '#/definitions/Credentials'
 security: []
 responses:
   200:
