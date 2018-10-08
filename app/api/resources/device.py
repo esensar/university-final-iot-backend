@@ -5,17 +5,22 @@ from flasgger import swag_from
 from flask import g, request
 import app.devices.api as devices
 from app.api.auth_protection import ProtectedResource
+from app.api.schemas import BaseResourceSchema
 
 
-class DeviceTypeSchema(Schema):
+class BasicDeviceTypeSchema(Schema):
     id = fields.Integer(dump_only=True)
     name = fields.Str(required=True)
 
 
-class DeviceSchema(Schema):
+class DeviceTypeSchema(BaseResourceSchema, BasicDeviceTypeSchema):
+    pass
+
+
+class DeviceSchema(BaseResourceSchema):
     id = fields.Integer(dump_only=True)
     name = fields.Str(required=True)
-    device_type = fields.Nested(DeviceTypeSchema, dump_only=True)
+    device_type = fields.Nested(BasicDeviceTypeSchema, dump_only=True)
     device_type_id = fields.Integer(load_only=True, missing=1)
 
 
@@ -23,35 +28,10 @@ class DeviceWithConfigurationSchema(DeviceSchema):
     configuration = fields.Raw(dump_only=True)
 
 
-class DeviceWrapperSchema(Schema):
-    device = fields.Nested(DeviceWithConfigurationSchema,
-                           required=True, location='json')
-
-
-class DevicesWrapperSchema(Schema):
-    devices = fields.Nested(DeviceSchema, required=True,
-                            location='json', many=True)
-
-
-class DeviceTypeWrapperSchema(Schema):
-    device_type = fields.Nested(DeviceTypeSchema, required=True,
-                                location='json')
-
-
-class DeviceTypesWrapperSchema(Schema):
-    device_types = fields.Nested(DeviceTypeSchema, required=True,
-                                 location='json', many=True)
-
-
-class RecordingsSchema(Schema):
+class RecordingsSchema(BaseResourceSchema):
     recorded_at = fields.DateTime()
     record_type = fields.Integer()
     record_value = fields.String()
-
-
-class RecordingsWrapperSchema(Schema):
-    recordings = fields.Nested(RecordingsSchema, required=True,
-                               location='json', many=True)
 
 
 def validate_device_ownership(device_id):
@@ -64,8 +44,8 @@ class DeviceResource(ProtectedResource):
     @swag_from('swagger/get_device_spec.yaml')
     def get(self, device_id):
         validate_device_ownership(device_id)
-        return DeviceWrapperSchema().dump(
-                {'device': devices.get_device(device_id)}), 200
+        return DeviceSchema().dump(
+                devices.get_device(device_id)), 200
 
     @swag_from('swagger/delete_device_spec.yaml')
     def delete(self, device_id):
@@ -77,18 +57,17 @@ class DeviceResource(ProtectedResource):
 class DeviceTypeResource(ProtectedResource):
     @swag_from('swagger/get_device_type_spec.yaml')
     def get(self, device_type_id):
-        return DeviceTypeWrapperSchema().dump(
-                {'device_type': devices.get_device_type(device_type_id)}), 200
+        return DeviceTypeSchema().dump(
+                devices.get_device_type(device_type_id)), 200
 
 
 class DeviceTypeListResource(ProtectedResource):
-    @use_args(DeviceTypeWrapperSchema())
+    @use_args(DeviceTypeSchema(), locations=('json',))
     @swag_from('swagger/create_device_type_spec.yaml')
     def post(self, args):
         if g.current_account.role_id != 1:
             abort(403, message='Only admin may create device types',
                   status='error')
-        args = args['device_type']
         success = devices.create_device_type(
                 args['name'])
         if success:
@@ -96,8 +75,8 @@ class DeviceTypeListResource(ProtectedResource):
 
     @swag_from('swagger/get_device_types_spec.yaml')
     def get(self):
-        return DeviceTypesWrapperSchema().dump(
-                {'device_types': devices.get_device_types()}), 200
+        return DeviceTypeSchema().dump(devices.get_device_types(),
+                                       many=True), 200
 
 
 class DeviceRecordingResource(ProtectedResource):
@@ -105,13 +84,12 @@ class DeviceRecordingResource(ProtectedResource):
     def get(self, device_id):
         validate_device_ownership(device_id)
         request_args = request.args
-        return RecordingsWrapperSchema().dump(
-                {'recordings':
+        return RecordingsSchema().dump(
                     devices.get_device_recordings_filtered(
                         device_id,
                         request_args.get('record_type'),
                         request_args.get('start_date'),
-                        request_args.get('end_date'))}), 200
+                        request_args.get('end_date')), many=True), 200
 
     @swag_from('swagger/create_device_recording_spec.yaml')
     def post(self, device_id):
@@ -122,10 +100,9 @@ class DeviceRecordingResource(ProtectedResource):
 
 
 class DeviceListResource(ProtectedResource):
-    @use_args(DeviceWrapperSchema())
+    @use_args(DeviceSchema(), locations=('json',))
     @swag_from('swagger/create_device_spec.yaml')
     def post(self, args):
-        args = args['device']
         success = devices.create_device(
                 args['name'],
                 g.current_account.id,
@@ -135,8 +112,8 @@ class DeviceListResource(ProtectedResource):
 
     @swag_from('swagger/get_devices_spec.yaml')
     def get(self):
-        return DevicesWrapperSchema().dump(
-                {'devices': devices.get_devices(g.current_account.id)}), 200
+        return DeviceSchema().dump(
+                devices.get_devices(g.current_account.id), many=True), 200
 
 
 class DeviceConfigurationResource(ProtectedResource):

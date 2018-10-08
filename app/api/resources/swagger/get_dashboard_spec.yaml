@@ -14,8 +14,8 @@ responses:
     schema:
       type: object
       required:
-        - dashboard
+        - content
       properties:
-        device:
+        content:
           $ref: '#/definitions/Dashboard'
 

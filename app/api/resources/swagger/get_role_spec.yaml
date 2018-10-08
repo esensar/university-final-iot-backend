@@ -14,8 +14,8 @@ responses:
     schema:
       type: object
       required:
-        - role
+        - content
       properties:
-        device:
+        content:
           $ref: '#/definitions/Role'
 

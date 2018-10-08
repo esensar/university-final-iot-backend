@@ -15,9 +15,9 @@ responses:
     schema:
       type: object
       required:
-        - user
+        - content
       properties:
-        user:
+        content:
           $ref: '#/definitions/User'
   403:
     description: Accessed a different account

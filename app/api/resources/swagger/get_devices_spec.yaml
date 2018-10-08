@@ -23,9 +23,9 @@ responses:
     schema:
       type: object
       required:
-        - devices
+        - content
       properties:
-        devices:
+        content:
           type: array
           items:
             $ref: '#/definitions/Device'
