@@ -1,7 +1,11 @@
 ---
 servers:
   - url: https://final-iot-backend.herokuapp.com/
-    description: Heroku deployed app for testing
+    description: Heroku deployed app for production usage
+  - url: https://final-iot-backend-staging.herokuapp.com/
+    description: Heroku staging app for pre-release testing
+  - url: https://final-iot-backend-test.herokuapp.com/
+    description: Heroku test app
 
 basePath: ""
 
