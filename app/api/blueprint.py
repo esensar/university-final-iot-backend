@@ -12,7 +12,9 @@ def add_resources():
                                     AccountListResource,
                                     AccountRoleResource,
                                     RoleResource,
-                                    RolesResource)
+                                    RolesResource,
+                                    AccountEmailTokenResource,
+                                    AccountEmailTokenResendResource)
     from .resources.token import TokenResource, ValidateTokenResource
     from .resources.device import (DeviceResource,
                                    DeviceRecordingResource,
@@ -25,6 +27,10 @@ def add_resources():
     api.add_resource(AccountResource, '/v1/accounts/<int:account_id>')
     api.add_resource(AccountListResource, '/v1/accounts')
     api.add_resource(AccountRoleResource, '/v1/accounts/<int:account_id>/role')
+    api.add_resource(AccountEmailTokenResource,
+                     '/v1/email/confirm/<string:token>')
+    api.add_resource(AccountEmailTokenResendResource,
+                     '/v1/email/resend')
     api.add_resource(RoleResource, '/v1/roles/<int:role_id>')
     api.add_resource(RolesResource, '/v1/roles')
     api.add_resource(TokenResource, '/v1/token')

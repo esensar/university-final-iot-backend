@@ -13,6 +13,8 @@ class Account(db.Model):
     email = db.Column(db.String, index=True, unique=True)
     role_id = db.Column(db.Integer, db.ForeignKey("roles.id"))
     role = db.relationship("Role", foreign_keys=[role_id])
+    confirmed = db.Column(db.Boolean, default=False, nullable=False)
+    confirmed_at = db.Column(db.DateTime, nullable=True)
     created_at = db.Column(db.DateTime,
                            nullable=False,
                            default=db.func.current_timestamp())

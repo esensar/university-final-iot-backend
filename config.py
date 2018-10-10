@@ -27,6 +27,7 @@ CSRF_SESSION_KEY = "secret"
 
 # Secret key for signing cookies
 SECRET_KEY = "?['Z(Z\x83Y \x06T\x12\x96<\xff\x12\xe0\x1b\xd1J\xe0\xd9ld"
+SECURITY_PASSWORD_SALT = "IyoZvOJb4feT3xKlYXyOJveHSIY4GDg6"
 
 # MQTT configuration
 MQTT_CLIENT_ID = 'final-iot-backend-server-' + os.environ['MQTT_CLIENT']
@@ -39,6 +40,20 @@ MQTT_REFRESH_TIME = 1.0  # refresh time in seconds
 # Celery config
 CELERY_BROKER_URL = os.environ['REDIS_URL']
 CELERY_RESULT_BACKEND = os.environ['REDIS_URL']
+
+# Mailer config
+MAIL_SERVER = 'smtp.googlemail.com'
+MAIL_PORT = 465
+MAIL_USE_TLS = False
+MAIL_USE_SSL = True
+MAIL_DEBUG = False
+
+# gmail authentication
+MAIL_USERNAME = os.environ['APP_MAIL_USERNAME']
+MAIL_PASSWORD = os.environ['APP_MAIL_PASSWORD']
+
+# mail accounts
+MAIL_DEFAULT_SENDER = 'final.iot.backend.mailer@gmail.com'
 
 # Flasgger config
 SWAGGER = {

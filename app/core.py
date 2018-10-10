@@ -2,6 +2,7 @@
 from flask_api import FlaskAPI
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
+from flask_mail import Mail
 from flasgger import Swagger
 from flask_cors import CORS
 from .tasks import celery_configurator
@@ -11,6 +12,7 @@ app.config.from_object('config')
 app.config.from_pyfile('config.py', silent=True)
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
+mail = Mail(app)
 swagger = Swagger(app, template_file='swagger/template.yaml')
 swagger.template['info']['version'] = app.config['APP_VERSION']
 CORS(app)

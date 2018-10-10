@@ -1,5 +1,7 @@
+import datetime
 from app.core import bcrypt
 from .models import Account, Role
+from .emailtoken import generate_confirmation_token, confirm_token
 
 
 def create_account(username, email, password):
@@ -12,17 +14,34 @@ def create_account(username, email, password):
     :type username: string
     :type email: string
     :type password: string
-    :returns: True if account is successfully created
-    :rtype: Boolean
+    :returns: Email confirmation token if creation was successful
+    :rtype: string
     :raises: ValueError if account already exists
     """
     if not Account.exists_with_any_of(username=username, email=email):
         pw_hash = bcrypt.generate_password_hash(password).decode('utf-8')
         account = Account(username, pw_hash, email)
         account.save()
-        return True
+
+        emailtoken = generate_confirmation_token(account.email)
+        return emailtoken
 
     raise ValueError("Account with given parameters already exists")
+
+
+def confirm_email_token(token):
+    try:
+        email = confirm_token(token)
+    except Exception:
+        return False
+    user = Account.query.filter_by(email=email).first_or_404()
+    if user.confirmed:
+        return True
+    else:
+        user.confirmed = True
+        user.confirmed_on = datetime.datetime.now()
+        user.save()
+        return True
 
 
 def update_account_role(account_id, role_id):
@@ -98,6 +117,10 @@ def create_token(username, password):
     account = Account.get(username=username)
     if not bcrypt.check_password_hash(account.password, password):
         raise ValueError("Invalid credentials")
+
+    if not account.confirmed:
+        print('ACCOUNT NOT CONFIRMED?')
+        raise ValueError("Email not confirmed")
 
     return account.create_auth_token()
 
