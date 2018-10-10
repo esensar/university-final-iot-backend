@@ -23,8 +23,8 @@ class TokenResource(Resource):
                     args['password'])
             if token:
                 return {'status': 'success', 'token': token}, 200
-        except ValueError:
-            abort(401, message='Invalid credentials', status='error')
+        except ValueError, e:
+            abort(401, message=str(e), status='error')
 
 
 class ValidateTokenResource(ProtectedResource):
