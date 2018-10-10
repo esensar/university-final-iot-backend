@@ -19,7 +19,6 @@ Flask-MQTT==1.0.3
 Flask-RESTful==0.3.6
 Flask-Script==2.0.6
 Flask-SQLAlchemy==2.3.2
-functools32==3.2.3.post2
 gunicorn==19.8.1
 itsdangerous==0.24
 Jinja2==2.10
