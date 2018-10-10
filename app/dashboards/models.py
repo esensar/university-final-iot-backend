@@ -29,6 +29,13 @@ class Dashboard(db.Model):
         db.session.add(self)
         db.session.commit()
 
+    def delete(self):
+        """
+        Deletes this dashboard from database
+        """
+        db.session.delete(self)
+        db.session.commit()
+
     @staticmethod
     def exists_with_any_of(**kwargs):
         """

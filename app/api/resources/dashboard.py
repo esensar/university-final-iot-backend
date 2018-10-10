@@ -35,6 +35,15 @@ class DashboardResource(ProtectedResource):
         if success:
             return '', 204
 
+    @swag_from('swagger/delete_dashboard_spec.yaml')
+    def delete(self, dashboard_id):
+        requested_dashboard = dashboard.get_dashboard(dashboard_id)
+        if requested_dashboard.account_id != g.current_account.id:
+            abort(403, message='You are not allowed to access this dashboard',
+                  status='error')
+        dashboard.delete_dashboard(dashboard_id)
+        return '', 204
+
 
 class DashboardListResource(ProtectedResource):
     @use_args(DashboardSchema(), locations=('json',))

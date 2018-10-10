@@ -1,0 +1,13 @@
+Deletes a dashboard
+---
+tags:
+  - Dashboard
+parameters:
+  - in: path
+    name: dashboard_id
+    required: true
+    type: integer
+    description: Id of the dashboard
+responses:
+  204:
+    description: Success

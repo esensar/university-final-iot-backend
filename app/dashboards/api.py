@@ -43,6 +43,17 @@ def update_dashboard(dashboard_id, dashboard_data):
     dashboard.save()
 
 
+def delete_dashboard(dashboard_id):
+    """
+    Tries to delete dashboard with given id
+
+    :param dashboard_id: Id of requested dashboard
+    :type name: int
+    """
+    dashboard = Dashboard.get(id=dashboard_id)
+    dashboard.delete()
+
+
 def get_dashboards(account_id):
     """
     Tries to fetch dashboards owned by account with given id
