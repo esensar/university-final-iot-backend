@@ -1,9 +1,11 @@
 from flask_restful import Resource, abort
-from flask import g
+from flask import g, render_template
 from marshmallow import Schema, fields
 from webargs.flaskparser import use_args
 from flasgger import swag_from
+from app.api.blueprint import api
 import app.accounts.api as accounts
+from app.accounts.tasks import send_email_task
 from app.api.auth_protection import ProtectedResource
 from app.api.permission_protection import (requires_permission,
                                            valid_permissions)
@@ -85,11 +87,34 @@ class AccountListResource(Resource):
     @swag_from('swagger/create_account_spec.yaml')
     def post(self, args):
         try:
-            success = accounts.create_account(
+            emailtoken = accounts.create_account(
                     args['username'],
                     args['email'],
                     args['password'])
-            if success:
-                return '', 201
+            confirm_url = api.url_for(
+                    AccountEmailTokenResource,
+                    token=emailtoken, _external=True)
+            html = render_template(
+                    'activate_mail.html',
+                    confirm_url=confirm_url)
+            send_email_task.delay(
+                    args['email'],
+                    'Please confirm your email',
+                    html)
+            return '', 201
         except ValueError:
             abort(422, message='Account already exists', status='error')
+
+
+class AccountEmailTokenResource(Resource):
+    def get(self, token):
+        success = accounts.confirm_email_token(token)
+        if success:
+            return '{"status": "success", \
+                     "message": "Successfully confirmed email"}', 200
+
+
+class AccountEmailTokenResendResource(Resource):
+    @use_args(UserSchema(), locations=('json',))
+    def post(self, args):
+        return '', 201
