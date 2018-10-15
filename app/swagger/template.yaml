@@ -224,10 +224,13 @@ definitions:
   DashboardCreation:
     type: object
     required:
+      - active
       - dashboard_data
     properties:
       dashboard_data:
         $ref: '#/definitions/dashboarddata'
+      active:
+        type: boolean
 
   UnauthorizedError:
     type: object

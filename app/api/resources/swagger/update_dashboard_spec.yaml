@@ -1,4 +1,5 @@
 Updates a dashboard
+Updating active state disables previous active dashboard
 ---
 tags:
   - Dashboard
