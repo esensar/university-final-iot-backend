@@ -23,7 +23,7 @@ class TokenResource(Resource):
                     args['password'])
             if token:
                 return {'status': 'success', 'token': token}, 200
-        except ValueError, e:
+        except ValueError as e:
             abort(401, message=str(e), status='error')
 
 

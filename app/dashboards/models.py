@@ -9,6 +9,7 @@ class Dashboard(db.Model):
     dashboard_data = db.Column(JSON, nullable=False)
     account_id = db.Column(db.Integer, db.ForeignKey('accounts.id'),
                            primary_key=True)
+    active = db.Column(db.Boolean, nullable=False, default=False)
     created_at = db.Column(db.DateTime,
                            nullable=False,
                            default=db.func.current_timestamp())
@@ -73,6 +74,28 @@ class Dashboard(db.Model):
          * account_id
         """
         return Dashboard.query.filter_by(**kwargs).all()
+
+    @staticmethod
+    def get_many_filtered(account_id, active):
+        """
+        Get many dashboard with given filters
+
+        Available filters:
+         * active
+        """
+        query = Dashboard.query.filter(Dashboard.account_id == account_id)
+        if active is not None:
+            query = query.filter(Dashboard.active == active)
+        return query.all()
+
+    @staticmethod
+    def deactivate_all_for_user(account_id):
+        """
+        Deactivates all dashboards for this user
+        """
+        db.session.query(Dashboard).filter(account_id == account_id) \
+                                   .update({'active': False})
+        db.session.commit()
 
     @staticmethod
     def get(**kwargs):

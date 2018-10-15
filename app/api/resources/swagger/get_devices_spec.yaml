@@ -3,14 +3,14 @@ Gets all associated devices
 tags:
   - Device
 parameters:
-  - in: path
+  - in: query
     name: page
     required: false
     schema:
       type: integer
       minimum: 1
     description: requested page
-  - in: path
+  - in: query
     name: per_page
     required: false
     schema:

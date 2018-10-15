@@ -2,6 +2,13 @@ Gets all associated dashboards
 ---
 tags:
   - Dashboard
+parameters:
+  - in: query
+    name: active
+    required: false
+    schema:
+      type: boolean
+    description: Filter for whether to display only active dashboard
 responses:
   200:
     description: Success
