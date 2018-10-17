@@ -44,13 +44,15 @@ CELERY_RESULT_BACKEND = os.environ['REDIS_URL']
 # Mailer config
 MAIL_SERVER = os.environ['MAILGUN_SMTP_SERVER']
 MAIL_PORT = os.environ['MAILGUN_SMTP_PORT']
-MAIL_USE_TLS = False
+MAIL_USE_TLS = True
 MAIL_USE_SSL = True
 MAIL_DEBUG = False
 
 # gmail authentication
 MAIL_USERNAME = os.environ['MAILGUN_SMTP_LOGIN']
 MAIL_PASSWORD = os.environ['MAILGUN_SMTP_PASSWORD']
+SMTP_LOGIN = os.environ['MAILGUN_SMTP_LOGIN']
+SMTP_PASSWORD = os.environ['MAILGUN_SMTP_PASSWORD']
 
 # mail accounts
 MAIL_DEFAULT_SENDER = 'final.iot.backend.mailer@gmail.com'
