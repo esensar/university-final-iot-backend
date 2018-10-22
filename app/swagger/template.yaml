@@ -84,6 +84,16 @@ definitions:
     description: Dashboard data
     example: {}
 
+  filters:
+    type: object
+    description: Dashboard data
+    example: {}
+
+  charttype:
+    type: string
+    description: Type of chart
+    example: line
+
   Credentials:
     type: object
     required:
@@ -222,6 +232,10 @@ definitions:
         $ref: '#/definitions/id'
       dashboard_data:
         $ref: '#/definitions/dashboarddata'
+      active:
+        type: boolean
+      name:
+        type: '#definitions/devicename'
 
   DashboardCreation:
     type: object
@@ -234,6 +248,66 @@ definitions:
         $ref: '#/definitions/dashboarddata'
       active:
         type: boolean
+      name:
+        ref: '#definitions/genericname'
+
+  Widget:
+    type: object
+    required:
+      - id
+      - dashboard_id
+      - device_id
+      - width
+      - height
+      - x
+      - y
+      - chart_type
+      - filters
+    properties:
+      id:
+        $ref: '#/definitions/id'
+      dashboard_id:
+        $ref: '#/definitions/id'
+      device_id:
+        $ref: '#/definitions/id'
+      width:
+        $ref: '#/definitions/id'
+      height:
+        $ref: '#/definitions/id'
+      x:
+        $ref: '#/definitions/id'
+      y:
+        $ref: '#/definitions/id'
+      chart_type:
+        $ref: '#/definitions/charttype'
+      filters:
+        $ref: '#/definitions/filters'
+
+  WidgetCreation:
+    type: object
+    required:
+      - device_id
+      - width
+      - height
+      - x
+      - y
+      - chart_type
+      - filters
+    properties:
+      device_id:
+        $ref: '#/definitions/id'
+      width:
+        $ref: '#/definitions/id'
+      height:
+        $ref: '#/definitions/id'
+      x:
+        $ref: '#/definitions/id'
+      y:
+        $ref: '#/definitions/id'
+      chart_type:
+        $ref: '#/definitions/charttype'
+      filters:
+        $ref: '#/definitions/filters'
 
   UnauthorizedError:
     type: object
