@@ -23,7 +23,9 @@ def add_resources():
                                    DeviceTypeListResource,
                                    DeviceConfigurationResource)
     from .resources.dashboard import (DashboardResource,
-                                      DashboardListResource)
+                                      DashboardListResource,
+                                      DashboardWidgetResource,
+                                      DashboardWidgetListResource)
 
     api.add_resource(AccountResource, '/v1/accounts/<int:account_id>')
     api.add_resource(AccountListResource, '/v1/accounts')
@@ -48,6 +50,11 @@ def add_resources():
     api.add_resource(DashboardResource,
                      '/v1/dashboards/<int:dashboard_id>')
     api.add_resource(DashboardListResource, '/v1/dashboards')
+    api.add_resource(
+            DashboardWidgetResource,
+            '/v1/dashboards/<int:dashboard_id>/widgets/<int:widget_id>')
+    api.add_resource(DashboardWidgetListResource,
+                     '/v1/dashboards/<int:dashboard_id>/widgets')
 
 
 add_resources()
