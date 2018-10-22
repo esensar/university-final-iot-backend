@@ -2,7 +2,7 @@ import os
 
 # App configuration
 DEBUG = os.environ['DEBUG']
-APP_VERSION = '0.2.2'
+APP_VERSION = '0.2.4'
 
 # Define the application directory
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
