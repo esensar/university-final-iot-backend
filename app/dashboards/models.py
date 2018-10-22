@@ -10,6 +10,7 @@ class Dashboard(db.Model):
     account_id = db.Column(db.Integer, db.ForeignKey('accounts.id'),
                            primary_key=True)
     active = db.Column(db.Boolean, nullable=False, default=False)
+    name = db.Column(db.String, nullable=False, default="")
     created_at = db.Column(db.DateTime,
                            nullable=False,
                            default=db.func.current_timestamp())
@@ -18,9 +19,10 @@ class Dashboard(db.Model):
                             default=db.func.current_timestamp(),
                             onupdate=db.func.current_timestamp())
 
-    def __init__(self, account_id, dashboard_data):
+    def __init__(self, account_id, dashboard_data, name):
         self.account_id = account_id
         self.dashboard_data = dashboard_data
+        self.name = name
 
     def save(self):
         """
