@@ -2,7 +2,7 @@ import os
 
 # App configuration
 DEBUG = os.environ['DEBUG']
-APP_VERSION = '0.2.3'
+APP_VERSION = '0.2.2'
 
 # Define the application directory
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -47,7 +47,7 @@ SMTP_PASSWORD = os.environ['MAILGUN_SMTP_PASSWORD']
 MAIL_SERVER = os.environ['MAILGUN_SMTP_SERVER']
 MAIL_PORT = os.environ['MAILGUN_SMTP_PORT']
 MAIL_USE_TLS = True
-MAIL_USE_SSL = False
+MAIL_USE_SSL = True
 MAIL_DEBUG = False
 
 # gmail authentication
