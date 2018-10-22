@@ -2,18 +2,20 @@ from .models import Dashboard
 
 
 # Public interface
-def create_dashboard(dashboard_data, account_id):
+def create_dashboard(dashboard_data, name, account_id):
     """
     Tries to create dashboard with given parameters
 
     :param dashboard_data: JSON dashboard data
     :param account_id: Id of owner of this dashboard
+    :param name: Name of the dashboard
     :type name: JSON
     :type account_id: int
+    :type name: string
     :returns: True if dashboard is successfully created
     :rtype: Boolean
     """
-    dashboard = Dashboard(account_id, dashboard_data)
+    dashboard = Dashboard(account_id, dashboard_data, name)
     dashboard.save()
 
 
@@ -30,7 +32,7 @@ def get_dashboard(dashboard_id):
 
 
 def patch_dashboard(account_id, dashboard_id,
-                    dashboard_data=None, active=None):
+                    dashboard_data=None, active=None, name=None):
     """
     Tries to update dashboard with given parameters
 
@@ -39,10 +41,12 @@ def patch_dashboard(account_id, dashboard_id,
     :type name: JSON
     :type dashboard_id: int
     """
+    dashboard = Dashboard.get(id=dashboard_id)
     if dashboard_data is not None:
-        dashboard = Dashboard.get(id=dashboard_id)
         dashboard.dashboard_data = dashboard_data
-        dashboard.save()
+    if name is not None:
+        dashboard.name = name
+    dashboard.save()
     if active:
         set_active_dashboard(account_id, dashboard_id)
 

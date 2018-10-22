@@ -1,6 +1,6 @@
 from flask import g, request
 from flask_restful import abort
-from marshmallow import fields, Schema
+from marshmallow import fields
 from webargs.flaskparser import use_args
 from flasgger import swag_from
 import app.dashboards.api as dashboard
@@ -12,10 +12,7 @@ class DashboardSchema(BaseResourceSchema):
     id = fields.Integer(dump_only=True)
     active = fields.Boolean(required=False)
     dashboard_data = fields.Raw()
-
-
-class DashboardIdSchema(Schema):
-    id = fields.Integer()
+    name = fields.String()
 
 
 class DashboardResource(ProtectedResource):
@@ -34,19 +31,16 @@ class DashboardResource(ProtectedResource):
         if requested_dashboard.account_id != g.current_account.id:
             abort(403, message='You are not allowed to access this dashboard',
                   status='error')
-        if args.get('dashboard_data') is None:
-            abort(400, message='Missing dashboard_data', status='error')
-        if args.get('active') is None:
-            abort(400, message='Missing active', status='error')
         success = dashboard.patch_dashboard(
                 g.current_account.id,
                 dashboard_id,
                 args['dashboard_data'],
-                args['active'])
+                args['active'],
+                args['name'])
         if success:
             return '', 204
 
-    @use_args(DashboardSchema(), locations=('json',))
+    @use_args(DashboardSchema(partial=True), locations=('json',))
     @swag_from('swagger/update_dashboard_spec.yaml')
     def patch(self, args, dashboard_id):
         requested_dashboard = dashboard.get_dashboard(dashboard_id)
@@ -57,7 +51,8 @@ class DashboardResource(ProtectedResource):
                 g.current_account.id,
                 dashboard_id,
                 args.get('dashboard_data'),
-                args.get('active'))
+                args.get('active'),
+                args.get('name'))
         if success:
             return '', 204
 
@@ -77,6 +72,7 @@ class DashboardListResource(ProtectedResource):
     def post(self, args):
         success = dashboard.create_dashboard(
                 args['dashboard_data'],
+                args['name'],
                 g.current_account.id)
         if success:
             return '', 201
