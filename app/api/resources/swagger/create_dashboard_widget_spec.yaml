@@ -1,0 +1,20 @@
+Creates new dashboard widget
+Requires Widget object and creates dashboard
+---
+tags:
+  - Dashboard
+parameters:
+  - in: path
+    name: dashboard_id
+    required: true
+    type: integer
+    description: Id of the owning dashboard
+  - in: body
+    name: body
+    required: true
+    schema:
+        type: object
+        $ref: '#/definitions/WidgetCreation'
+responses:
+  201:
+    description: Successful creation

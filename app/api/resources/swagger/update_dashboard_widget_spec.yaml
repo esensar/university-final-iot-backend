@@ -1,4 +1,4 @@
-Deletes a widget
+Updates a widget
 ---
 tags:
   - Dashboard
@@ -13,6 +13,12 @@ parameters:
     required: true
     type: integer
     description: Id of the widget
+  - in: body
+    name: body
+    required: true
+    schema:
+      type: object
+      $ref: '#/definitions/WidgetCreation'
 responses:
   204:
     description: Success

@@ -113,3 +113,121 @@ class Dashboard(db.Model):
     def __repr__(self):
         return '<Dashboard (dashboard_data=%s, account_id=%s)>' % (
                 self.dashboard_data, self.account_id)
+
+
+class DashboardWidget(db.Model):
+    __tablename__ = 'dashboard_widgets'
+
+    id = db.Column(db.Integer, primary_key=True)
+    dashboard_id = db.Column(db.Integer, db.ForeignKey('dashboards.id'))
+    device_id = db.Column(db.Integer, db.ForeignKey('devices.id'))
+    height = db.Column(db.Integer, nullable=False)
+    width = db.Column(db.Integer, nullable=False)
+    x = db.Column(db.Integer, nullable=False)
+    y = db.Column(db.Integer, nullable=False)
+    chart_type = db.Column(db.String, nullable=False)
+    filters = db.Column(JSON, nullable=False)
+    created_at = db.Column(db.DateTime,
+                           nullable=False,
+                           default=db.func.current_timestamp())
+    modified_at = db.Column(db.DateTime,
+                            nullable=False,
+                            default=db.func.current_timestamp(),
+                            onupdate=db.func.current_timestamp())
+
+    def __init__(self, dashboard_id, device_id, height, width, x, y,
+                 chart_type, filters):
+        self.dashboard_id = dashboard_id
+        self.device_id = device_id
+        self.height = height
+        self.width = width
+        self.x = x
+        self.y = y
+        self.chart_type = chart_type
+        self.filters = filters
+
+    def save(self):
+        """
+        Stores this widget to database
+        This may raise errors
+        """
+        db.session.add(self)
+        db.session.commit()
+
+    def delete(self):
+        """
+        Deletes this widget from database
+        """
+        db.session.delete(self)
+        db.session.commit()
+
+    @staticmethod
+    def exists_with_any_of(**kwargs):
+        """
+        Checks if widget with any of the given arguments exists
+        """
+        for key, value in kwargs.items():
+            args = {key: value}
+            if DashboardWidget.query.filter_by(**args).first():
+                return True
+        return False
+
+    @staticmethod
+    def exists(**kwargs):
+        """
+        Checks if widget with all of the given arguments exists
+        """
+        if DashboardWidget.query.filter_by(**kwargs).first():
+            return True
+        return False
+
+    @staticmethod
+    def get_all():
+        """
+        Get all stored widgets
+        """
+        return DashboardWidget.query.paginate(None, None, False).items
+
+    @staticmethod
+    def get_many(**kwargs):
+        """
+        Get widgets with given filters
+
+        Available filters:
+         * id
+         * dashboard_id
+         * device_id
+         * dimensions and positions, but useless
+         * chart_type
+         * filters, but useless
+        """
+        return DashboardWidget.query.filter_by(**kwargs).paginate(
+                None, None, False).items
+
+    @staticmethod
+    def get_many_for_dashboard(dashboard_id):
+        """
+        Get widgets for given dashboard
+        """
+        query = DashboardWidget.query.filter(
+                DashboardWidget.dashboard_id == dashboard_id)
+        return query.paginate(None, None, False).items
+
+    @staticmethod
+    def get(**kwargs):
+        """
+        Get widget with given filters
+
+        Available filters:
+         * id
+         * dashboard_id
+         * device_id
+         * dimensions and positions, but useless
+         * chart_type
+         * filters, but useless
+        """
+        return DashboardWidget.query.filter_by(**kwargs).first_or_404()
+
+    def __repr__(self):
+        return '<DashboardWidget (id=%s, dashboard_id=%s)>' % (
+                self.dashboard_data, self.account_id)

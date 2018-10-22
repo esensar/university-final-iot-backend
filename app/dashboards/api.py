@@ -1,4 +1,4 @@
-from .models import Dashboard
+from .models import Dashboard, DashboardWidget
 
 
 # Public interface
@@ -101,3 +101,80 @@ def get_dashboards(account_id, active):
     :rtype: List of Dashboard
     """
     return Dashboard.get_many_filtered(account_id=account_id, active=active)
+
+
+def create_widget(dashboard_id, device_id, height, width, x, y,
+                  chart_type, filters):
+    """
+    Tries to create a dashboard widget
+    """
+    widget = DashboardWidget(dashboard_id, device_id, height, width, x, y,
+                             chart_type, filters)
+    widget.save()
+
+
+def delete_widget(widget_id):
+    """
+    Tries to delete widget with given id
+
+    :param widget_id: Id of requested widget
+    :type name: int
+    """
+    widget = DashboardWidget.get(id=widget_id)
+    widget.delete()
+
+
+def get_widgets(dashboard_id):
+    """
+    Tries to fetch widgets of a dashboard with dashboard_id
+
+    :param dashboard_id: Id of owner dashboard
+    :type name: int
+    :returns: Widget list
+    :rtype: List of Widgets
+    """
+    return DashboardWidget.get_many_for_dashboard(dashboard_id)
+
+
+def get_widget(widget_id):
+    """
+    Tries to fetch widget with given id
+
+    :param widget_id: Id of requested dashboard
+    :type name: int
+    :returns: Widget object
+    :rtype: Widget
+    """
+    return DashboardWidget.get(id=widget_id)
+
+
+def patch_widget(widget_id, device_id=None, height=None, width=None,
+                 x=None, y=None, chart_type=None, filters=None):
+    """
+    Tries to update widget with given parameters
+    """
+    widget = DashboardWidget.get(id=widget_id)
+
+    if device_id is not None:
+        widget.device_id = device_id
+
+    if height is not None:
+        widget.height = height
+
+    if width is not None:
+        widget.width = width
+
+    if x is not None:
+        widget.x = x
+
+    if y is not None:
+        widget.y = y
+
+    if chart_type is not None:
+        widget.chart_type = chart_type
+
+    if filters is not None:
+        widget.filters = filters
+
+    widget.save()
+    print("Saved widget")

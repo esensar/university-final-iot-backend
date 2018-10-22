@@ -1,0 +1,22 @@
+Gets all widgets of a dashboard
+---
+tags:
+  - Dashboard
+parameters:
+  - in: path
+    name: dashboard_id
+    required: true
+    type: integer
+    description: Id of the dashboard
+responses:
+  200:
+    description: Success
+    schema:
+      type: object
+      required:
+        - content
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/definitions/Widget'

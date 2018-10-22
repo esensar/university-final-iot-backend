@@ -1,4 +1,4 @@
-Deletes a widget
+Gets a widget
 ---
 tags:
   - Dashboard
@@ -14,5 +14,13 @@ parameters:
     type: integer
     description: Id of the widget
 responses:
-  204:
+  200:
     description: Success
+    schema:
+      type: object
+      required:
+        - content
+      properties:
+        content:
+          $ref: '#/definitions/Widget'
+
