@@ -1,6 +1,6 @@
 from flask import g, request
 from flask_restful import abort
-from marshmallow import fields
+from marshmallow import fields, Schema
 from webargs.flaskparser import use_args
 from flasgger import swag_from
 import app.dashboards.api as dashboard
@@ -9,14 +9,7 @@ from app.api.auth_protection import ProtectedResource
 from app.api.schemas import BaseResourceSchema
 
 
-class DashboardSchema(BaseResourceSchema):
-    id = fields.Integer(dump_only=True)
-    active = fields.Boolean(required=False)
-    dashboard_data = fields.Raw()
-    name = fields.String()
-
-
-class DashboardWidgetSchema(BaseResourceSchema):
+class BasicDashboardWidgetSchema(Schema):
     id = fields.Integer(dump_only=True)
     device_id = fields.Integer()
     height = fields.Integer()
@@ -27,22 +20,43 @@ class DashboardWidgetSchema(BaseResourceSchema):
     filters = fields.Raw()
 
 
+class DashboardWidgetSchema(BaseResourceSchema, BasicDashboardWidgetSchema):
+    pass
+
+
+class DashboardSchema(BaseResourceSchema):
+    id = fields.Integer(dump_only=True)
+    active = fields.Boolean(required=False)
+    dashboard_data = fields.Raw()
+    name = fields.String()
+    widgets = fields.Nested(BasicDashboardWidgetSchema, dump_only=True,
+                            many=True)
+
+
+def validate_dashboard_ownership(dashboard_id):
+    requested_dashboard = dashboard.get_dashboard(dashboard_id)
+    if requested_dashboard.account_id != g.current_account.id:
+        abort(403, message='You are not allowed to access this dashboard',
+              status='error')
+    return requested_dashboard
+
+
+def validate_device_ownership(device_id):
+    if not device.can_user_access_device(g.current_account.id, device_id):
+        abort(403, message='You are not allowed to access this device',
+              status='error')
+
+
 class DashboardResource(ProtectedResource):
     @swag_from('swagger/get_dashboard_spec.yaml')
     def get(self, dashboard_id):
-        requested_dashboard = dashboard.get_dashboard(dashboard_id)
-        if requested_dashboard.account_id != g.current_account.id:
-            abort(403, message='You are not allowed to access this dashboard',
-                  status='error')
+        requested_dashboard = validate_dashboard_ownership(dashboard_id)
         return DashboardSchema().dump(requested_dashboard), 200
 
     @use_args(DashboardSchema(), locations=('json',))
     @swag_from('swagger/update_dashboard_spec.yaml')
     def put(self, args, dashboard_id):
-        requested_dashboard = dashboard.get_dashboard(dashboard_id)
-        if requested_dashboard.account_id != g.current_account.id:
-            abort(403, message='You are not allowed to access this dashboard',
-                  status='error')
+        validate_dashboard_ownership(dashboard_id)
         success = dashboard.patch_dashboard(
                 g.current_account.id,
                 dashboard_id,
@@ -55,10 +69,7 @@ class DashboardResource(ProtectedResource):
     @use_args(DashboardSchema(partial=True), locations=('json',))
     @swag_from('swagger/update_dashboard_spec.yaml')
     def patch(self, args, dashboard_id):
-        requested_dashboard = dashboard.get_dashboard(dashboard_id)
-        if requested_dashboard.account_id != g.current_account.id:
-            abort(403, message='You are not allowed to access this dashboard',
-                  status='error')
+        validate_dashboard_ownership(dashboard_id)
         success = dashboard.patch_dashboard(
                 g.current_account.id,
                 dashboard_id,
@@ -70,10 +81,7 @@ class DashboardResource(ProtectedResource):
 
     @swag_from('swagger/delete_dashboard_spec.yaml')
     def delete(self, dashboard_id):
-        requested_dashboard = dashboard.get_dashboard(dashboard_id)
-        if requested_dashboard.account_id != g.current_account.id:
-            abort(403, message='You are not allowed to access this dashboard',
-                  status='error')
+        validate_dashboard_ownership(dashboard_id)
         dashboard.delete_dashboard(dashboard_id)
         return '', 204
 
@@ -102,14 +110,8 @@ class DashboardWidgetListResource(ProtectedResource):
     @use_args(DashboardWidgetSchema(), locations=('json',))
     @swag_from('swagger/create_dashboard_widget_spec.yaml')
     def post(self, args, dashboard_id):
-        requested_dashboard = dashboard.get_dashboard(dashboard_id)
-        if requested_dashboard.account_id != g.current_account.id:
-            abort(403, message='You are not allowed to access this dashboard',
-                  status='error')
-        if not device.can_user_access_device(g.current_account.id,
-                                             args['device_id']):
-            abort(403, message='You are not allowed to access this device',
-                  status='error')
+        validate_dashboard_ownership(dashboard_id)
+        validate_dashboard_ownership(args['device_id'])
         success = dashboard.create_widget(
                 dashboard_id,
                 args['device_id'],
@@ -124,10 +126,7 @@ class DashboardWidgetListResource(ProtectedResource):
 
     @swag_from('swagger/get_dashboard_widgets_spec.yaml')
     def get(self, dashboard_id):
-        requested_dashboard = dashboard.get_dashboard(dashboard_id)
-        if requested_dashboard.account_id != g.current_account.id:
-            abort(403, message='You are not allowed to access this dashboard',
-                  status='error')
+        validate_dashboard_ownership(dashboard_id)
         return DashboardWidgetSchema().dump(
                 dashboard.get_widgets(dashboard_id), many=True), 200
 
@@ -135,28 +134,15 @@ class DashboardWidgetListResource(ProtectedResource):
 class DashboardWidgetResource(ProtectedResource):
     @swag_from('swagger/get_dashboard_widget_spec.yaml')
     def get(self, dashboard_id, widget_id):
-        requested_dashboard = dashboard.get_dashboard(dashboard_id)
-        if requested_dashboard.account_id != g.current_account.id:
-            abort(403, message='You are not allowed to access this widget',
-                  status='error')
+        validate_dashboard_ownership(dashboard_id)
         requested_widget = dashboard.get_widget(widget_id)
         return DashboardWidgetSchema().dump(requested_widget), 200
 
     @use_args(DashboardWidgetSchema(), locations=('json',))
     @swag_from('swagger/update_dashboard_widget_spec.yaml')
     def put(self, args, dashboard_id, widget_id):
-        print("Received stuff!")
-        print("Args: " + str(args))
-        print("Dashboard_id: " + str(dashboard_id))
-        print("Widget_id: " + str(widget_id))
-        requested_dashboard = dashboard.get_dashboard(dashboard_id)
-        if requested_dashboard.account_id != g.current_account.id:
-            abort(403, message='You are not allowed to access this dashboard',
-                  status='error')
-        if not device.can_user_access_device(g.current_account.id,
-                                             args['device_id']):
-            abort(403, message='You are not allowed to access this device',
-                  status='error')
+        validate_dashboard_ownership(dashboard_id)
+        validate_dashboard_ownership(args['device_id'])
         success = dashboard.patch_widget(
                 widget_id,
                 args['device_id'],
@@ -172,15 +158,9 @@ class DashboardWidgetResource(ProtectedResource):
     @use_args(DashboardWidgetSchema(partial=True), locations=('json',))
     @swag_from('swagger/update_dashboard_widget_spec.yaml')
     def patch(self, args, dashboard_id, widget_id):
-        requested_dashboard = dashboard.get_dashboard(dashboard_id)
-        if requested_dashboard.account_id != g.current_account.id:
-            abort(403, message='You are not allowed to access this dashboard',
-                  status='error')
+        validate_dashboard_ownership(dashboard_id)
         if args.get('device_id') is not None:
-            if not device.can_user_access_device(g.current_account.id,
-                                                 args['device_id']):
-                abort(403, message='You are not allowed to access this device',
-                      status='error')
+            validate_dashboard_ownership(args['device_id'])
         success = dashboard.patch_widget(
                 widget_id,
                 args.get('device_id'),
@@ -195,9 +175,6 @@ class DashboardWidgetResource(ProtectedResource):
 
     @swag_from('swagger/delete_dashboard_widget_spec.yaml')
     def delete(self, dashboard_id, widget_id):
-        requested_dashboard = dashboard.get_dashboard(dashboard_id)
-        if requested_dashboard.account_id != g.current_account.id:
-            abort(403, message='You are not allowed to access this dashboard',
-                  status='error')
+        validate_dashboard_ownership(dashboard_id)
         dashboard.delete_widget(widget_id)
         return '', 204

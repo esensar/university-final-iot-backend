@@ -19,6 +19,9 @@ class Dashboard(db.Model):
                             default=db.func.current_timestamp(),
                             onupdate=db.func.current_timestamp())
 
+    widgets = db.relationship("DashboardWidget",
+                              cascade="save-update, merge, delete")
+
     def __init__(self, account_id, dashboard_data, name):
         self.account_id = account_id
         self.dashboard_data = dashboard_data
@@ -134,6 +137,8 @@ class DashboardWidget(db.Model):
                             nullable=False,
                             default=db.func.current_timestamp(),
                             onupdate=db.func.current_timestamp())
+
+    dashboard = db.relationship("Dashboard", foreign_keys=[dashboard_id])
 
     def __init__(self, dashboard_id, device_id, height, width, x, y,
                  chart_type, filters):
