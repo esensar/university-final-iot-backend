@@ -111,7 +111,7 @@ class DashboardWidgetListResource(ProtectedResource):
     @swag_from('swagger/create_dashboard_widget_spec.yaml')
     def post(self, args, dashboard_id):
         validate_dashboard_ownership(dashboard_id)
-        validate_dashboard_ownership(args['device_id'])
+        validate_device_ownership(args['device_id'])
         success = dashboard.create_widget(
                 dashboard_id,
                 args['device_id'],
@@ -142,7 +142,7 @@ class DashboardWidgetResource(ProtectedResource):
     @swag_from('swagger/update_dashboard_widget_spec.yaml')
     def put(self, args, dashboard_id, widget_id):
         validate_dashboard_ownership(dashboard_id)
-        validate_dashboard_ownership(args['device_id'])
+        validate_device_ownership(args['device_id'])
         success = dashboard.patch_widget(
                 widget_id,
                 args['device_id'],
@@ -160,7 +160,7 @@ class DashboardWidgetResource(ProtectedResource):
     def patch(self, args, dashboard_id, widget_id):
         validate_dashboard_ownership(dashboard_id)
         if args.get('device_id') is not None:
-            validate_dashboard_ownership(args['device_id'])
+            validate_device_ownership(args['device_id'])
         success = dashboard.patch_widget(
                 widget_id,
                 args.get('device_id'),
