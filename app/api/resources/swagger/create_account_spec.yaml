@@ -14,7 +14,14 @@ parameters:
 security: []
 responses:
   201:
-    description: Successful creation
+    description: Success
+    schema:
+      type: object
+      required:
+        - content
+      properties:
+        content:
+          $ref: '#/definitions/User'
   422:
     description: Account already exists
     schema:

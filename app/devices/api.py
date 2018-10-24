@@ -20,6 +20,7 @@ def create_device(name, account_id, device_type=1):
     device.save()
     device_association = DeviceAssociation(device.id, account_id)
     device_association.save()
+    return device
 
 
 def create_device_type(name):
@@ -33,6 +34,7 @@ def create_device_type(name):
     """
     device_type = DeviceType(name)
     device_type.save()
+    return device_type
 
 
 def set_device_configuration(device_id, configuration_json):
@@ -50,6 +52,7 @@ def set_device_configuration(device_id, configuration_json):
     device.configuration = configuration_json
     device.save()
     send_config.delay(device_id, str(configuration_json))
+    return device
 
 
 def get_device_configuration(device_id):
@@ -173,6 +176,47 @@ def get_device_types():
     return DeviceType.get_many()
 
 
+def parse_raw_json_recording(device_id, json_msg):
+    """
+    Parses raw json recording and creates Recrding object
+
+    :param device_id: Id of device
+    :type device_id: int
+    :param raw_json: Raw json received
+    :type raw_json: json
+    :raises: ValueError if parsing fails
+    """
+    try:
+        return Recording(device_id=device_id,
+                         record_type=json_msg["record_type"],
+                         record_value=json_msg["record_value"],
+                         recorded_at=json_msg["recorded_at"],
+                         raw_json=json_msg)
+    except KeyError:
+        error_type, error_instance, traceback = sys.exc_info()
+        raise ValueError("JSON parsing failed! Key error: "
+                         + str(error_instance))
+
+
+def create_recording_and_return(device_id, raw_json):
+    """
+    Tries to create recording with given parameters and returns it.
+    Raises error on failure
+
+    :param device_id: Id of device
+    :type device_id: int
+    :param raw_json: Raw json received
+    :type raw_json: json
+    :raises: ValueError if parsing fails or device does not exist
+    """
+    if not Device.exists(id=device_id):
+        raise ValueError("Device does not exist!")
+
+    recording = parse_raw_json_recording(device_id, raw_json)
+    recording.save()
+    return recording
+
+
 def create_recording(device_id, raw_json):
     """
     Tries to create recording with given parameters. Raises error on failure
@@ -183,18 +227,6 @@ def create_recording(device_id, raw_json):
     :type raw_json: json
     :raises: ValueError if parsing fails or device does not exist
     """
-    def parse_raw_json_recording(device_id, json_msg):
-        try:
-            return Recording(device_id=device_id,
-                             record_type=json_msg["record_type"],
-                             record_value=json_msg["record_value"],
-                             recorded_at=json_msg["recorded_at"],
-                             raw_json=json_msg)
-        except KeyError:
-            error_type, error_instance, traceback = sys.exc_info()
-            raise ValueError("JSON parsing failed! Key error: "
-                             + str(error_instance))
-
     if not Device.exists(id=device_id):
         raise ValueError("Device does not exist!")
 

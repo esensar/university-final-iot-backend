@@ -60,10 +60,9 @@ class RolesResource(ProtectedResource):
     @use_args(RoleCreationSchema(), locations=('json',))
     @swag_from('swagger/create_role_spec.yaml')
     def post(self, args):
-        success = accounts.create_role(args['display_name'],
-                                       args['permissions'])
-        if success:
-            return '', 201
+        created_role = accounts.create_role(args['display_name'],
+                                            args['permissions'])
+        return RoleSchema().dump(created_role), 201
 
     @swag_from('swagger/get_roles_spec.yaml')
     def get(self):
@@ -77,9 +76,9 @@ class AccountRoleResource(ProtectedResource):
         if g.current_account.id == account_id:
             abort(403, message='You may not change your own roles',
                   status='error')
-        success = accounts.update_account_role(account_id, args['role_id'])
-        if success:
-            return '', 204
+        updated_account = accounts.update_account_role(
+                account_id, args['role_id'])
+        return UserSchema().dump(updated_account), 200
 
 
 class AccountListResource(Resource):
@@ -87,7 +86,7 @@ class AccountListResource(Resource):
     @swag_from('swagger/create_account_spec.yaml')
     def post(self, args):
         try:
-            emailtoken = accounts.create_account(
+            created_account, emailtoken = accounts.create_account(
                     args['username'],
                     args['email'],
                     args['password'])
@@ -101,7 +100,7 @@ class AccountListResource(Resource):
                     args['email'],
                     'Please confirm your email',
                     html)
-            return '', 201
+            return UserSchema().dump(created_account), 201
         except ValueError:
             abort(422, message='Account already exists', status='error')
 
