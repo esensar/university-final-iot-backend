@@ -11,5 +11,12 @@ parameters:
         type: object
         $ref: '#/definitions/DashboardCreation'
 responses:
-  201:
-    description: Successful creation
+  200:
+    description: Success
+    schema:
+      type: object
+      required:
+        - content
+      properties:
+        content:
+          $ref: '#/definitions/Dashboard'

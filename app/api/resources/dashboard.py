@@ -57,27 +57,25 @@ class DashboardResource(ProtectedResource):
     @swag_from('swagger/update_dashboard_spec.yaml')
     def put(self, args, dashboard_id):
         validate_dashboard_ownership(dashboard_id)
-        success = dashboard.patch_dashboard(
+        updated_dashboard = dashboard.patch_dashboard(
                 g.current_account.id,
                 dashboard_id,
                 args['dashboard_data'],
                 args['active'],
                 args['name'])
-        if success:
-            return '', 204
+        return DashboardSchema().dump(updated_dashboard), 200
 
     @use_args(DashboardSchema(partial=True), locations=('json',))
     @swag_from('swagger/update_dashboard_spec.yaml')
     def patch(self, args, dashboard_id):
         validate_dashboard_ownership(dashboard_id)
-        success = dashboard.patch_dashboard(
+        updated_dashboard = dashboard.patch_dashboard(
                 g.current_account.id,
                 dashboard_id,
                 args.get('dashboard_data'),
                 args.get('active'),
                 args.get('name'))
-        if success:
-            return '', 204
+        return DashboardSchema().dump(updated_dashboard), 200
 
     @swag_from('swagger/delete_dashboard_spec.yaml')
     def delete(self, dashboard_id):
@@ -90,12 +88,11 @@ class DashboardListResource(ProtectedResource):
     @use_args(DashboardSchema(), locations=('json',))
     @swag_from('swagger/create_dashboard_spec.yaml')
     def post(self, args):
-        success = dashboard.create_dashboard(
+        created_dashboard = dashboard.create_dashboard(
                 args['dashboard_data'],
                 args['name'],
                 g.current_account.id)
-        if success:
-            return '', 201
+        return DashboardSchema().dump(created_dashboard), 201
 
     @swag_from('swagger/get_dashboards_spec.yaml')
     def get(self):
@@ -112,7 +109,7 @@ class DashboardWidgetListResource(ProtectedResource):
     def post(self, args, dashboard_id):
         validate_dashboard_ownership(dashboard_id)
         validate_device_ownership(args['device_id'])
-        success = dashboard.create_widget(
+        created_widget = dashboard.create_widget(
                 dashboard_id,
                 args['device_id'],
                 args['height'],
@@ -121,8 +118,7 @@ class DashboardWidgetListResource(ProtectedResource):
                 args['y'],
                 args['chart_type'],
                 args['filters'])
-        if success:
-            return '', 201
+        return DashboardWidgetSchema().dump(created_widget), 201
 
     @swag_from('swagger/get_dashboard_widgets_spec.yaml')
     def get(self, dashboard_id):
@@ -143,7 +139,7 @@ class DashboardWidgetResource(ProtectedResource):
     def put(self, args, dashboard_id, widget_id):
         validate_dashboard_ownership(dashboard_id)
         validate_device_ownership(args['device_id'])
-        success = dashboard.patch_widget(
+        updated_widget = dashboard.patch_widget(
                 widget_id,
                 args['device_id'],
                 args['height'],
@@ -152,8 +148,7 @@ class DashboardWidgetResource(ProtectedResource):
                 args['y'],
                 args['chart_type'],
                 args['filters'])
-        if success:
-            return '', 204
+        return DashboardWidgetSchema().dump(updated_widget), 200
 
     @use_args(DashboardWidgetSchema(partial=True), locations=('json',))
     @swag_from('swagger/update_dashboard_widget_spec.yaml')
@@ -161,7 +156,7 @@ class DashboardWidgetResource(ProtectedResource):
         validate_dashboard_ownership(dashboard_id)
         if args.get('device_id') is not None:
             validate_device_ownership(args['device_id'])
-        success = dashboard.patch_widget(
+        updated_widget = dashboard.patch_widget(
                 widget_id,
                 args.get('device_id'),
                 args.get('height'),
@@ -170,8 +165,7 @@ class DashboardWidgetResource(ProtectedResource):
                 args.get('y'),
                 args.get('chart_type'),
                 args.get('filters'))
-        if success:
-            return '', 204
+        return DashboardWidgetSchema().dump(updated_widget), 200
 
     @swag_from('swagger/delete_dashboard_widget_spec.yaml')
     def delete(self, dashboard_id, widget_id):

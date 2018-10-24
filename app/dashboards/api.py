@@ -17,6 +17,7 @@ def create_dashboard(dashboard_data, name, account_id):
     """
     dashboard = Dashboard(account_id, dashboard_data, name)
     dashboard.save()
+    return dashboard
 
 
 def get_dashboard(dashboard_id):
@@ -49,6 +50,8 @@ def patch_dashboard(account_id, dashboard_id,
     dashboard.save()
     if active:
         set_active_dashboard(account_id, dashboard_id)
+        dashboard.active = True
+    return dashboard
 
 
 def delete_dashboard(dashboard_id):
@@ -111,6 +114,7 @@ def create_widget(dashboard_id, device_id, height, width, x, y,
     widget = DashboardWidget(dashboard_id, device_id, height, width, x, y,
                              chart_type, filters)
     widget.save()
+    return widget
 
 
 def delete_widget(widget_id):
@@ -177,4 +181,4 @@ def patch_widget(widget_id, device_id=None, height=None, width=None,
         widget.filters = filters
 
     widget.save()
-    print("Saved widget")
+    return widget
