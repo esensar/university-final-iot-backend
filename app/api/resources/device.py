@@ -44,7 +44,7 @@ class DeviceResource(ProtectedResource):
     @swag_from('swagger/get_device_spec.yaml')
     def get(self, device_id):
         validate_device_ownership(device_id)
-        return DeviceSchema().dump(
+        return DeviceWithConfigurationSchema().dump(
                 devices.get_device(device_id)), 200
 
     @swag_from('swagger/delete_device_spec.yaml')
@@ -68,10 +68,9 @@ class DeviceTypeListResource(ProtectedResource):
         if g.current_account.role_id != 1:
             abort(403, message='Only admin may create device types',
                   status='error')
-        success = devices.create_device_type(
+        created_device_type = devices.create_device_type(
                 args['name'])
-        if success:
-            return '', 201
+        return DeviceTypeSchema().dump(created_device_type), 201
 
     @swag_from('swagger/get_device_types_spec.yaml')
     def get(self):
@@ -94,21 +93,20 @@ class DeviceRecordingResource(ProtectedResource):
     @swag_from('swagger/create_device_recording_spec.yaml')
     def post(self, device_id):
         validate_device_ownership(device_id)
-        success = devices.create_recording(device_id, request.json)
-        if success:
-            return '', 201
+        created_recording = devices.create_recording_and_return(
+                device_id, request.json)
+        return RecordingsSchema().dump(created_recording), 201
 
 
 class DeviceListResource(ProtectedResource):
     @use_args(DeviceSchema(), locations=('json',))
     @swag_from('swagger/create_device_spec.yaml')
     def post(self, args):
-        success = devices.create_device(
+        created_device = devices.create_device(
                 args['name'],
                 g.current_account.id,
                 args['device_type_id'])
-        if success:
-            return '', 201
+        return DeviceSchema().dump(created_device), 201
 
     @swag_from('swagger/get_devices_spec.yaml')
     def get(self):
@@ -120,9 +118,10 @@ class DeviceConfigurationResource(ProtectedResource):
     @swag_from('swagger/update_device_configuration_spec.yaml')
     def put(self, device_id):
         validate_device_ownership(device_id)
-        success = devices.set_device_configuration(device_id, request.json)
-        if success:
-            return '', 204
+        updated_device = devices.set_device_configuration(
+                device_id, request.json)
+        return DeviceWithConfigurationSchema().dump(
+                updated_device), 200
 
     @swag_from('swagger/get_device_configuration_spec.yaml')
     def get(self, device_id):

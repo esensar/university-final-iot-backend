@@ -15,5 +15,12 @@ parameters:
     schema:
         type: object
 responses:
-  204:
+  200:
     description: Success
+    schema:
+      type: object
+      required:
+        - content
+      properties:
+        content:
+          $ref: '#/definitions/DeviceWithConfig'

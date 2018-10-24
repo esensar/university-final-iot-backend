@@ -14,7 +14,7 @@ def create_account(username, email, password):
     :type username: string
     :type email: string
     :type password: string
-    :returns: Email confirmation token if creation was successful
+    :returns: Account and Email confirmation token if creation was successful
     :rtype: string
     :raises: ValueError if account already exists
     """
@@ -24,7 +24,7 @@ def create_account(username, email, password):
         account.save()
 
         emailtoken = generate_confirmation_token(account.email)
-        return emailtoken
+        return account, emailtoken
 
     raise ValueError("Account with given parameters already exists")
 
@@ -58,6 +58,7 @@ def update_account_role(account_id, role_id):
     acc = Account.get(id=account_id)
     acc.role_id = role_id
     acc.save()
+    return acc
 
 
 def create_role(display_name, permissions):
@@ -74,6 +75,7 @@ def create_role(display_name, permissions):
     """
     role = Role(display_name, permissions)
     role.save()
+    return role
 
 
 def get_role(role_id):

@@ -8,7 +8,7 @@ from sqlalchemy.dialects.postgresql import JSON
 class Recording(db.Model):
     __tablename__ = 'recordings'
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     recorded_at = db.Column(db.DateTime, index=True,
                             default=db.func.current_timestamp())
     received_at = db.Column(db.DateTime, index=True,
@@ -115,7 +115,7 @@ class Recording(db.Model):
 class Device(db.Model):
     __tablename__ = 'devices'
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     created_at = db.Column(db.DateTime,
                            nullable=False,
                            default=db.func.current_timestamp())
@@ -267,7 +267,7 @@ class DeviceAssociation(db.Model):
 class DeviceType(db.Model):
     __tablename__ = 'device_types'
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String, nullable=False)
 
     def __init__(self, name):
@@ -320,7 +320,7 @@ class DeviceType(db.Model):
 class AccessLevel(db.Model):
     __tablename__ = 'access_levels'
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String, nullable=False)
 
     def __init__(self, name):
