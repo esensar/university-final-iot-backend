@@ -7,7 +7,7 @@ from calendar import timegm
 class Account(db.Model):
     __tablename__ = 'accounts'
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String, index=True, unique=True)
     password = db.Column(db.String)
     email = db.Column(db.String, index=True, unique=True)
@@ -123,7 +123,7 @@ class Account(db.Model):
 class Role(db.Model):
     __tablename__ = 'roles'
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     display_name = db.Column(db.String, unique=True)
     permissions = db.Column(db.ARRAY(db.String))
 
