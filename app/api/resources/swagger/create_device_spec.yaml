@@ -12,4 +12,11 @@ parameters:
         $ref: '#/definitions/DeviceCreation'
 responses:
   201:
-    description: Successful creation
+    description: Success
+    schema:
+      type: object
+      required:
+        - content
+      properties:
+        content:
+          $ref: '#/definitions/DeviceWithConfig'
