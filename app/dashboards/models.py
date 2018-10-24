@@ -5,7 +5,7 @@ from sqlalchemy.dialects.postgresql import JSON
 class Dashboard(db.Model):
     __tablename__ = 'dashboards'
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     dashboard_data = db.Column(JSON, nullable=False)
     account_id = db.Column(db.Integer, db.ForeignKey('accounts.id'),
                            primary_key=True)
@@ -121,7 +121,7 @@ class Dashboard(db.Model):
 class DashboardWidget(db.Model):
     __tablename__ = 'dashboard_widgets'
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     dashboard_id = db.Column(db.Integer, db.ForeignKey('dashboards.id'))
     device_id = db.Column(db.Integer, db.ForeignKey('devices.id'))
     height = db.Column(db.Integer, nullable=False)
