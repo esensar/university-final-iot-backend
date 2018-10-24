@@ -111,6 +111,7 @@ def create_widget(dashboard_id, device_id, height, width, x, y,
     widget = DashboardWidget(dashboard_id, device_id, height, width, x, y,
                              chart_type, filters)
     widget.save()
+    return widget
 
 
 def delete_widget(widget_id):
