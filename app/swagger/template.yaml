@@ -94,6 +94,16 @@ definitions:
     description: Type of chart
     example: line
 
+  secret:
+    type: string
+    description: Secret key
+    example: Ranom-Key123
+
+  hashalgorithm:
+    type: string
+    description: Hashing algorithm used
+    example: sha512
+
   Credentials:
     type: object
     required:
@@ -208,6 +218,17 @@ definitions:
         $ref: '#/definitions/DeviceType'
       configuration:
         $ref: '#/definitions/configuration'
+
+  DeviceSecretInfo:
+    type: object
+    required:
+      - device_secret
+      - secret_algorithm
+    properties:
+      device_secret:
+        $ref: '#/definitions/secret'
+      secret_algorithm:
+        $ref: '#/definitions/hashalgorithm'
 
   DeviceCreation:
     type: object

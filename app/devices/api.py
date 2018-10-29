@@ -1,4 +1,6 @@
 import sys
+import hmac
+import urllib.parse
 from .models import Device, Recording, DeviceAssociation, DeviceType
 from app.core import app
 
@@ -178,7 +180,7 @@ def get_device_types():
 
 def parse_raw_json_recording(device_id, json_msg):
     """
-    Parses raw json recording and creates Recrding object
+    Parses raw json recording and creates Recording object
 
     :param device_id: Id of device
     :type device_id: int
@@ -198,7 +200,20 @@ def parse_raw_json_recording(device_id, json_msg):
                          + str(error_instance))
 
 
-def create_recording_and_return(device_id, raw_json):
+def validate_hmac_in_message(device_id, raw_json):
+    device = Device.get(id=device_id)
+    hmac_value = raw_json.pop('hmac', None)
+    raw_json_bytes = urllib.parse.urlencode(raw_json).encode('utf-8')
+    calculated_hmac = hmac.new(
+            bytes(device.device_secret, 'utf-8'),
+            raw_json_bytes,
+            device.secret_algorithm).hexdigest()
+    if not hmac.compare_digest(hmac_value, calculated_hmac):
+        raise ValueError("Bad hmac")
+
+
+def create_recording_and_return(device_id, raw_json,
+                                authenticated=False):
     """
     Tries to create recording with given parameters and returns it.
     Raises error on failure
@@ -211,6 +226,9 @@ def create_recording_and_return(device_id, raw_json):
     """
     if not Device.exists(id=device_id):
         raise ValueError("Device does not exist!")
+
+    if not authenticated:
+        validate_hmac_in_message(device_id, raw_json)
 
     recording = parse_raw_json_recording(device_id, raw_json)
     recording.save()
@@ -230,6 +248,7 @@ def create_recording(device_id, raw_json):
     if not Device.exists(id=device_id):
         raise ValueError("Device does not exist!")
 
+    validate_hmac_in_message(device_id, raw_json)
     recording = parse_raw_json_recording(device_id, raw_json)
     with app.app_context():
         recording.save()
