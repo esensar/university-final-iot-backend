@@ -5,6 +5,23 @@ from .models import Device, Recording, DeviceAssociation, DeviceType
 from app.core import app
 
 
+# Private helpers
+def generate_hmac_for_message(device_id, raw_json):
+    device = Device.get(id=device_id)
+    raw_json_bytes = urllib.parse.urlencode(raw_json).encode('utf-8')
+    return hmac.new(
+            bytes(device.device_secret, 'utf-8'),
+            raw_json_bytes,
+            device.secret_algorithm).hexdigest()
+
+
+def validate_hmac_in_message(device_id, raw_json):
+    hmac_value = raw_json.pop('hmac', None)
+    calculated_hmac = generate_hmac_for_message(device_id, raw_json)
+    if not hmac.compare_digest(hmac_value, calculated_hmac):
+        raise ValueError("Bad hmac")
+
+
 # Public interface
 def create_device(name, account_id, device_type=1):
     """
@@ -53,6 +70,9 @@ def set_device_configuration(device_id, configuration_json):
     device = Device.get(id=device_id)
     device.configuration = configuration_json
     device.save()
+    configuration_json['hmac'] = generate_hmac_for_message(
+            device_id,
+            configuration_json)
     send_config.delay(device_id, str(configuration_json))
     return device
 
@@ -198,18 +218,6 @@ def parse_raw_json_recording(device_id, json_msg):
         error_type, error_instance, traceback = sys.exc_info()
         raise ValueError("JSON parsing failed! Key error: "
                          + str(error_instance))
-
-
-def validate_hmac_in_message(device_id, raw_json):
-    device = Device.get(id=device_id)
-    hmac_value = raw_json.pop('hmac', None)
-    raw_json_bytes = urllib.parse.urlencode(raw_json).encode('utf-8')
-    calculated_hmac = hmac.new(
-            bytes(device.device_secret, 'utf-8'),
-            raw_json_bytes,
-            device.secret_algorithm).hexdigest()
-    if not hmac.compare_digest(hmac_value, calculated_hmac):
-        raise ValueError("Bad hmac")
 
 
 def create_recording_and_return(device_id, raw_json,
