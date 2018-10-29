@@ -34,6 +34,11 @@ class RecordingsSchema(BaseResourceSchema):
     record_value = fields.String()
 
 
+class DeviceSecretSchema(BaseResourceSchema):
+    device_secret = fields.String(dump_only=True)
+    secret_algorithm = fields.String()
+
+
 def validate_device_ownership(device_id):
     if not devices.can_user_access_device(g.current_account.id, device_id):
         abort(403, message='You are not allowed to access this device',
@@ -127,3 +132,10 @@ class DeviceConfigurationResource(ProtectedResource):
     def get(self, device_id):
         validate_device_ownership(device_id)
         return devices.get_device_configuration(device_id), 200
+
+
+class DeviceSecretResource(ProtectedResource):
+    @swag_from('swagger/get_device_secret_spec.yaml')
+    def get(self, device_id):
+        validate_device_ownership(device_id)
+        return DeviceSecretSchema().dump(devices.get_device(device_id)), 200

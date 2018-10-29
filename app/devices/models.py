@@ -3,6 +3,7 @@ from datetime import datetime
 import datetime as datetime_module
 from app.core import db
 from sqlalchemy.dialects.postgresql import JSON
+from secrets import token_urlsafe
 
 
 class Recording(db.Model):
@@ -126,6 +127,8 @@ class Device(db.Model):
     name = db.Column(db.String, nullable=False)
     device_type_id = db.Column(db.Integer, db.ForeignKey('device_types.id'))
     device_type = db.relationship("DeviceType", foreign_keys=[device_type_id])
+    device_secret = db.Column(db.String, nullable=False)
+    secret_algorithm = db.Column(db.String, nullable=False)
     configuration = db.Column(JSON, nullable=True)
 
     users = db.relationship("DeviceAssociation",
@@ -137,6 +140,8 @@ class Device(db.Model):
         self.name = name
         self.configuration = configuration
         self.device_type_id = device_type
+        self.secret_algorithm = 'sha512'
+        self.device_secret = token_urlsafe(32)
 
     def save(self):
         """
