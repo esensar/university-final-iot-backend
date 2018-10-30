@@ -38,6 +38,7 @@ class RecordingsQuerySchema(Schema):
     selections = fields.Raw()
     filters = fields.Raw()
     groups = fields.Raw()
+    orders = fields.Raw()
 
 
 class DeviceSecretSchema(BaseResourceSchema):

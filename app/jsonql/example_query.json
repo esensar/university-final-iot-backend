@@ -12,5 +12,7 @@
     },
     "group": {
         "date": "month"
+    },
+    "order": {
     }
 }
