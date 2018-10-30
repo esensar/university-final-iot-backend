@@ -167,6 +167,7 @@ definitions:
       - selections
       - filters
       - groups
+      - orders
     properties:
       selections:
         type: object
@@ -180,6 +181,10 @@ definitions:
         type: object
         description: GROUP BY part of query
         example: { "recorded_at": "year" }
+      orders:
+        type: object
+        description: ORDER BY part of query
+        example: { "group_recorded_at": "asc" }
 
   RecordingCreation:
     type: object

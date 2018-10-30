@@ -3,10 +3,11 @@ from app.core import db
 GROUPS = ['sum', 'avg', 'count']
 FILTERS = ['$gt', '$lt', '$eq']
 PERIODS = ['year', 'month', 'week', 'day', 'hour', 'minute', 'second']
+ORDERS = ['asc', 'desc']
 
 
 def run_query_on(query_object, field_provider, **kwargs):
-    selections, filters, groups = validate_selections(**kwargs)
+    selections, filters, groups, orderings = validate_selections(**kwargs)
     entities = []
 
     print('Starting with args: ' + str(kwargs))
@@ -41,6 +42,20 @@ def run_query_on(query_object, field_provider, **kwargs):
     if groups is not None:
         for group in groups.keys():
             query_object = query_object.group_by('group_' + str(group))
+
+    if orderings is not None:
+        for order in orderings.keys():
+            if ((selections is not None and
+                    order not in selections.keys())
+                    and
+                    (groups is None or
+                        order not in ['group_' + str(group) for group in
+                                      groups.keys()])):
+                            raise ValueError(
+                                    'Invalid order! Must use one of' +
+                                    ' selections or groups')
+            query_object = query_object.order_by(
+                    order + ' ' + orderings[order])
 
     return query_object
 
@@ -83,6 +98,7 @@ def validate_selections(**kwargs):
     selections = kwargs.get('selections')
     filters = kwargs.get('filters')
     groups = kwargs.get('groups')
+    orderings = kwargs.get('orders')
 
     if selections is None:
         raise ValueError("Missing selections!")
@@ -90,14 +106,21 @@ def validate_selections(**kwargs):
     if is_group(**kwargs):
         for key in selections.keys():
             if selections[key] not in GROUPS:
-                raise ValueError("Can only use sum, avg and count when\
-                                 grouping!")
+                raise ValueError("Can only use " + str(GROUPS) + " when " +
+                                 "grouping!")
 
     if filters is not None:
         for key in filters.keys():
             for inner_key in filters[key].keys():
                 if inner_key not in FILTERS:
-                    raise ValueError("Unknown filter: " + str(
-                        inner_key))
+                    raise ValueError("Invalid filter (" + str(
+                        inner_key) + "). Valid filters: " + str(FILTERS))
 
-    return selections, filters, groups
+    if orderings is not None:
+        for key in orderings.keys():
+            if orderings[key] not in ORDERS:
+                raise ValueError("Invalid order type ("
+                                 + orderings[key] + "). " +
+                                 "Valid types: " + str(ORDERS))
+
+    return selections, filters, groups, orderings
