@@ -16,14 +16,14 @@ class Recording(db.Model):
                             default=db.func.current_timestamp())
     device_id = db.Column(db.Integer, db.ForeignKey('devices.id'))
     record_type = db.Column(db.Integer, nullable=False)
-    record_value = db.Column(db.String, nullable=False)
+    record_value = db.Column(db.Float, nullable=False)
     raw_record = db.Column(JSON, nullable=True)
 
     def __init__(self, device_id, record_type,
                  record_value, recorded_at, raw_json):
         self.device_id = int(device_id)
         self.record_type = int(record_type)
-        self.record_value = str(record_value)
+        self.record_value = float(record_value)
         self.recorded_at = datetime.fromtimestamp(int(recorded_at))
         self.received_at = datetime.utcnow()
         self.raw_record = raw_json

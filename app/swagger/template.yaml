@@ -157,9 +157,9 @@ definitions:
       record_type:
         $ref: '#/definitions/id'
       record_value:
-        type: string
+        type: float
         description: Value of the recording
-        example: '25 degrees'
+        example: 25.0
 
   RecordingCreation:
     type: object
@@ -173,9 +173,9 @@ definitions:
       record_type:
         $ref: '#/definitions/id'
       record_value:
-        type: string
+        type: float
         description: Value of the recording
-        example: '25 degrees'
+        example: 25.0
 
   DeviceType:
     type: object

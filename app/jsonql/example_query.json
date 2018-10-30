@@ -1,0 +1,16 @@
+{
+    "target": "Recording",
+    "selection": {
+        "record_value": "sum",
+        "record_type": "count",
+        "record_type": "avg"
+    },
+    "filter": {
+        "date": {
+            "$gt": "12-12-02"
+        }
+    },
+    "group": {
+        "date": "month"
+    }
+}

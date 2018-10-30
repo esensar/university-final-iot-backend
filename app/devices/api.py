@@ -3,6 +3,7 @@ import hmac
 import urllib.parse
 from .models import Device, Recording, DeviceAssociation, DeviceType
 from app.core import app
+from app.jsonql import api as jsonql
 
 
 # Private helpers
@@ -260,3 +261,30 @@ def create_recording(device_id, raw_json):
     recording = parse_raw_json_recording(device_id, raw_json)
     with app.app_context():
         recording.save()
+
+
+def run_custom_query(device_id, request):
+    """
+    """
+    if not Device.exists(id=device_id):
+        raise ValueError("Device does not exist!")
+
+    def recording_field_provider(name):
+        if name == 'record_value':
+            return Recording.record_value
+        if name == 'record_type':
+            return Recording.record_type
+        if name == 'device_id':
+            return Recording.device_id
+        if name == 'recorded_at':
+            return Recording.recorded_at
+        if name == 'received_at':
+            return Recording.received_at
+
+    resulting_query = jsonql.run_query_on(Recording.query.with_entities(),
+                                          recording_field_provider,
+                                          **request)
+    print("Resulting query: " + str(resulting_query))
+    result = resulting_query.filter(Recording.device_id == device_id).all()
+    print("RESULT: " + str(result))
+    return result
