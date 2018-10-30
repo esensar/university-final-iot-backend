@@ -31,7 +31,13 @@ class DeviceWithConfigurationSchema(DeviceSchema):
 class RecordingsSchema(BaseResourceSchema):
     recorded_at = fields.DateTime()
     record_type = fields.Integer()
-    record_value = fields.String()
+    record_value = fields.Float()
+
+
+class RecordingsQuerySchema(Schema):
+    selections = fields.Raw()
+    filters = fields.Raw()
+    groups = fields.Raw()
 
 
 class DeviceSecretSchema(BaseResourceSchema):
@@ -101,6 +107,17 @@ class DeviceRecordingResource(ProtectedResource):
         created_recording = devices.create_recording_and_return(
                 device_id, request.json)
         return RecordingsSchema().dump(created_recording), 201
+
+
+class DeviceRecordingQueryResource(ProtectedResource):
+    @use_args(RecordingsQuerySchema(), locations=('json',))
+    @swag_from('swagger/create_device_recording_query_spec.yaml')
+    def post(self, args, device_id):
+        validate_device_ownership(device_id)
+        try:
+            return devices.run_custom_query(device_id, args), 200
+        except ValueError as e:
+            abort(400, message=str(e), status='error')
 
 
 class DeviceListResource(ProtectedResource):
