@@ -17,4 +17,10 @@ responses:
   200:
     description: Success
     schema:
-      type: array
+      type: object
+      required:
+        - content
+      properties:
+        content:
+          type: array
+

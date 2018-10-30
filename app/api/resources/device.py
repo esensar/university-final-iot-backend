@@ -115,7 +115,8 @@ class DeviceRecordingQueryResource(ProtectedResource):
     def post(self, args, device_id):
         validate_device_ownership(device_id)
         try:
-            return devices.run_custom_query(device_id, args), 200
+            return {'content':
+                    devices.run_custom_query(device_id, args)}, 200
         except ValueError as e:
             abort(400, message=str(e), status='error')
 

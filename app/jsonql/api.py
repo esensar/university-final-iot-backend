@@ -2,7 +2,7 @@ from app.core import db
 
 GROUPS = ['sum', 'avg', 'count']
 FILTERS = ['$gt', '$lt', '$eq']
-PERIODS = ['year', 'month', 'week', 'day']
+PERIODS = ['year', 'month', 'week', 'day', 'hour', 'minute', 'second']
 
 
 def run_query_on(query_object, field_provider, **kwargs):
@@ -12,9 +12,20 @@ def run_query_on(query_object, field_provider, **kwargs):
     print('Starting with args: ' + str(kwargs))
 
     if selections is not None:
+        if groups is not None:
+            for group in groups.keys():
+                entities.append(
+                        get_group(
+                            field_provider(group),
+                            groups[group]
+                            ).label(
+                                'group_' + str(group)  # + '_' + groups[group]
+                                )
+                            )
+
         for selection in selections.keys():
             entities.append(get_column(selections[selection],
-                            field_provider(selection)))
+                            field_provider(selection)).label(selection))
 
         print('New entities: ' + str(entities))
         query_object = query_object.with_entities(*entities)
@@ -29,8 +40,7 @@ def run_query_on(query_object, field_provider, **kwargs):
 
     if groups is not None:
         for group in groups.keys():
-            query_object = query_object.group_by(
-                    get_group(field_provider(group), groups[group]))
+            query_object = query_object.group_by('group_' + str(group))
 
     return query_object
 

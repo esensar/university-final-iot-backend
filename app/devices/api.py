@@ -284,7 +284,13 @@ def run_custom_query(device_id, request):
     resulting_query = jsonql.run_query_on(Recording.query.with_entities(),
                                           recording_field_provider,
                                           **request)
-    print("Resulting query: " + str(resulting_query))
-    result = resulting_query.filter(Recording.device_id == device_id).all()
-    print("RESULT: " + str(result))
-    return result
+    final_query = resulting_query.filter(Recording.device_id == device_id)
+    resulting_columns = final_query.column_descriptions
+    result = final_query.all()
+    formatted_result = []
+    for row in result:
+        formatted_row = {}
+        for idx, col in enumerate(row):
+            formatted_row[resulting_columns[idx]['name']] = col
+        formatted_result.append(formatted_row)
+    return formatted_result
