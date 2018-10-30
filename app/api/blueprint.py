@@ -18,6 +18,7 @@ def add_resources():
     from .resources.token import TokenResource, ValidateTokenResource
     from .resources.device import (DeviceResource,
                                    DeviceRecordingResource,
+                                   DeviceRecordingQueryResource,
                                    DeviceListResource,
                                    DeviceTypeResource,
                                    DeviceTypeListResource,
@@ -42,6 +43,8 @@ def add_resources():
     api.add_resource(DeviceResource, '/v1/devices/<int:device_id>')
     api.add_resource(DeviceRecordingResource,
                      '/v1/devices/<int:device_id>/recordings')
+    api.add_resource(DeviceRecordingQueryResource,
+                     '/v1/devices/<int:device_id>/recordings/jsonql')
     api.add_resource(DeviceListResource, '/v1/devices')
     api.add_resource(DeviceTypeResource,
                      '/v1/devices/types/<int:device_type_id>')
