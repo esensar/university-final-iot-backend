@@ -161,6 +161,26 @@ definitions:
         description: Value of the recording
         example: 25.0
 
+  Query:
+    type: object
+    required:
+      - selections
+      - filters
+      - groups
+    properties:
+      selections:
+        type: object
+        description: SELECT part of query - columns to select and aggregate
+        example: { "record_value": "sum" }
+      filters:
+        type: object
+        description: WHERE part of query (filters) - All of them are combined with AND
+        example: { "record_value": { "$gt": "300", "$lt": "1000" } }
+      groups:
+        type: object
+        description: GROUP BY part of query
+        example: { "recorded_at": "year" }
+
   RecordingCreation:
     type: object
     required:
