@@ -1,5 +1,5 @@
 from flask_restful import Resource, abort
-from flask import g, render_template
+from flask import g, render_template, redirect
 from marshmallow import Schema, fields
 from webargs.flaskparser import use_args
 from flasgger import swag_from
@@ -10,6 +10,7 @@ from app.api.auth_protection import ProtectedResource
 from app.api.permission_protection import (requires_permission,
                                            valid_permissions)
 from app.api.schemas import BaseResourceSchema
+from flask import current_app as app
 
 
 class UserSchema(BaseResourceSchema):
@@ -107,10 +108,15 @@ class AccountListResource(Resource):
 
 class AccountEmailTokenResource(Resource):
     def get(self, token):
-        success = accounts.confirm_email_token(token)
+        success, email = accounts.confirm_email_token(token)
         if success:
-            return '{"status": "success", \
-                     "message": "Successfully confirmed email"}', 200
+            html = render_template(
+                    'welcome_to_iot.html')
+            send_email_task.delay(
+                    email,
+                    'Welcome to IoT!',
+                    html)
+            return redirect(app.config['FRONTEND_URL'])
 
 
 class AccountEmailTokenResendResource(Resource):
