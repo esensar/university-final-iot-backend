@@ -99,7 +99,7 @@ class AccountListResource(Resource):
                     confirm_url=confirm_url)
             send_email_task.delay(
                     args['email'],
-                    'Please confirm your email',
+                    'ETF IoT Email confirmation',
                     html)
             return UserSchema().dump(created_account), 201
         except ValueError:
@@ -110,13 +110,15 @@ class AccountEmailTokenResource(Resource):
     def get(self, token):
         success, email = accounts.confirm_email_token(token)
         if success:
+            frontend_url = app.config['FRONTEND_URL']
             html = render_template(
-                    'welcome_to_iot.html')
+                    'welcome_to_iot.html',
+                    frontend_url=frontend_url)
             send_email_task.delay(
                     email,
-                    'Welcome to IoT!',
+                    'Welcome to ETF IoT!',
                     html)
-            return redirect(app.config['FRONTEND_URL'])
+            return redirect(frontend_url)
 
 
 class AccountEmailTokenResendResource(Resource):
