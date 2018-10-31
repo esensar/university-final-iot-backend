@@ -135,6 +135,8 @@ class Device(db.Model):
                             cascade="save-update, merge, delete")
     recordings = db.relationship("Recording",
                                  cascade="save-update, merge, delete")
+    widgets = db.relationship("DashboardWidget",
+                              cascade="save-update, merge, delete")
 
     def __init__(self, name, configuration=None, device_type=1):
         self.name = name
