@@ -23,11 +23,13 @@ CSRF_ENABLED = True
 
 # Use a secure, unique and absolutely secret key for
 # signing the data.
-CSRF_SESSION_KEY = "secret"
+CSRF_SESSION_KEY = os.environ.get('CSRF_SECRET') or "secret"
 
 # Secret key for signing cookies
-SECRET_KEY = "?['Z(Z\x83Y \x06T\x12\x96<\xff\x12\xe0\x1b\xd1J\xe0\xd9ld"
-SECURITY_PASSWORD_SALT = "IyoZvOJb4feT3xKlYXyOJveHSIY4GDg6"
+SECRET_KEY = (os.environ.get('APP_SECRET_KEY') or
+              "?['Z(Z\x83Y\x06T\x12\x96<\xff\x12\xe0\x1b\xd1J\xe0\xd9ld")
+SECURITY_PASSWORD_SALT = (os.environ.get('APP_SECRETS_SALT') or
+                          "IyoZvOJb4feT3xKlYXyOJveHSIY4GDg6")
 
 # MQTT configuration
 MQTT_CLIENT_ID = 'final-iot-backend-server-' + os.environ['MQTT_CLIENT']
