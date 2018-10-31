@@ -106,7 +106,7 @@ class DeviceRecordingResource(ProtectedResource):
     def post(self, device_id):
         validate_device_ownership(device_id)
         created_recording = devices.create_recording_and_return(
-                device_id, request.json)
+                device_id, request.json, True)
         return RecordingsSchema().dump(created_recording), 201
 
 
