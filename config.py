@@ -55,6 +55,10 @@ MAIL_PASSWORD = os.environ['APP_MAIL_PASSWORD']
 # mail accounts
 MAIL_DEFAULT_SENDER = 'final.iot.backend.mailer@gmail.com'
 
+# frontend
+FRONTEND_URL = (os.environ.get('IOT_FRONTEND_URL') or
+                'http://iot-frontend-app.herokuapp.com/')
+
 # Flasgger config
 SWAGGER = {
     'uiversion': 3

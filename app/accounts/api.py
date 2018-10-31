@@ -33,15 +33,15 @@ def confirm_email_token(token):
     try:
         email = confirm_token(token)
     except Exception:
-        return False
+        return False, None
     user = Account.query.filter_by(email=email).first_or_404()
     if user.confirmed:
-        return True
+        return True, user.email
     else:
         user.confirmed = True
         user.confirmed_on = datetime.datetime.now()
         user.save()
-        return True
+        return True, user.email
 
 
 def update_account_role(account_id, role_id):
