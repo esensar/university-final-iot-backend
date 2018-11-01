@@ -227,6 +227,31 @@ definitions:
       device_type:
         $ref: '#/definitions/DeviceType'
 
+  DeviceShareTokenCreation:
+    type: object
+    required:
+      - access_level_id
+    properties:
+      access_level_id:
+        $ref: '#/definitions/id'
+      account_id:
+        $ref: '#/definitions/id'
+
+  DeviceShareToken:
+    type: object
+    required:
+      - token
+      - activation_url
+    properties:
+      token:
+        type: string
+        description: Activation token used to gain access to shared device
+        example: idjsfodsfmskdf12312nkVDSFSDFS
+      activation_url:
+        type: string
+        description: Activation url using token
+        example: https://etf-iot.com/api/v1/devices/123/share/activation/idjsfodsfmskdf12312nkVDSFSDFS
+
   DeviceWithConfig:
     type: object
     required:

@@ -23,7 +23,9 @@ def add_resources():
                                    DeviceTypeResource,
                                    DeviceTypeListResource,
                                    DeviceConfigurationResource,
-                                   DeviceSecretResource)
+                                   DeviceSecretResource,
+                                   DeviceShareResource,
+                                   DeviceShareActivationResource)
     from .resources.dashboard import (DashboardResource,
                                       DashboardListResource,
                                       DashboardWidgetResource,
@@ -53,6 +55,11 @@ def add_resources():
                      '/v1/devices/<int:device_id>/configuration')
     api.add_resource(DeviceSecretResource,
                      '/v1/devices/<int:device_id>/secret')
+    api.add_resource(DeviceShareResource,
+                     '/v1/devices/<int:device_id>/share')
+    api.add_resource(
+            DeviceShareActivationResource,
+            '/v1/devices/<int:device_id>/share/activate/<string:token>')
     api.add_resource(DashboardResource,
                      '/v1/dashboards/<int:dashboard_id>')
     api.add_resource(DashboardListResource, '/v1/dashboards')
