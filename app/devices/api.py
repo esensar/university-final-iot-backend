@@ -1,7 +1,12 @@
 import sys
 import hmac
 import urllib.parse
-from .models import Device, Recording, DeviceAssociation, DeviceType
+from .models import (Device,
+                     Recording,
+                     DeviceAssociation,
+                     DeviceType,
+                     AccessLevel)
+from itsdangerous import URLSafeSerializer
 from app.core import app
 from app.jsonql import api as jsonql
 
@@ -263,8 +268,69 @@ def create_recording(device_id, raw_json):
         recording.save()
 
 
+def create_targeted_device_sharing_token(
+        device_id, access_level_id, account_id=None):
+    """
+    Creates device sharing token that can be passed only to account with passed
+    id in order to allow access to device
+
+    :param device_id: Id of device
+    :type device_id: int
+    :param access_level_id: Id of access level this link will give
+    :type access_level_id: int
+    :param account_id: Id of account
+    :type account_id: int
+    :raises: ValueError if device does not exist
+    """
+    if not Device.exists(id=device_id):
+        raise ValueError("Device does not exist!")
+    if not AccessLevel.exists(id=access_level_id):
+        raise ValueError("AccessLevel does not exist!")
+
+    data_to_serialize = {
+            'device_id': device_id,
+            'access_level_id': access_level_id
+    }
+
+    if account_id is not None:
+        data_to_serialize['account_id'] = account_id
+
+    serializer = URLSafeSerializer(app.config['SECRET_KEY'],
+                                   salt=app.config['SECURITY_PASSWORD_SALT'])
+    token = serializer.dumps(data_to_serialize)
+    return token
+
+
+def activate_device_sharing_token(account_id, token):
+    """
+    Activates device sharing token for account with passed id
+
+    :param account_id: Id of account
+    :type account_id: int
+    :param token: Token created by device owner
+    :type token: string
+    :raises: ValueError if device does not exist
+    """
+    serializer = URLSafeSerializer(app.config['SECRET_KEY'],
+                                   salt=app.config['SECURITY_PASSWORD_SALT'])
+    token_data = serializer.loads(token)
+    device_id = token_data['device_id']
+    access_level_id = token_data['access_level_id']
+    if (token_data.get('account_id') or account_id) != account_id:
+        return False
+
+    if not Device.exists(id=device_id):
+        raise ValueError("Device does not exist!")
+
+    device_association = DeviceAssociation(device_id, account_id,
+                                           access_level_id)
+    device_association.save()
+    return True
+
+
 def run_custom_query(device_id, request):
     """
+    Runs custom query as defined by jsonql module
     """
     if not Device.exists(id=device_id):
         raise ValueError("Device does not exist!")

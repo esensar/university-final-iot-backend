@@ -122,8 +122,10 @@ class DashboardWidget(db.Model):
     __tablename__ = 'dashboard_widgets'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    dashboard_id = db.Column(db.Integer, db.ForeignKey('dashboards.id'))
-    device_id = db.Column(db.Integer, db.ForeignKey('devices.id'))
+    dashboard_id = db.Column(db.Integer, db.ForeignKey('dashboards.id'),
+                             nullable=False)
+    device_id = db.Column(db.Integer, db.ForeignKey('devices.id'),
+                          nullable=False)
     height = db.Column(db.Integer, nullable=False)
     width = db.Column(db.Integer, nullable=False)
     x = db.Column(db.Integer, nullable=False)

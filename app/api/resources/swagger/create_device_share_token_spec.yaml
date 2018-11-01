@@ -1,0 +1,21 @@
+Creates new device sharing token
+---
+tags:
+  - Device
+parameters:
+  - in: body
+    name: body
+    required: true
+    schema:
+        type: object
+        $ref: '#/definitions/DeviceShareTokenCreation'
+responses:
+  201:
+    description: Success
+    schema:
+      type: object
+      required:
+        - content
+      properties:
+        content:
+          $ref: '#/definitions/DeviceShareToken'

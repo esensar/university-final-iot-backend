@@ -135,6 +135,8 @@ class Device(db.Model):
                             cascade="save-update, merge, delete")
     recordings = db.relationship("Recording",
                                  cascade="save-update, merge, delete")
+    widgets = db.relationship("DashboardWidget",
+                              cascade="save-update, merge, delete")
 
     def __init__(self, name, configuration=None, device_type=1):
         self.name = name
@@ -223,6 +225,9 @@ class DeviceAssociation(db.Model):
                            primary_key=True)
     access_level = db.Column(db.Integer, db.ForeignKey('access_levels.id'),
                              nullable=False)
+
+    access_level_data = db.relationship("AccessLevel",
+                                        foreign_keys=[access_level])
 
     def __init__(self, device_id, account_id, access_level=1):
         self.device_id = device_id
@@ -327,9 +332,20 @@ class AccessLevel(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String, nullable=False)
+    permissions = db.Column(db.ARRAY(db.String), nullable=False)
 
-    def __init__(self, name):
+    def __init__(self, name, permissions=['VIEW_DEVICE']):
         self.name = name
+        self.permissions = permissions
+
+    @staticmethod
+    def exists(**kwargs):
+        """
+        Checks if access level with all of the given arguments exists
+        """
+        if AccessLevel.query.filter_by(**kwargs).first():
+            return True
+        return False
 
     def __repr__(self):
         return '<AccessLevel (name %s)>' % self.name
