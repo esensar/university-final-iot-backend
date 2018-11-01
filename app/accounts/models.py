@@ -23,6 +23,9 @@ class Account(db.Model):
                             default=db.func.current_timestamp(),
                             onupdate=db.func.current_timestamp())
 
+    dashboards = db.relationship("Dashboard",
+                                 cascade="save-update, merge, delete")
+
     def __init__(self, username, password, email, role=2):
         self.username = str(username)
         self.password = str(password)

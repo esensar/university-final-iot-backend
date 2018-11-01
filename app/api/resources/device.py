@@ -2,10 +2,12 @@ from flask_restful import abort
 from marshmallow import Schema, fields
 from webargs.flaskparser import use_args
 from flasgger import swag_from
-from flask import g, request
+from flask import g, request, redirect
+from app.api.blueprint import api
 import app.devices.api as devices
 from app.api.auth_protection import ProtectedResource
 from app.api.schemas import BaseResourceSchema
+from flask import current_app as app
 
 
 class BasicDeviceTypeSchema(Schema):
@@ -44,6 +46,16 @@ class RecordingsQuerySchema(Schema):
 class DeviceSecretSchema(BaseResourceSchema):
     device_secret = fields.String(dump_only=True)
     secret_algorithm = fields.String()
+
+
+class DeviceShareSchema(BaseResourceSchema):
+    access_level_id = fields.Integer()
+    account_id = fields.Integer(required=False)
+
+
+class DeviceShareTokenSchema(BaseResourceSchema):
+    token = fields.String()
+    activation_url = fields.String()
 
 
 def validate_device_ownership(device_id):
@@ -158,3 +170,36 @@ class DeviceSecretResource(ProtectedResource):
     def get(self, device_id):
         validate_device_ownership(device_id)
         return DeviceSecretSchema().dump(devices.get_device(device_id)), 200
+
+
+class DeviceShareResource(ProtectedResource):
+    @use_args(DeviceShareSchema(), locations=('json',))
+    @swag_from('swagger/create_device_share_token_spec.yaml')
+    def post(self, args, device_id):
+        validate_device_ownership(device_id)
+        created_token = devices.create_targeted_device_sharing_token(
+                device_id, args['access_level_id'], args.get('account_id'))
+        activation_url = api.url_for(
+                DeviceShareActivationResource,
+                device_id=device_id,
+                token=created_token, _external=True)
+        return DeviceShareTokenSchema().dump(
+                {
+                    'token': created_token,
+                    'activation_url': activation_url
+                }
+                ), 201
+
+
+class DeviceShareActivationResource(ProtectedResource):
+    def get(self, device_id, token):
+        try:
+            success = devices.activate_device_sharing_token(
+                    g.current_account.id, token)
+            if not success:
+                abort(403,
+                      message='You may not get access to this device',
+                      status='error')
+            return redirect(app.config['FRONTEND_URL'])
+        except ValueError as e:
+            abort(400, message=str(e), status='error')
