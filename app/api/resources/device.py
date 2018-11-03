@@ -6,11 +6,13 @@ from flask import g, request, redirect
 from app.api.blueprint import api
 import app.devices.api as devices
 from app.api.auth_protection import ProtectedResource
-from app.api.schemas import BaseResourceSchema
+from app.api.schemas import (BaseResourceSchema,
+                             BaseTimestampedSchema,
+                             BaseTimestampedResourceSchema)
 from flask import current_app as app
 
 
-class BasicDeviceTypeSchema(Schema):
+class BasicDeviceTypeSchema(BaseTimestampedSchema):
     id = fields.Integer(dump_only=True)
     name = fields.Str(required=True)
 
@@ -19,13 +21,11 @@ class DeviceTypeSchema(BaseResourceSchema, BasicDeviceTypeSchema):
     pass
 
 
-class DeviceSchema(BaseResourceSchema):
+class DeviceSchema(BaseTimestampedResourceSchema):
     id = fields.Integer(dump_only=True)
     name = fields.Str(required=True)
     device_type = fields.Nested(BasicDeviceTypeSchema, dump_only=True)
     device_type_id = fields.Integer(load_only=True, missing=1)
-    created_at = fields.DateTime(dump_only=True)
-    modified_at = fields.DateTime(dump_only=True)
 
 
 class DeviceWithConfigurationSchema(DeviceSchema):
