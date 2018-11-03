@@ -7,10 +7,19 @@ ORDERS = ['asc', 'desc']
 
 
 def run_query_on(query_object, field_provider, **kwargs):
+    """
+    Generates a query for target object based on query provided as kwargs
+
+    :param query_object: Initial query object as returned by SQLAlchemy for
+    target table
+    :type query_object: Query
+    :param field_provider: Function which provides fields based on name, with
+    optional parameter formatted which returns the field formatted using sql
+    functions
+    :type field_provider: func(col_name:String, formatted:Boolean)
+    """
     selections, filters, groups, orderings = validate_selections(**kwargs)
     entities = []
-
-    print('Starting with args: ' + str(kwargs))
 
     if selections is not None:
         if groups is not None:
@@ -26,9 +35,8 @@ def run_query_on(query_object, field_provider, **kwargs):
 
         for selection in selections.keys():
             entities.append(get_column(selections[selection],
-                            field_provider(selection)).label(selection))
+                            field_provider(selection, True)).label(selection))
 
-        print('New entities: ' + str(entities))
         query_object = query_object.with_entities(*entities)
 
     if filters is not None:
