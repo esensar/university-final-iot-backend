@@ -1,13 +1,14 @@
 import sys
 import hmac
 import urllib.parse
+import datetime
 from .models import (Device,
                      Recording,
                      DeviceAssociation,
                      DeviceType,
                      AccessLevel)
 from itsdangerous import URLSafeSerializer
-from app.core import app, db
+from app.core import app
 from app.jsonql import api as jsonql
 
 
@@ -335,7 +336,7 @@ def run_custom_query(device_id, request):
     if not Device.exists(id=device_id):
         raise ValueError("Device does not exist!")
 
-    def recording_field_provider(name, formatted=False):
+    def recording_field_provider(name):
         if name == 'record_value':
             return Recording.record_value
         if name == 'record_type':
@@ -343,14 +344,8 @@ def run_custom_query(device_id, request):
         if name == 'device_id':
             return Recording.device_id
         if name == 'recorded_at':
-            if formatted:
-                return db.func.to_char(
-                        Recording.recorded_at, 'YYYY-MM-DD"T"HH24:MI:SSOF')
             return Recording.recorded_at
         if name == 'received_at':
-            if formatted:
-                return db.func.to_char(
-                        Recording.received_at, 'YYYY-MM-DD"T"HH24:MI:SSOF')
             return Recording.received_at
 
     resulting_query = jsonql.run_query_on(Recording.query.with_entities(),
@@ -363,6 +358,8 @@ def run_custom_query(device_id, request):
     for row in result:
         formatted_row = {}
         for idx, col in enumerate(row):
+            if isinstance(col, datetime.datetime):
+                col = col.replace(tzinfo=datetime.timezone.utc).isoformat()
             formatted_row[resulting_columns[idx]['name']] = col
         formatted_result.append(formatted_row)
     return formatted_result

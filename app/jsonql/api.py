@@ -35,7 +35,7 @@ def run_query_on(query_object, field_provider, **kwargs):
 
         for selection in selections.keys():
             entities.append(get_column(selections[selection],
-                            field_provider(selection, True)).label(selection))
+                            field_provider(selection)).label(selection))
 
         query_object = query_object.with_entities(*entities)
 
