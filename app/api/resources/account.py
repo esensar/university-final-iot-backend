@@ -86,24 +86,21 @@ class AccountListResource(Resource):
     @use_args(UserSchema(), locations=('json',))
     @swag_from('swagger/create_account_spec.yaml')
     def post(self, args):
-        try:
-            created_account, emailtoken = accounts.create_account(
-                    args['username'],
-                    args['email'],
-                    args['password'])
-            confirm_url = api.url_for(
-                    AccountEmailTokenResource,
-                    token=emailtoken, _external=True)
-            html = render_template(
-                    'activate_mail.html',
-                    confirm_url=confirm_url)
-            send_email_task.delay(
-                    args['email'],
-                    'ETF IoT Email confirmation',
-                    html)
-            return UserSchema().dump(created_account), 201
-        except ValueError:
-            abort(422, message='Account already exists', status='error')
+        created_account, emailtoken = accounts.create_account(
+                args['username'],
+                args['email'],
+                args['password'])
+        confirm_url = api.url_for(
+                AccountEmailTokenResource,
+                token=emailtoken, _external=True)
+        html = render_template(
+                'activate_mail.html',
+                confirm_url=confirm_url)
+        send_email_task.delay(
+                args['email'],
+                'ETF IoT Email confirmation',
+                html)
+        return UserSchema().dump(created_account), 201
 
 
 class AccountEmailTokenResource(Resource):
