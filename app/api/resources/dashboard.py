@@ -6,10 +6,12 @@ from flasgger import swag_from
 import app.dashboards.api as dashboard
 import app.devices.api as device
 from app.api.auth_protection import ProtectedResource
-from app.api.schemas import BaseResourceSchema
+from app.api.schemas import (BaseResourceSchema,
+                             BaseTimestampedSchema,
+                             BaseTimestampedResourceSchema)
 
 
-class BasicDashboardWidgetSchema(Schema):
+class BasicDashboardWidgetSchema(BaseTimestampedSchema):
     id = fields.Integer(dump_only=True)
     device_id = fields.Integer(required=True)
     name = fields.String(required=True)
@@ -25,7 +27,7 @@ class DashboardWidgetSchema(BaseResourceSchema, BasicDashboardWidgetSchema):
     pass
 
 
-class DashboardSchema(BaseResourceSchema):
+class DashboardSchema(BaseTimestampedResourceSchema):
     id = fields.Integer(dump_only=True)
     active = fields.Boolean(required=False)
     dashboard_data = fields.Raw(required=True)
