@@ -1,6 +1,6 @@
 from flask_restful import Api
 from marshmallow import ValidationError
-from app.errors import NotPresentError
+from app.errors import NotPresentError, BadRequestError
 from flask import Blueprint, jsonify
 
 
@@ -94,6 +94,12 @@ def handle_value_error(e):
 @api_bp.errorhandler(404)
 def handle_not_present_error(e):
     return jsonify({'status': 'error', 'message': str(e)}), 404
+
+
+@api_bp.errorhandler(BadRequestError)
+@api_bp.errorhandler(400)
+def handle_bad_request_error(e):
+    return jsonify({'status': 'error', 'message': str(e)}), 400
 
 
 @api_bp.errorhandler(Exception)
