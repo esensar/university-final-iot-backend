@@ -106,12 +106,13 @@ def get_dashboards(account_id, active):
     return Dashboard.get_many_filtered(account_id=account_id, active=active)
 
 
-def create_widget(dashboard_id, device_id, height, width, x, y,
+def create_widget(dashboard_id, device_id, name, height, width, x, y,
                   chart_type, filters):
     """
     Tries to create a dashboard widget
     """
-    widget = DashboardWidget(dashboard_id, device_id, height, width, x, y,
+    widget = DashboardWidget(dashboard_id, device_id,
+                             name, height, width, x, y,
                              chart_type, filters)
     widget.save()
     return widget
@@ -152,7 +153,7 @@ def get_widget(widget_id):
     return DashboardWidget.get(id=widget_id)
 
 
-def patch_widget(widget_id, device_id=None, height=None, width=None,
+def patch_widget(widget_id, device_id=None, name=None, height=None, width=None,
                  x=None, y=None, chart_type=None, filters=None):
     """
     Tries to update widget with given parameters
@@ -164,6 +165,9 @@ def patch_widget(widget_id, device_id=None, height=None, width=None,
 
     if height is not None:
         widget.height = height
+
+    if name is not None:
+        widget.name = name
 
     if width is not None:
         widget.width = width

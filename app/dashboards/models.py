@@ -126,6 +126,7 @@ class DashboardWidget(db.Model):
                              nullable=False)
     device_id = db.Column(db.Integer, db.ForeignKey('devices.id'),
                           nullable=False)
+    name = db.Column(db.String, nullable=False)
     height = db.Column(db.Integer, nullable=False)
     width = db.Column(db.Integer, nullable=False)
     x = db.Column(db.Integer, nullable=False)
@@ -142,10 +143,11 @@ class DashboardWidget(db.Model):
 
     dashboard = db.relationship("Dashboard", foreign_keys=[dashboard_id])
 
-    def __init__(self, dashboard_id, device_id, height, width, x, y,
+    def __init__(self, dashboard_id, device_id, name, height, width, x, y,
                  chart_type, filters):
         self.dashboard_id = dashboard_id
         self.device_id = device_id
+        self.name = name
         self.height = height
         self.width = width
         self.x = x
