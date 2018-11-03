@@ -2,6 +2,7 @@ import sys
 import hmac
 import urllib.parse
 import datetime
+from secrets import token_urlsafe
 from .models import (Device,
                      Recording,
                      DeviceAssociation,
@@ -148,6 +149,17 @@ def get_device(device_id):
     :rtype: Device
     """
     return Device.get(id=device_id)
+
+
+def reset_device_secret(device_id):
+    """
+    Resets device secret for device with given parameters. Raises error on
+    failure
+    """
+    device = Device.get(id=device_id)
+    device.device_secret = token_urlsafe(32)
+    device.save()
+    return device
 
 
 def can_user_access_device(account_id, device_id):

@@ -174,6 +174,14 @@ class DeviceSecretResource(ProtectedResource):
         return DeviceSecretSchema().dump(devices.get_device(device_id)), 200
 
 
+class DeviceSecretResetResource(ProtectedResource):
+    @swag_from('swagger/reset_device_secret_spec.yaml')
+    def post(self, device_id):
+        validate_device_ownership(device_id)
+        return DeviceSecretSchema().dump(
+                devices.reset_device_secret(device_id)), 200
+
+
 class DeviceShareResource(ProtectedResource):
     @use_args(DeviceShareSchema(), locations=('json',))
     @swag_from('swagger/create_device_share_token_spec.yaml')
