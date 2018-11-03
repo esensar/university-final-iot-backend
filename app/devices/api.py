@@ -11,6 +11,7 @@ from .models import (Device,
                      AccessLevel)
 from itsdangerous import URLSafeSerializer
 from app.core import app
+from app.errors import NotPresentError
 from app.jsonql import api as jsonql
 
 
@@ -110,7 +111,7 @@ def get_device_recordings(device_id):
     :raises: ValueError if device does not exist
     """
     if not Device.exists(id=device_id):
-        raise ValueError("Device with id %s does not exist" % device_id)
+        raise NotPresentError("Device with id %s does not exist" % device_id)
 
     return Recording.get_many(device_id=device_id)
 
@@ -134,7 +135,7 @@ def get_device_recordings_filtered(device_id, record_type=None,
     :raises: ValueError if device does not exist
     """
     if not Device.exists(id=device_id):
-        raise ValueError("Device with id %s does not exist" % device_id)
+        raise NotPresentError("Device with id %s does not exist" % device_id)
 
     return Recording.get_many_filtered(device_id, record_type,
                                        start_date, end_date)
@@ -282,7 +283,7 @@ def create_recording_and_return(device_id, raw_json,
     :raises: ValueError if parsing fails or device does not exist
     """
     if not Device.exists(id=device_id):
-        raise ValueError("Device does not exist!")
+        raise NotPresentError("Device does not exist!")
 
     if not authenticated:
         validate_hmac_in_message(device_id, raw_json)
@@ -303,7 +304,7 @@ def create_recording(device_id, raw_json):
     :raises: ValueError if parsing fails or device does not exist
     """
     if not Device.exists(id=device_id):
-        raise ValueError("Device does not exist!")
+        raise NotPresentError("Device does not exist!")
 
     validate_hmac_in_message(device_id, raw_json)
     recording = parse_raw_json_recording(device_id, raw_json)
@@ -326,9 +327,9 @@ def create_targeted_device_sharing_token(
     :raises: ValueError if device does not exist
     """
     if not Device.exists(id=device_id):
-        raise ValueError("Device does not exist!")
+        raise NotPresentError("Device does not exist!")
     if not AccessLevel.exists(id=access_level_id):
-        raise ValueError("AccessLevel does not exist!")
+        raise NotPresentError("AccessLevel does not exist!")
 
     data_to_serialize = {
             'device_id': device_id,
@@ -363,7 +364,7 @@ def activate_device_sharing_token(account_id, token):
         return False
 
     if not Device.exists(id=device_id):
-        raise ValueError("Device does not exist!")
+        raise NotPresentError("Device does not exist!")
 
     device_association = DeviceAssociation(device_id, account_id,
                                            access_level_id)
@@ -376,7 +377,7 @@ def run_custom_query(device_id, request):
     Runs custom query as defined by jsonql module
     """
     if not Device.exists(id=device_id):
-        raise ValueError("Device does not exist!")
+        raise NotPresentError("Device does not exist!")
 
     def recording_field_provider(name):
         if name == 'record_value':

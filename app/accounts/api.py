@@ -121,7 +121,6 @@ def create_token(username, password):
         raise ValueError("Invalid credentials")
 
     if not account.confirmed:
-        print('ACCOUNT NOT CONFIRMED?')
         raise ValueError("Email not confirmed")
 
     return account.create_auth_token()
