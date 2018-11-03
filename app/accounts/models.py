@@ -129,6 +129,13 @@ class Role(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     display_name = db.Column(db.String, unique=True)
     permissions = db.Column(db.ARRAY(db.String))
+    created_at = db.Column(db.DateTime,
+                           nullable=False,
+                           default=db.func.current_timestamp())
+    modified_at = db.Column(db.DateTime,
+                            nullable=False,
+                            default=db.func.current_timestamp(),
+                            onupdate=db.func.current_timestamp())
 
     def __init__(self, name, permissions):
         self.display_name = str(name)
