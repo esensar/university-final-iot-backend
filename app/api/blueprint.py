@@ -91,6 +91,7 @@ def handle_value_error(e):
 
 
 @api_bp.errorhandler(NotPresentError)
+@api_bp.errorhandler(404)
 def handle_not_present_error(e):
     return jsonify({'status': 'error', 'message': str(e)}), 404
 
