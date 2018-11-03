@@ -1,6 +1,9 @@
 import sys
 import hmac
 import urllib.parse
+import datetime
+import hashlib
+from secrets import token_urlsafe
 from .models import (Device,
                      Recording,
                      DeviceAssociation,
@@ -147,6 +150,46 @@ def get_device(device_id):
     :rtype: Device
     """
     return Device.get(id=device_id)
+
+
+def reset_device_secret(device_id):
+    """
+    Resets device secret for device with given parameters. Raises error on
+    failure
+
+    :param device_id: Id of device
+    :type device_id: int
+    :returns: Requested device
+    :rtype: Device
+    """
+    device = Device.get(id=device_id)
+    device.device_secret = token_urlsafe(32)
+    device.save()
+    return device
+
+
+def update_algorithm(device_id, algorithm):
+    """
+    Updates device secret algorithm for device with given parameters. Raises
+    error on failure
+
+    :param device_id: Id of device
+    :type device_id: int
+    :param algorithm: Name of new algorithm
+    :type algorithm: string
+    :returns: Requested device
+    :rtype: Device
+    """
+    if algorithm not in hashlib.algorithms_available:
+        raise ValueError("Unsupported algorithm! Supported algorithms: " +
+                         str(hashlib.algorithms_available) + ". Some of " +
+                         "these may not work on all platforms. These are " +
+                         "guaranteed to work on every platform: " +
+                         str(hashlib.algorithms_guaranteed))
+    device = Device.get(id=device_id)
+    device.secret_algorithm = algorithm
+    device.save()
+    return device
 
 
 def can_user_access_device(account_id, device_id):
@@ -357,6 +400,8 @@ def run_custom_query(device_id, request):
     for row in result:
         formatted_row = {}
         for idx, col in enumerate(row):
+            if isinstance(col, datetime.datetime):
+                col = col.replace(tzinfo=datetime.timezone.utc).isoformat()
             formatted_row[resulting_columns[idx]['name']] = col
         formatted_result.append(formatted_row)
     return formatted_result

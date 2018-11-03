@@ -9,11 +9,11 @@ from app.accounts.tasks import send_email_task
 from app.api.auth_protection import ProtectedResource
 from app.api.permission_protection import (requires_permission,
                                            valid_permissions)
-from app.api.schemas import BaseResourceSchema
+from app.api.schemas import BaseTimestampedResourceSchema
 from flask import current_app as app
 
 
-class UserSchema(BaseResourceSchema):
+class UserSchema(BaseTimestampedResourceSchema):
     username = fields.Str(required=True)
     email = fields.Email(required=True)
     password = fields.Str(required=True, load_only=True)
@@ -27,7 +27,7 @@ def validate_role_permissions(permissions_list):
     return set(permissions_list).issubset(valid_permissions)
 
 
-class RoleSchema(BaseResourceSchema):
+class RoleSchema(BaseTimestampedResourceSchema):
     id = fields.Integer(required=True, location='json')
     display_name = fields.String(required=True, location='json')
     permissions = fields.List(fields.String, required=True,

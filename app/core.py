@@ -1,5 +1,5 @@
 # App initialization
-from flask_api import FlaskAPI
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_mail import Mail
@@ -7,7 +7,7 @@ from flasgger import Swagger
 from flask_cors import CORS
 from .tasks import celery_configurator
 
-app = FlaskAPI(__name__, instance_relative_config=True)
+app = Flask(__name__, instance_relative_config=True)
 app.config.from_object('config')
 app.config.from_pyfile('config.py', silent=True)
 db = SQLAlchemy(app)

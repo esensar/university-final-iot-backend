@@ -6,29 +6,32 @@ from flasgger import swag_from
 import app.dashboards.api as dashboard
 import app.devices.api as device
 from app.api.auth_protection import ProtectedResource
-from app.api.schemas import BaseResourceSchema
+from app.api.schemas import (BaseResourceSchema,
+                             BaseTimestampedSchema,
+                             BaseTimestampedResourceSchema)
 
 
-class BasicDashboardWidgetSchema(Schema):
+class BasicDashboardWidgetSchema(BaseTimestampedSchema):
     id = fields.Integer(dump_only=True)
-    device_id = fields.Integer()
-    height = fields.Integer()
-    width = fields.Integer()
-    x = fields.Integer()
-    y = fields.Integer()
-    chart_type = fields.String()
-    filters = fields.Raw()
+    device_id = fields.Integer(required=True)
+    name = fields.String(required=True)
+    height = fields.Integer(required=True)
+    width = fields.Integer(required=True)
+    x = fields.Integer(required=True)
+    y = fields.Integer(required=True)
+    chart_type = fields.String(required=True)
+    filters = fields.Raw(required=True)
 
 
 class DashboardWidgetSchema(BaseResourceSchema, BasicDashboardWidgetSchema):
     pass
 
 
-class DashboardSchema(BaseResourceSchema):
+class DashboardSchema(BaseTimestampedResourceSchema):
     id = fields.Integer(dump_only=True)
     active = fields.Boolean(required=False)
-    dashboard_data = fields.Raw()
-    name = fields.String()
+    dashboard_data = fields.Raw(required=True)
+    name = fields.String(required=True)
     widgets = fields.Nested(BasicDashboardWidgetSchema, dump_only=True,
                             many=True)
 
@@ -112,6 +115,7 @@ class DashboardWidgetListResource(ProtectedResource):
         created_widget = dashboard.create_widget(
                 dashboard_id,
                 args['device_id'],
+                args['name'],
                 args['height'],
                 args['width'],
                 args['x'],
@@ -142,6 +146,7 @@ class DashboardWidgetResource(ProtectedResource):
         updated_widget = dashboard.patch_widget(
                 widget_id,
                 args['device_id'],
+                args['name'],
                 args['height'],
                 args['width'],
                 args['x'],
@@ -159,6 +164,7 @@ class DashboardWidgetResource(ProtectedResource):
         updated_widget = dashboard.patch_widget(
                 widget_id,
                 args.get('device_id'),
+                args.get('name'),
                 args.get('height'),
                 args.get('width'),
                 args.get('x'),

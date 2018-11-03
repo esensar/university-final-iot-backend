@@ -219,6 +219,8 @@ definitions:
       - id
       - name
       - device_type
+      - created_at
+      - modified_at
     properties:
       id:
         $ref: '#/definitions/id'
@@ -226,6 +228,10 @@ definitions:
         $ref: '#/definitions/devicename'
       device_type:
         $ref: '#/definitions/DeviceType'
+      created_at:
+        $ref: '#/definitions/datetime'
+      modified_at:
+        $ref: '#/definitions/datetime'
 
   DeviceShareTokenCreation:
     type: object
@@ -328,6 +334,7 @@ definitions:
       - id
       - dashboard_id
       - device_id
+      - name
       - width
       - height
       - x
@@ -341,6 +348,8 @@ definitions:
         $ref: '#/definitions/id'
       device_id:
         $ref: '#/definitions/id'
+      name:
+        $ref: '#/definitions/genericname'
       width:
         $ref: '#/definitions/id'
       height:

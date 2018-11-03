@@ -6,11 +6,13 @@ from flask import g, request, redirect
 from app.api.blueprint import api
 import app.devices.api as devices
 from app.api.auth_protection import ProtectedResource
-from app.api.schemas import BaseResourceSchema
+from app.api.schemas import (BaseResourceSchema,
+                             BaseTimestampedSchema,
+                             BaseTimestampedResourceSchema)
 from flask import current_app as app
 
 
-class BasicDeviceTypeSchema(Schema):
+class BasicDeviceTypeSchema(BaseTimestampedSchema):
     id = fields.Integer(dump_only=True)
     name = fields.Str(required=True)
 
@@ -19,7 +21,7 @@ class DeviceTypeSchema(BaseResourceSchema, BasicDeviceTypeSchema):
     pass
 
 
-class DeviceSchema(BaseResourceSchema):
+class DeviceSchema(BaseTimestampedResourceSchema):
     id = fields.Integer(dump_only=True)
     name = fields.Str(required=True)
     device_type = fields.Nested(BasicDeviceTypeSchema, dump_only=True)
@@ -45,7 +47,7 @@ class RecordingsQuerySchema(Schema):
 
 class DeviceSecretSchema(BaseResourceSchema):
     device_secret = fields.String(dump_only=True)
-    secret_algorithm = fields.String()
+    secret_algorithm = fields.String(required=True)
 
 
 class DeviceShareSchema(BaseResourceSchema):
@@ -170,6 +172,25 @@ class DeviceSecretResource(ProtectedResource):
     def get(self, device_id):
         validate_device_ownership(device_id)
         return DeviceSecretSchema().dump(devices.get_device(device_id)), 200
+
+    @use_args(DeviceSecretSchema(), locations=('json',))
+    @swag_from('swagger/update_device_secret_spec.yaml')
+    def put(self, args, device_id):
+        validate_device_ownership(device_id)
+        return DeviceSecretSchema().dump(
+                devices.update_algorithm(
+                    device_id,
+                    args['secret_algorithm']
+                    )
+                ), 200
+
+
+class DeviceSecretResetResource(ProtectedResource):
+    @swag_from('swagger/reset_device_secret_spec.yaml')
+    def post(self, device_id):
+        validate_device_ownership(device_id)
+        return DeviceSecretSchema().dump(
+                devices.reset_device_secret(device_id)), 200
 
 
 class DeviceShareResource(ProtectedResource):

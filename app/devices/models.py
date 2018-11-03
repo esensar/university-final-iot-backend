@@ -225,6 +225,13 @@ class DeviceAssociation(db.Model):
                            primary_key=True)
     access_level = db.Column(db.Integer, db.ForeignKey('access_levels.id'),
                              nullable=False)
+    created_at = db.Column(db.DateTime,
+                           nullable=False,
+                           default=db.func.current_timestamp())
+    modified_at = db.Column(db.DateTime,
+                            nullable=False,
+                            default=db.func.current_timestamp(),
+                            onupdate=db.func.current_timestamp())
 
     access_level_data = db.relationship("AccessLevel",
                                         foreign_keys=[access_level])
@@ -279,6 +286,13 @@ class DeviceType(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String, nullable=False)
+    created_at = db.Column(db.DateTime,
+                           nullable=False,
+                           default=db.func.current_timestamp())
+    modified_at = db.Column(db.DateTime,
+                            nullable=False,
+                            default=db.func.current_timestamp(),
+                            onupdate=db.func.current_timestamp())
 
     def __init__(self, name):
         self.name = name
@@ -333,6 +347,13 @@ class AccessLevel(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String, nullable=False)
     permissions = db.Column(db.ARRAY(db.String), nullable=False)
+    created_at = db.Column(db.DateTime,
+                           nullable=False,
+                           default=db.func.current_timestamp())
+    modified_at = db.Column(db.DateTime,
+                            nullable=False,
+                            default=db.func.current_timestamp(),
+                            onupdate=db.func.current_timestamp())
 
     def __init__(self, name, permissions=['VIEW_DEVICE']):
         self.name = name

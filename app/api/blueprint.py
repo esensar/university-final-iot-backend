@@ -1,9 +1,11 @@
 from flask_restful import Api
 from marshmallow import ValidationError
-from flask import Blueprint
+from flask import Blueprint, jsonify
 
 
 api_bp = Blueprint('api', __name__)
+
+
 api = Api(api_bp)
 
 
@@ -24,6 +26,7 @@ def add_resources():
                                    DeviceTypeListResource,
                                    DeviceConfigurationResource,
                                    DeviceSecretResource,
+                                   DeviceSecretResetResource,
                                    DeviceShareResource,
                                    DeviceShareActivationResource)
     from .resources.dashboard import (DashboardResource,
@@ -55,6 +58,8 @@ def add_resources():
                      '/v1/devices/<int:device_id>/configuration')
     api.add_resource(DeviceSecretResource,
                      '/v1/devices/<int:device_id>/secret')
+    api.add_resource(DeviceSecretResetResource,
+                     '/v1/devices/<int:device_id>/secret/reset')
     api.add_resource(DeviceShareResource,
                      '/v1/devices/<int:device_id>/share')
     api.add_resource(
@@ -76,12 +81,18 @@ add_resources()
 @api_bp.errorhandler(ValidationError)
 @api_bp.errorhandler(422)
 def handle_validation_error(e):
-    return {'status': 'error', 'message': str(e)}, 422
+    return jsonify({'status': 'error', 'message': str(e)}), 422
+
+
+@api_bp.errorhandler(ValueError)
+def handle_value_error(e):
+    return jsonify({'status': 'error', 'message': str(e)}), 422
 
 
 @api_bp.errorhandler(Exception)
+@api_bp.errorhandler(500)
 def handle_unknown_errors(e):
-    return ({
+    return jsonify({
         'status': 'failed',
         'message': 'Unknown error has occurred! ({0})'.format(str(e))
-        }, 500)
+        }), 500
