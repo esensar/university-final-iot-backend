@@ -24,6 +24,8 @@ class DeviceSchema(BaseResourceSchema):
     name = fields.Str(required=True)
     device_type = fields.Nested(BasicDeviceTypeSchema, dump_only=True)
     device_type_id = fields.Integer(load_only=True, missing=1)
+    created_at = fields.DateTime(dump_only=True)
+    modified_at = fields.DateTime(dump_only=True)
 
 
 class DeviceWithConfigurationSchema(DeviceSchema):
