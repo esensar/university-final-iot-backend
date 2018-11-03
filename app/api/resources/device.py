@@ -47,7 +47,7 @@ class RecordingsQuerySchema(Schema):
 
 class DeviceSecretSchema(BaseResourceSchema):
     device_secret = fields.String(dump_only=True)
-    secret_algorithm = fields.String()
+    secret_algorithm = fields.String(required=True)
 
 
 class DeviceShareSchema(BaseResourceSchema):
@@ -172,6 +172,17 @@ class DeviceSecretResource(ProtectedResource):
     def get(self, device_id):
         validate_device_ownership(device_id)
         return DeviceSecretSchema().dump(devices.get_device(device_id)), 200
+
+    @use_args(DeviceSecretSchema(), locations=('json',))
+    @swag_from('swagger/update_device_secret_spec.yaml')
+    def put(self, args, device_id):
+        validate_device_ownership(device_id)
+        return DeviceSecretSchema().dump(
+                devices.update_algorithm(
+                    device_id,
+                    args['secret_algorithm']
+                    )
+                ), 200
 
 
 class DeviceSecretResetResource(ProtectedResource):
