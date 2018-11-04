@@ -1,12 +1,10 @@
 from flask_restful import Api
 from marshmallow import ValidationError
-from app.errors import NotPresentError
+from app.errors import NotPresentError, BadRequestError
 from flask import Blueprint, jsonify
 
 
 api_bp = Blueprint('api', __name__)
-
-
 api = Api(api_bp)
 
 
@@ -34,6 +32,7 @@ def add_resources():
                                       DashboardListResource,
                                       DashboardWidgetResource,
                                       DashboardWidgetListResource)
+    from .resources.app import MqttConfigResource, AppConfigResource
 
     api.add_resource(AccountResource, '/v1/accounts/<int:account_id>')
     api.add_resource(AccountListResource, '/v1/accounts')
@@ -74,6 +73,8 @@ def add_resources():
             '/v1/dashboards/<int:dashboard_id>/widgets/<int:widget_id>')
     api.add_resource(DashboardWidgetListResource,
                      '/v1/dashboards/<int:dashboard_id>/widgets')
+    api.add_resource(MqttConfigResource, '/v1/config/mqtt')
+    api.add_resource(AppConfigResource, '/v1/config')
 
 
 add_resources()
@@ -94,6 +95,12 @@ def handle_value_error(e):
 @api_bp.errorhandler(404)
 def handle_not_present_error(e):
     return jsonify({'status': 'error', 'message': str(e)}), 404
+
+
+@api_bp.errorhandler(BadRequestError)
+@api_bp.errorhandler(400)
+def handle_bad_request_error(e):
+    return jsonify({'status': 'error', 'message': str(e)}), 400
 
 
 @api_bp.errorhandler(Exception)

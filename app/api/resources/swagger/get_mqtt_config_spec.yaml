@@ -1,0 +1,15 @@
+Gets server Mqtt configuration and description
+---
+tags:
+  - Mqtt
+  - Config
+responses:
+  200:
+    description: Success
+    schema:
+      type: object
+      required:
+        - content
+      properties:
+        content:
+          $ref: '#/definitions/MqttConfig'

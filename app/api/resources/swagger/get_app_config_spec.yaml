@@ -1,0 +1,14 @@
+Gets server app configuration and description
+---
+tags:
+  - Config
+responses:
+  200:
+    description: Success
+    schema:
+      type: object
+      required:
+        - content
+      properties:
+        content:
+          $ref: '#/definitions/AppConfig'
