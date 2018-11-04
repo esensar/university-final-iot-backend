@@ -2,7 +2,7 @@ Gets server Mqtt configuration and description
 ---
 tags:
   - Mqtt
-  - Config
+  - Application Information
 responses:
   200:
     description: Success
