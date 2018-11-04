@@ -1,7 +1,6 @@
-Gets server Mqtt configuration and description
+Gets server app configuration and description
 ---
 tags:
-  - Mqtt
   - Config
 responses:
   200:
@@ -12,4 +11,4 @@ responses:
         - content
       properties:
         content:
-          $ref: '#/definitions/MqttConfig'
+          $ref: '#/definitions/AppConfig'
