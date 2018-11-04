@@ -5,8 +5,6 @@ from flask import Blueprint, jsonify
 
 
 api_bp = Blueprint('api', __name__)
-
-
 api = Api(api_bp)
 
 
@@ -34,6 +32,7 @@ def add_resources():
                                       DashboardListResource,
                                       DashboardWidgetResource,
                                       DashboardWidgetListResource)
+    from .resources.app import MqttConfigResource
 
     api.add_resource(AccountResource, '/v1/accounts/<int:account_id>')
     api.add_resource(AccountListResource, '/v1/accounts')
@@ -74,6 +73,7 @@ def add_resources():
             '/v1/dashboards/<int:dashboard_id>/widgets/<int:widget_id>')
     api.add_resource(DashboardWidgetListResource,
                      '/v1/dashboards/<int:dashboard_id>/widgets')
+    api.add_resource(MqttConfigResource, '/v1/config/mqtt')
 
 
 add_resources()
