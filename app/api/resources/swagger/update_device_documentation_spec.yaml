@@ -1,0 +1,26 @@
+Updates a device documentation
+---
+tags:
+  - Device
+  - Docs
+parameters:
+  - in: path
+    name: device_id
+    required: true
+    type: integer
+    description: Id of the device
+  - in: body
+    name: body
+    required: true
+    schema:
+      $ref: '#/definitions/DeviceDocumentation'
+responses:
+  200:
+    description: Success
+    schema:
+      type: object
+      required:
+        - content
+      properties:
+        content:
+          $ref: '#/definitions/DeviceDocumentation'

@@ -137,6 +137,8 @@ class Device(db.Model):
                                  cascade="save-update, merge, delete")
     widgets = db.relationship("DashboardWidget",
                               cascade="save-update, merge, delete")
+    documentations = db.relationship("DeviceDocumentation",
+                                     cascade="save-update, merge, delete")
 
     def __init__(self, name, configuration=None, device_type=1):
         self.name = name
@@ -340,6 +342,54 @@ class DeviceType(db.Model):
     def __repr__(self):
         return '<DeviceType (name %s)>' % self.name
 
+
+class DeviceDocumentation(db.Model):
+    __tablename__ = 'device_documentations'
+
+    device_id = db.Column(db.Integer, db.ForeignKey('devices.id'),
+                          primary_key=True)
+    text = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime,
+                           nullable=False,
+                           default=db.func.current_timestamp())
+    modified_at = db.Column(db.DateTime,
+                            nullable=False,
+                            default=db.func.current_timestamp(),
+                            onupdate=db.func.current_timestamp())
+
+    def __init__(self, device_id, text):
+        self.device_id = device_id
+        self.text = text
+
+    def save(self):
+        """
+        Stores this device documentation to database
+        This may raise errors
+        """
+        db.session.add(self)
+        db.session.commit()
+
+    @staticmethod
+    def get(**kwargs):
+        """
+        Get device documentation with given filters
+
+        Available filters:
+         * device_id
+        """
+        return DeviceDocumentation.query.filter_by(**kwargs).first()
+
+    @staticmethod
+    def get_for_device(device_id):
+        """
+        Get documentation for device with device id passed in
+        parameter
+        """
+        return (DeviceDocumentation.get(device_id=device_id) or
+                DeviceDocumentation(device_id, ""))
+
+    def __repr__(self):
+        return '<DeviceDocumentation (device_id %s)>' % self.device_id
 
 class AccessLevel(db.Model):
     __tablename__ = 'access_levels'

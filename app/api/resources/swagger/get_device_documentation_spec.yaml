@@ -1,0 +1,17 @@
+Gets a device documentation
+---
+tags:
+  - Device
+  - Docs
+parameters:
+  - in: path
+    name: device_id
+    required: true
+    type: integer
+    description: Id of the device
+responses:
+  200:
+    description: Success
+    schema:
+      $ref: '#/definitions/DeviceDocumentation'
+

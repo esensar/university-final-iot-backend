@@ -45,6 +45,11 @@ class RecordingsQuerySchema(Schema):
     orders = fields.Raw()
 
 
+class DeviceDocumentationSchema(BaseTimestampedResourceSchema):
+    device_id = fields.Integer(dump_only=True)
+    text = fields.String(required=True)
+
+
 class DeviceSecretSchema(BaseResourceSchema):
     device_secret = fields.String(dump_only=True)
     secret_algorithm = fields.String(required=True)
@@ -165,6 +170,23 @@ class DeviceConfigurationResource(ProtectedResource):
     def get(self, device_id):
         validate_device_ownership(device_id)
         return devices.get_device_configuration(device_id), 200
+
+
+class DeviceDocumentationResource(ProtectedResource):
+    @use_args(DeviceDocumentationSchema(), locations=('json',))
+    @swag_from('swagger/update_device_documentation_spec.yaml')
+    def put(self, args, device_id):
+        validate_device_ownership(device_id)
+        update_device_documentation = devices.update_device_documentation(
+                device_id, args['text'])
+        return DeviceDocumentationSchema().dump(
+                update_device_documentation), 200
+
+    @swag_from('swagger/get_device_documentation_spec.yaml')
+    def get(self, device_id):
+        validate_device_ownership(device_id)
+        return DeviceDocumentationSchema().dump(
+                devices.get_device_documentation(device_id)), 200
 
 
 class DeviceSecretResource(ProtectedResource):
