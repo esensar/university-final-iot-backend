@@ -45,7 +45,7 @@ class RecordingsQuerySchema(Schema):
     orders = fields.Raw()
 
 
-class DeviceDocumentationSchema(BaseResourceSchema):
+class DeviceDocumentationSchema(BaseTimestampedResourceSchema):
     device_id = fields.Integer(dump_only=True)
     text = fields.String(required=True)
 

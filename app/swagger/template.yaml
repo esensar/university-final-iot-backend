@@ -233,6 +233,25 @@ definitions:
       modified_at:
         $ref: '#/definitions/datetime'
 
+  DeviceDocumentation:
+    type: object
+    required:
+      - device_id
+      - text
+      - created_at
+      - modified_at
+    properties:
+      device_id:
+        $ref: '#/definitions/id'
+      text:
+        type: string
+        description: Text of documentation
+        example: This device is used for ...
+      created_at:
+        $ref: '#/definitions/datetime'
+      modified_at:
+        $ref: '#/definitions/datetime'
+
   DeviceShareTokenCreation:
     type: object
     required:
