@@ -123,10 +123,10 @@ def get_email_info(config):
 class MqttConfigResource(ProtectedResource):
     @swag_from('swagger/get_mqtt_config_spec.yaml')
     def get(self):
-        return {
+        return MqttConfigSchema().dump({
             'broker': get_mqtt_broker_info(app.config),
             'endpoints':  get_mqtt_endpoints(app.config)
-        }, 200
+        }), 200
 
 
 class AppConfigResource(ProtectedResource):
