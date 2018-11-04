@@ -1,7 +1,7 @@
 Gets server app configuration and description
 ---
 tags:
-  - Config
+  - Application Information
 responses:
   200:
     description: Success

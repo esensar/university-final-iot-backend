@@ -24,6 +24,7 @@ def add_resources():
                                    DeviceTypeResource,
                                    DeviceTypeListResource,
                                    DeviceConfigurationResource,
+                                   DeviceDocumentationResource,
                                    DeviceSecretResource,
                                    DeviceSecretResetResource,
                                    DeviceShareResource,
@@ -56,6 +57,8 @@ def add_resources():
     api.add_resource(DeviceTypeListResource, '/v1/devices/types')
     api.add_resource(DeviceConfigurationResource,
                      '/v1/devices/<int:device_id>/configuration')
+    api.add_resource(DeviceDocumentationResource,
+                     '/v1/devices/<int:device_id>/documentation')
     api.add_resource(DeviceSecretResource,
                      '/v1/devices/<int:device_id>/secret')
     api.add_resource(DeviceSecretResetResource,

@@ -8,7 +8,8 @@ from .models import (Device,
                      Recording,
                      DeviceAssociation,
                      DeviceType,
-                     AccessLevel)
+                     AccessLevel,
+                     DeviceDocumentation)
 from itsdangerous import URLSafeSerializer
 from app.core import app
 from app.errors import NotPresentError
@@ -236,6 +237,29 @@ def get_devices(account_id):
     :rtype: List of Devices
     """
     return Device.get_many_for_user(account_id)
+
+
+def get_device_documentation(device_id):
+    """
+    Tries to get device documentation associated to given device.
+
+    :returns: DeviceDocumentation
+    """
+    if not Device.exists(id=device_id):
+        raise NotPresentError("Device with id %s does not exist" % device_id)
+    return DeviceDocumentation.get_for_device(device_id)
+
+
+def update_device_documentation(device_id, new_text):
+    """
+    Tries to update device documentation
+    """
+    if not Device.exists(id=device_id):
+        raise NotPresentError("Device with id %s does not exist" % device_id)
+    device_documentation = DeviceDocumentation.get_for_device(device_id)
+    device_documentation.text = new_text
+    device_documentation.save()
+    return device_documentation
 
 
 def get_device_types():
