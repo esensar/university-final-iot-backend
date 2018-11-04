@@ -328,6 +328,54 @@ definitions:
       name:
         ref: '#definitions/genericname'
 
+  MqttBroker:
+    type: object
+    required:
+      - url
+      - port
+    properties:
+      url:
+        type: string
+        description: Url of the used MQTT broker
+        example: broker.hivemq.com
+      port:
+        type: number
+        description: Port of the used MQTT broker
+        example: 1883
+
+  MqttEndpoint:
+    type: object
+    required:
+      - topic
+      - description
+      - body_example
+    properties:
+      topic:
+        type: string
+        description: Topic of this endpoint
+        example: device/<device_id>
+      description:
+        type: string
+        description: Description of usage of this endpoint
+        example: Used to send data to devices
+      body_example:
+        type: object
+        description: Example of body of messages used on this endpoint
+        example: {}
+
+  MqttConfig:
+    type: object
+    required:
+      - broker
+      - endpoints
+    properties:
+      broker:
+        $ref: '#/definitions/MqttBroker'
+      endpoints:
+        type: array
+        items:
+          $ref: '#/definitions/MqttEndpoint'
+
   Widget:
     type: object
     required:
