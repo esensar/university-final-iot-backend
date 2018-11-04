@@ -29,6 +29,38 @@ class MqttConfigSchema(BaseResourceSchema):
     endpoints = fields.Nested(BasicMqttEndpointSchema, many=True)
 
 
+class BasicVersionInfoSchema(Schema):
+    name = fields.String()
+    build_number = fields.String()
+
+
+class VersionInfoSchema(BaseResourceSchema, BasicVersionInfoSchema):
+    pass
+
+
+class BasicFrontendInfoSchema(Schema):
+    url = fields.String()
+
+
+class FrontendInfoSchema(BaseResourceSchema, BasicFrontendInfoSchema):
+    pass
+
+
+class BasicEmailInfoSchema(Schema):
+    mailer_account = fields.String()
+    contact_accounts = fields.List(fields.String, many=True)
+
+
+class EmailInfoSchema(BaseResourceSchema, BasicEmailInfoSchema):
+    pass
+
+
+class AppConfigSchema(BaseResourceSchema):
+    version = fields.Nested(BasicVersionInfoSchema)
+    frontend = fields.Nested(BasicFrontendInfoSchema)
+    email = fields.Nested(BasicEmailInfoSchema)
+
+
 def get_mqtt_broker_info(config):
     return {
         'url': config['MQTT_BROKER_URL'],
@@ -68,6 +100,26 @@ def get_mqtt_endpoints(config):
     ]
 
 
+def get_app_version_info(config):
+    return {
+        'name': config['APP_VERSION'],
+        'build_number': config['APP_RELEASE_VERSION_STRING']
+    }
+
+
+def get_frontend_info(config):
+    return {
+        'url': config['FRONTEND_URL']
+    }
+
+
+def get_email_info(config):
+    return {
+        'mailer_account': config['MAIL_DEFAULT_SENDER'],
+        'contact_accounts': config['MAIL_CONTACT_ACCOUNTS']
+    }
+
+
 class MqttConfigResource(ProtectedResource):
     @swag_from('swagger/get_mqtt_config_spec.yaml')
     def get(self):
@@ -75,3 +127,13 @@ class MqttConfigResource(ProtectedResource):
             'broker': get_mqtt_broker_info(app.config),
             'endpoints':  get_mqtt_endpoints(app.config)
         }, 200
+
+
+class AppConfigResource(ProtectedResource):
+    @swag_from('swagger/get_app_config_spec.yaml')
+    def get(self):
+        return AppConfigSchema().dump({
+            'version': get_app_version_info(app.config),
+            'frontend': get_frontend_info(app.config),
+            'email': get_email_info(app.config)
+        }), 200

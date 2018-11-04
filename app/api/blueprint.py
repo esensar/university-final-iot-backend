@@ -32,7 +32,7 @@ def add_resources():
                                       DashboardListResource,
                                       DashboardWidgetResource,
                                       DashboardWidgetListResource)
-    from .resources.app import MqttConfigResource
+    from .resources.app import MqttConfigResource, AppConfigResource
 
     api.add_resource(AccountResource, '/v1/accounts/<int:account_id>')
     api.add_resource(AccountListResource, '/v1/accounts')
@@ -74,6 +74,7 @@ def add_resources():
     api.add_resource(DashboardWidgetListResource,
                      '/v1/dashboards/<int:dashboard_id>/widgets')
     api.add_resource(MqttConfigResource, '/v1/config/mqtt')
+    api.add_resource(AppConfigResource, '/v1/config')
 
 
 add_resources()

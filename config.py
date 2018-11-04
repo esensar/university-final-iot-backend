@@ -3,6 +3,8 @@ import os
 # App configuration
 DEBUG = os.environ['DEBUG']
 APP_VERSION = '0.4.2'
+APP_RELEASE_VERSION_STRING = (os.environ.get('HEROKU_RELEASE_VERSION')
+                              or 'Unknown')
 
 # Define the application directory
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -56,6 +58,7 @@ MAIL_PASSWORD = os.environ['APP_MAIL_PASSWORD']
 
 # mail accounts
 MAIL_DEFAULT_SENDER = 'final.iot.backend.mailer@gmail.com'
+MAIL_CONTACT_ACCOUNTS = ['esarajcic1@etf.unsa.ba', 'valjic1@etf.unsa.ba']
 
 # frontend
 FRONTEND_URL = (os.environ.get('IOT_FRONTEND_URL') or
