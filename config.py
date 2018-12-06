@@ -2,7 +2,7 @@ import os
 
 # App configuration
 DEBUG = os.environ['DEBUG']
-APP_VERSION = '0.4.4'
+APP_VERSION = '0.4.5'
 APP_RELEASE_VERSION_STRING = (os.environ.get('HEROKU_RELEASE_VERSION')
                               or 'Unknown')
 
