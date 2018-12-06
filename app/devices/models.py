@@ -144,7 +144,7 @@ class Device(db.Model):
         self.name = name
         self.configuration = configuration
         self.device_type_id = device_type
-        self.secret_algorithm = 'sha512'
+        self.secret_algorithm = 'sha256'
         self.device_secret = token_urlsafe(32)
 
     def save(self):
