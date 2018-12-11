@@ -108,6 +108,13 @@ class Recording(db.Model):
         """
         return Recording.query.filter_by(**kwargs).first_or_404()
 
+    @staticmethod
+    def get_latest(device_id):
+        """
+        Get latest recording for device with id device_id
+        """
+        return Recording.query.order_by('recorded_at desc').first_or_404()
+
     def __repr__(self):
         return '<Recording (value=%s, recorded_at=%s)>' % (
             self.record_value, self.recorded_at)

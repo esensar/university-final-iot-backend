@@ -142,6 +142,23 @@ def get_device_recordings_filtered(device_id, record_type=None,
                                        start_date, end_date)
 
 
+def get_latest_device_recording(device_id):
+    """
+    Tries to get most recent recording for device with given parameters. Raises
+    error on failure
+
+    :param device_id: Id of device
+    :type device_id: int
+    :returns: Single recording (last recording)
+    :rtpe: Recording
+    :raises: ValueError if device does not exist
+    """
+    if not Device.exists(id=device_id):
+        raise NotPresentError("Device with id %s does not exist" % device_id)
+
+    return Recording.get_latest(device_id)
+
+
 def get_device(device_id):
     """
     Tries to get device with given parameters. Raises error on failure

@@ -129,6 +129,14 @@ class DeviceRecordingResource(ProtectedResource):
         return RecordingsSchema().dump(created_recording), 201
 
 
+class DeviceLatestRecordingResource(ProtectedResource):
+    @swag_from('swagger/get_latest_device_recording_spec.yaml')
+    def get(self, device_id):
+        validate_device_ownership(device_id)
+        return RecordingsSchema().dump(
+                devices.get_latest_device_recording(device_id)), 200
+
+
 class DeviceRecordingQueryResource(ProtectedResource):
     @use_args(RecordingsQuerySchema(), locations=('json',))
     @swag_from('swagger/create_device_recording_query_spec.yaml')
