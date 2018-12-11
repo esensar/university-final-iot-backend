@@ -1,0 +1,21 @@
+Gets latest recording for given device
+---
+tags:
+  - Device
+  - Recording
+parameters:
+  - in: path
+    name: device_id
+    required: true
+    type: integer
+    description: Id of the device
+responses:
+  200:
+    description: Success
+    schema:
+      type: object
+      required:
+        - content
+      properties:
+        content:
+            $ref: '#/definitions/Recording'
